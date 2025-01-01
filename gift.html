@@ -83,7 +83,39 @@
                 ],
                 color: 'from-purple-500 to-indigo-500'
             },
-            // Diğer hediye tipleri...
+            'tech': {
+                title: '💻 Teknoloji Paketi',
+                items: [
+                    '⌨️ Kod yazan sihirli klavye',
+                    '🖥️ Hata düzeltici gözlük',
+                    '📱 Fikir geliştirici tablet',
+                    '🤖 AI asistan',
+                    '🔮 Bug bulucu kristal küre'
+                ],
+                color: 'from-blue-500 to-cyan-500'
+            },
+            'gamer': {
+                title: '🎮 Oyuncu Seti',
+                items: [
+                    '🕹️ Pro oyuncu kontrolcüsü',
+                    '👓 Taktik görüş gözlüğü',
+                    '🎧 Rakip sezdiren kulaklık',
+                    '⚡ Refleks artırıcı eldiven',
+                    '🏆 Şampiyon kupası'
+                ],
+                color: 'from-emerald-500 to-teal-500'
+            },
+            'default': {
+                title: '✨ Sihirli Hediye Paketi',
+                items: [
+                    '🎁 2025 Şans Getirici',
+                    '💫 Dilek Yıldızı',
+                    '🌈 Mutluluk Kristali',
+                    '🎯 Hedef Gerçekleştirici',
+                    '🌟 Başarı Tılsımı'
+                ],
+                color: 'from-violet-500 to-purple-500'
+            }
         };
 
         // URL parametrelerini al
@@ -92,7 +124,9 @@
         const type = urlParams.get('type') || 'default';
         const header = urlParams.get('header') || 'Hoş Geldin';
         const note = urlParams.get('note') || '';
-        const gift = GIFTS[type] || GIFTS.default;
+        const testMode = urlParams.get('test') === 'true';
+
+        const gift = GIFTS[type] || GIFTS['default'];
 
         // Başlığı ayarla
         document.getElementById('personalHeader').textContent = `${header} ${name}`;
@@ -136,7 +170,7 @@
             revealedGift.classList.remove('hidden');
             
             const giftContent = document.getElementById('giftContent');
-            giftContent.className = `p-6 rounded-lg relative bg-gradient-to-r ${gift.color}`;
+            giftContent.className = `p-6 rounded-lg bg-gradient-to-r ${gift.color}`;
             giftContent.innerHTML = `
                 <div class="text-2xl font-bold text-white mb-6">${gift.title}</div>
                 <div class="space-y-4">
@@ -173,7 +207,6 @@
         }
 
         // Test modu veya normal mod
-        const testMode = urlParams.get('test') === 'true';
         if (testMode) {
             setTimeout(revealGift, 3000);
         } else {
