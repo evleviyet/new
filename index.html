@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 Yeni Yıl Hediyesi - Kontrol Paneli</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body class="cyber-bg min-h-screen">
+    <!-- Grid Arka Plan -->
+    <div class="cyber-grid fixed inset-0"></div>
+
+    <div class="container mx-auto px-4 py-8 relative">
+        <!-- Başlık -->
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-white neon-text mb-4 floating">2025</h1>
+            <p class="text-blue-200 text-xl">Yeni Yıl Hediyesi Oluşturucu</p>
+        </div>
+
+        <!-- Ana Panel -->
+        <div class="cyber-box rounded-xl p-6 max-w-4xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Sol Panel: Form -->
+                <div class="space-y-6">
+                    <!-- İsim -->
+                    <div>
+                        <label class="block text-blue-300 mb-2">İsim</label>
+                        <input type="text" id="friendName" placeholder="Örn: Ahmet" 
+                               class="w-full bg-gray-900 text-white rounded-lg p-3 border border-blue-500 focus:border-blue-400">
+                    </div>
+
+                    <!-- İlişki Türü -->
+                    <div>
+                        <label class="block text-blue-300 mb-2">İlişki Türü</label>
+                        <select id="relationType" onchange="updateRelationDetails()" 
+                                class="w-full bg-gray-900 text-white rounded-lg p-3 border border-blue-500">
+                            <option value="best_friend">👑 En İyi Arkadaş</option>
+                            <option value="close_friend">💫 Yakın Arkadaş</option>
+                            <option value="work_friend">💼 İş Arkadaşı</option>
+                            <option value="family">❤️ Aile Üyesi</option>
+                            <option value="relative">🌟 Akraba</option>
+                            <option value="teacher">📚 Öğretmenim</option>
+                            <option value="student">🎓 Öğrencim</option>
+                            <option value="mentor">🌠 Mentorum</option>
+                            <option value="custom">✨ Özel İlişki</option>
+                        </select>
+                    </div>
+
+                    <!-- Hitap Şekli -->
+                    <div>
+                        <label class="block text-blue-300 mb-2">Hitap Şekli</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="customHeader" 
+                                   class="flex-1 bg-gray-900 text-white rounded-lg p-3 border border-blue-500">
+                            <button onclick="resetHeader()" 
+                                    class="bg-blue-600 px-4 rounded-lg text-white hover:bg-blue-700">
+                                ↺
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Hediye Tipi -->
+                    <div>
+                        <label class="block text-blue-300 mb-2">Hediye Tipi</label>
+                        <select id="giftType" onchange="updatePreview()" 
+                                class="w-full bg-gray-900 text-white rounded-lg p-3 border border-blue-500">
+                            <option value="artist">🎨 Sanatçı Hediyesi</option>
+                            <option value="musician">🎵 Müzisyen Hediyesi</option>
+                            <option value="tech">💻 Teknoloji Hediyesi</option>
+                            <option value="gamer">🎮 Oyuncu Hediyesi</option>
+                            <option value="chef">👨‍🍳 Şef Hediyesi</option>
+                            <option value="photographer">📸 Fotoğrafçı Hediyesi</option>
+                            <option value="writer">✒️ Yazar Hediyesi</option>
+                            <option value="dancer">💃 Dansçı Hediyesi</option>
+                            <option value="athlete">🏃‍♂️ Sporcu Hediyesi</option>
+                        </select>
+                    </div>
+
+                    <!-- Kişisel Not -->
+                    <div>
+                        <label class="block text-blue-300 mb-2">Kişisel Not</label>
+                        <div class="space-y-2">
+                            <textarea id="personalNote" rows="3" 
+                                      class="w-full bg-gray-900 text-white rounded-lg p-3 border border-blue-500"></textarea>
+                            <div class="flex justify-end">
+                                <button onclick="resetNote()" 
+                                        class="text-sm text-blue-400 hover:text-blue-300">
+                                    Varsayılan Nota Dön
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sağ Panel: Önizleme -->
+                <div>
+                    <div class="cyber-box p-4 h-full">
+                        <h3 class="text-blue-300 mb-4">Önizleme</h3>
+                        <div id="preview" class="preview-box text-white space-y-4">
+                            <!-- JavaScript ile doldurulacak -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Butonlar -->
+            <div class="flex justify-between mt-6">
+                <button onclick="showCustomizeModal()" 
+                        class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg">
+                    ⚙️ Hediye Türü Ekle
+                </button>
+                <button onclick="generateLink()" 
+                        class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg">
+                    🎁 Link Oluştur
+                </button>
+            </div>
+
+            <!-- Oluşturulan Link -->
+            <div id="linkResult" class="mt-8 hidden">
+                <div class="cyber-box p-4 rounded-lg">
+                    <label class="block text-blue-300 mb-2">Oluşturulan Link:</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="generatedLink" readonly 
+                               class="flex-1 bg-gray-900 text-white rounded-lg p-2 border border-blue-500">
+                        <button onclick="copyLink()" 
+                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 rounded-lg">
+                            📋 Kopyala
+                        </button>
+                        <button onclick="testLink()" 
+                                class="bg-purple-600 hover:bg-purple-700 text-white px-4 rounded-lg">
+                            🚀 Test Et
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kaydedilen Linkler -->
+            <div id="savedLinks" class="mt-8">
+                <!-- JavaScript ile doldurulacak -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Özelleştirme Modal -->
+    <div id="customizeModal" class="modal">
+        <div class="cyber-box rounded-xl p-6 max-w-2xl w-full mx-4">
+            <h3 class="text-2xl text-blue-300 mb-6">Yeni Hediye Türü Ekle</h3>
+            <div class="space-y-4">
+                <!-- Modal içeriği JavaScript ile doldurulacak -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
