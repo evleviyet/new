@@ -47,19 +47,13 @@ const RELATIONS = {
         header: 'Değerli Mentorum',
         note: 'Yol göstericiliğiniz için minnettarım. 2025 size güzellikler getirsin!',
         style: 'from-violet-500 to-purple-500'
-    },
-    'custom': {
-        title: '✨ Özel',
-        header: 'Özel Not',
-        note: '',
-        style: 'from-gray-500 to-blue-500'
     }
 };
 
 // Hediye türleri
 const GIFTS = {
     'artist': {
-        title: '🎨 Sanatçı Hediyesi',
+        title: '🎨 Sanat Koleksiyonu',
         items: [
             '✨ Sınırsız renk paleti',
             '🖌️ İlham veren fırçalar',
@@ -69,7 +63,7 @@ const GIFTS = {
         ]
     },
     'musician': {
-        title: '🎵 Müzisyen Hediyesi',
+        title: '🎵 Müzik Seti',
         items: [
             '🎼 Beste yapan sihirli kalem',
             '🎸 Her enstrümana dönüşen tel',
@@ -78,20 +72,48 @@ const GIFTS = {
             '🎶 Melodi yakalayıcı'
         ]
     },
-    'tech': {
-        title: '💻 Teknoloji Hediyesi',
-        items: [
-            '⌨️ Kod yazan sihirli klavye',
-            '🖥️ Hata düzeltici gözlük',
-            '📱 Fikir geliştirici tablet',
-            '🤖 AI asistan',
-            '🔮 Bug bulucu kristal küre'
-        ]
-    },
-    // Diğer hediye tipleri...
+    // ... diğer hediye tipleri
 };
 
-// Ana fonksiyonlar
+// URL güncellemesi
+function generateLink() {
+    const name = document.getElementById('friendName').value;
+    const type = document.getElementById('giftType').value;
+    const header = document.getElementById('customHeader').value;
+    const note = document.getElementById('personalNote').value;
+    const relationType = document.getElementById('relationType').value;
+
+    if (!name) {
+        alert('Lütfen bir isim girin!');
+        return;
+    }
+
+    // Yeni URL yapısı
+    const baseUrl = 'https://evleviyet.github.io/new/';
+    const params = new URLSearchParams({
+        name: encodeURIComponent(name),
+        type: type,
+        header: encodeURIComponent(header),
+        note: encodeURIComponent(note),
+        relation: relationType
+    });
+
+    const link = `${baseUrl}gift.html?${params.toString()}`;
+    
+    document.getElementById('generatedLink').value = link;
+    document.getElementById('linkResult').classList.remove('hidden');
+
+    saveLink({
+        id: Date.now(),
+        name: name,
+        type: type,
+        header: header,
+        link: link,
+        date: new Date().toLocaleDateString()
+    });
+}
+
+// Diğer fonksiyonlar
 function updateRelationDetails() {
     const type = document.getElementById('relationType').value;
     const relation = RELATIONS[type];
@@ -126,7 +148,6 @@ function updatePreview() {
                 <h4 class="text-xl font-bold mb-2">${header} ${name}</h4>
                 <p class="text-gray-300">${note}</p>
             </div>
-            
             <div class="p-4 rounded-lg bg-gradient-to-r ${relation.style} bg-opacity-20">
                 <h4 class="text-xl font-bold mb-2">${gift.title}</h4>
                 <div class="space-y-2">
@@ -141,41 +162,7 @@ function updatePreview() {
     `;
 }
 
-function generateLink() {
-    const name = document.getElementById('friendName').value;
-    const type = document.getElementById('giftType').value;
-    const header = document.getElementById('customHeader').value;
-    const note = document.getElementById('personalNote').value;
-    const relationType = document.getElementById('relationType').value;
-
-    if (!name) {
-        alert('Lütfen bir isim girin!');
-        return;
-    }
-
-    const params = new URLSearchParams({
-        name: name,
-        type: type,
-        header: header,
-        note: note,
-        relation: relationType
-    });
-
-    const link = `https://evleviyet.github.io/happy-new-year/gift.html?${params.toString()}`;
-    
-    document.getElementById('generatedLink').value = link;
-    document.getElementById('linkResult').classList.remove('hidden');
-
-    saveLink({
-        id: Date.now(),
-        name: name,
-        type: type,
-        header: header,
-        link: link,
-        date: new Date().toLocaleDateString()
-    });
-}
-
+// Link yönetimi
 function saveLink(linkData) {
     const savedLinks = JSON.parse(localStorage.getItem('savedLinks') || '[]');
     savedLinks.unshift(linkData);
