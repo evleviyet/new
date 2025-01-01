@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 Yeni Yıl Hediyesi</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body class="cyber-bg min-h-screen overflow-hidden">
+    <div class="cyber-grid fixed inset-0"></div>
+
+    <div id="app" class="container mx-auto px-4 py-8 relative z-10">
+        <div class="gift-container text-center">
+            <h2 id="personalHeader" class="text-3xl font-medium text-white mb-6 italic neon-text"></h2>
+            
+            <h1 class="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 mb-8 floating neon-text">
+                2025
+            </h1>
+            
+            <div id="countdown" class="flex justify-center gap-4 mb-12">
+                <div class="countdown-item cyber-box p-6 rounded-lg">
+                    <div id="hours" class="text-4xl font-bold text-white">00</div>
+                    <div class="text-sm text-blue-300">Saat</div>
+                </div>
+                <div class="countdown-item cyber-box p-6 rounded-lg">
+                    <div id="minutes" class="text-4xl font-bold text-white">00</div>
+                    <div class="text-sm text-blue-300">Dakika</div>
+                </div>
+                <div class="countdown-item cyber-box p-6 rounded-lg">
+                    <div id="seconds" class="text-4xl font-bold text-white">00</div>
+                    <div class="text-sm text-blue-300">Saniye</div>
+                </div>
+            </div>
+
+            <div id="gift-box" class="cyber-box p-8 rounded-lg max-w-sm mx-auto floating glowing cursor-pointer transform transition-all duration-300 hover:scale-105">
+                <svg class="gift-icon w-32 h-32 mx-auto text-white" viewBox="0 0 24 24" stroke="currentColor" fill="none">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M12 21V11"></path>
+                    <path d="M12 11H3"></path>
+                    <path d="M12 11H21"></path>
+                    <path d="M12 11C12 11 9 3 12 3S12 11 12 11"></path>
+                </svg>
+            </div>
+
+            <div id="revealed-gift" class="cyber-box p-8 rounded-lg max-w-lg mx-auto hidden gift-reveal">
+                <div class="relative">
+                    <div class="absolute -top-6 -right-6">
+                        <div class="text-4xl animate-pulse">✨</div>
+                    </div>
+                    <h2 class="text-3xl font-bold text-white mb-6 neon-text">Mutlu Yıllar! 🎉</h2>
+                    <div id="giftContent" class="p-6 rounded-lg relative overflow-hidden">
+                        <!-- JavaScript ile doldurulacak -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Hediye türleri
+        const GIFTS = {
+            'artist': {
+                title: '🎨 Sanat Koleksiyonu',
+                items: [
+                    '✨ Sınırsız renk paleti',
+                    '🖌️ İlham veren fırçalar',
+                    '🎭 Yaratıcılık beresi',
+                    '🖼️ Sergi fırsatı',
+                    '🌈 Renk ustası sertifikası'
+                ],
+                color: 'from-pink-500 to-rose-500'
+            },
+            'musician': {
+                title: '🎵 Müzik Seti',
+                items: [
+                    '🎼 Beste yapan sihirli kalem',
+                    '🎸 Her enstrümana dönüşen tel',
+                    '🎧 Müzik perisi kulaklıklar',
+                    '🎹 Cep stüdyosu',
+                    '🎶 Melodi yakalayıcı'
+                ],
+                color: 'from-purple-500 to-indigo-500'
+            },
+            // Diğer hediye tipleri...
+        };
+
+        // URL parametrelerini al
+        const urlParams = new URLSearchParams(window.location.search);
+        const name = urlParams.get('name') || '';
+        const type = urlParams.get('type') || 'default';
+        const header = urlParams.get('header') || 'Hoş Geldin';
+        const note = urlParams.get('note') || '';
+        const gift = GIFTS[type] || GIFTS.default;
+
+        // Başlığı ayarla
+        document.getElementById('personalHeader').textContent = `${header} ${name}`;
+
+        // Havai fişek efekti
+        function createFireworks() {
+            const duration = 15 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            const interval = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                const particleCount = 50 * (timeLeft / duration);
+
+                confetti(Object.assign({}, defaults, {
+                    particleCount,
+                    origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+                }));
+                confetti(Object.assign({}, defaults, {
+                    particleCount,
+                    origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+                }));
+            }, 250);
+        }
+
+        // Hediyeyi göster
+        function revealGift() {
+            document.getElementById('countdown').style.display = 'none';
+            document.getElementById('gift-box').style.display = 'none';
+            
+            const revealedGift = document.getElementById('revealed-gift');
+            revealedGift.classList.remove('hidden');
+            
+            const giftContent = document.getElementById('giftContent');
+            giftContent.className = `p-6 rounded-lg relative bg-gradient-to-r ${gift.color}`;
+            giftContent.innerHTML = `
+                <div class="text-2xl font-bold text-white mb-6">${gift.title}</div>
+                <div class="space-y-4">
+                    ${gift.items.map(item => `
+                        <div class="flex items-center gap-2 text-white">
+                            <span>${item}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                ${note ? `<div class="mt-8 p-4 rounded bg-black bg-opacity-20 text-white italic">${note}</div>` : ''}
+            `;
+
+            createFireworks();
+        }
+
+        // Geri sayım
+        function updateCountdown() {
+            const now = new Date();
+            const midnight = new Date();
+            midnight.setHours(24, 0, 0, 0);
+            const diff = midnight - now;
+
+            if (diff > 0) {
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((diff / 1000 / 60) % 60);
+                const seconds = Math.floor((diff / 1000) % 60);
+
+                document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+            } else {
+                revealGift();
+            }
+        }
+
+        // Test modu veya normal mod
+        const testMode = urlParams.get('test') === 'true';
+        if (testMode) {
+            setTimeout(revealGift, 3000);
+        } else {
+            setInterval(updateCountdown, 1000);
+            updateCountdown();
+        }
+
+        // Hediye kutusu tıklama animasyonu
+        document.getElementById('gift-box').addEventListener('click', () => {
+            const giftBox = document.getElementById('gift-box');
+            giftBox.style.transform = 'scale(0.95) rotate(-5deg)';
+            setTimeout(() => {
+                giftBox.style.transform = 'scale(1) rotate(0)';
+            }, 200);
+        });
+    </script>
+</body>
+</html>
