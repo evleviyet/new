@@ -8,7 +8,6 @@
     <link href="style.css" rel="stylesheet">
 </head>
 <body class="cyber-bg min-h-screen">
-    <!-- Grid Arka Plan -->
     <div class="cyber-grid fixed inset-0"></div>
 
     <div class="container mx-auto px-4 py-8 relative">
@@ -104,12 +103,8 @@
                 </div>
             </div>
 
-            <!-- Butonlar -->
-            <div class="flex justify-between mt-6">
-                <button onclick="showCustomizeModal()" 
-                        class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg">
-                    ⚙️ Hediye Türü Ekle
-                </button>
+            <!-- Link Oluşturma Butonu -->
+            <div class="flex justify-end mt-6">
                 <button onclick="generateLink()" 
                         class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg">
                     🎁 Link Oluştur
@@ -138,16 +133,6 @@
             <!-- Kaydedilen Linkler -->
             <div id="savedLinks" class="mt-8">
                 <!-- JavaScript ile doldurulacak -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Özelleştirme Modal -->
-    <div id="customizeModal" class="modal">
-        <div class="cyber-box rounded-xl p-6 max-w-2xl w-full mx-4">
-            <h3 class="text-2xl text-blue-300 mb-6">Yeni Hediye Türü Ekle</h3>
-            <div class="space-y-4">
-                <!-- Modal içeriği JavaScript ile doldurulacak -->
             </div>
         </div>
     </div>
