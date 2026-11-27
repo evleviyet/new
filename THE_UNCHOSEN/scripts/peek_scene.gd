@@ -146,30 +146,39 @@ func _glow(center: Vector2, radius: float, c: Color, strength: float = 1.0) -> v
 		draw_circle(center, radius * (1.0 - k * 0.92), col)
 
 
-func _person(feet: Vector2, h: float, c: Color) -> void:
+## A standing figure. It breathes and shifts its weight a little — nobody in
+## these moments is a statue, even when nothing else moves.
+func _person(feet: Vector2, h: float, c: Color, ph: float = INF) -> void:
+	if ph == INF:
+		ph = feet.x * 0.071 + feet.y * 0.013
+	var breath := sin(t * 1.5 + ph) * h * 0.006
+	var sway := sin(t * 0.45 + ph * 1.7) * h * 0.006
 	var r := h * 0.075
 	var shoulders := h * 0.13
 	var hips := h * 0.09
+	var top := Vector2(sway, -breath)
+	var mid := Vector2(sway * 0.5, -breath * 0.4)
 	var body := PackedVector2Array([
 		feet + Vector2(-h * 0.07, 0),
-		feet + Vector2(-hips, -h * 0.46),
-		feet + Vector2(-shoulders, -h * 0.74),
-		feet + Vector2(-shoulders * 0.7, -h * 0.82),
-		feet + Vector2(shoulders * 0.7, -h * 0.82),
-		feet + Vector2(shoulders, -h * 0.74),
-		feet + Vector2(hips, -h * 0.46),
+		feet + Vector2(-hips, -h * 0.46) + mid,
+		feet + Vector2(-shoulders, -h * 0.74) + top,
+		feet + Vector2(-shoulders * 0.7, -h * 0.82) + top,
+		feet + Vector2(shoulders * 0.7, -h * 0.82) + top,
+		feet + Vector2(shoulders, -h * 0.74) + top,
+		feet + Vector2(hips, -h * 0.46) + mid,
 		feet + Vector2(h * 0.07, 0),
 	])
 	draw_colored_polygon(body, c)
-	draw_circle(feet + Vector2(0, -h * 0.82 - r * 1.05), r, c)
+	draw_circle(feet + Vector2(0, -h * 0.82 - r * 1.05) + top * 1.2, r, c)
 
 
 ## Silhouette with a thin rim of light so it reads against a dark ground.
 func _person_rim(feet: Vector2, h: float, c: Color, rim: Color) -> void:
 	var w := maxf(2.0, h * 0.012)
+	var ph := feet.x * 0.071 + feet.y * 0.013
 	for o: Vector2 in [Vector2(-w, 0), Vector2(w, 0), Vector2(0, -w), Vector2(w * 0.7, -w * 0.7)]:
-		_person(feet + o, h, rim)
-	_person(feet, h, c)
+		_person(feet + o, h, rim, ph)
+	_person(feet, h, c, ph)
 
 
 func _flicker(speed: float, amount: float) -> float:

@@ -28,6 +28,14 @@ func _ready() -> void:
 	resized.connect(func() -> void: pivot_offset = Vector2(size.x * 0.5, size.y * 1.6))
 
 
+func _process(_delta: float) -> void:
+	# a card waiting for a decision floats very slightly, like a held breath
+	if interactive and absf(_drag) < 0.5 and not (_tween and _tween.is_running()):
+		var tt := Time.get_ticks_msec() / 1000.0
+		position.y = _base.y + sin(tt * 1.3) * 3.0
+		rotation = sin(tt * 0.8) * 0.006
+
+
 func art_texture() -> Texture2D:
 	return art_view.get_texture()
 
@@ -41,6 +49,7 @@ func drag_to(dx: float) -> void:
 	if not interactive:
 		return
 	_drag = dx
+	position.y = _base.y
 	position.x = _base.x + dx
 	rotation = clampf(dx / (size.x * 2.5), -MAX_TILT, MAX_TILT)
 	var k := clampf(absf(dx) / (size.x * THRESHOLD), 0.0, 1.0)
