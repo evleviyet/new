@@ -113,7 +113,8 @@ Bütün sesleri `tools/synth_audio.py` üretiyor. Ne kullandığımı, neyi nede
 - **Gerçek piyano ve saha kayıtları:** [facebookincubator/Meta-open-sound](https://github.com/facebookincubator/Meta-open-sound) (CC0 1.0).
   - Müzikte 88 tuşlu gerçek bir upright piyano çalıyor.
   - Kapı, ayak sesi, şehir yağmuru, araba motoru, araba camı, tren, bozuk para, sayfa ve whoosh sesleri gerçek kayıtlardan.
-- **Sentez:** Kayıt bulunmayan şeyler sentezleniyor: kapının ardındaki televizyon sesleri, kalem cızırtısı, floresan, korna, piyano altındaki pad'ler, "yankı" ve bölüm sesleri.
+- **OpenGameArt (CC0):** Kalem yazısı ve televizyon paraziti kayıtları `tools/audio_src/` altında; kaynakları `SOURCES.md` içinde.
+- **Sentez:** Kayıt bulunmayan şeyler sentezleniyor: kapının ardındaki televizyon sesleri, floresan, korna, piyano altındaki pad'ler, "yankı" ve bölüm sesleri.
 - **Kayıtsız üretim:** Betik `--samples` olmadan da çalışır; o zaman her şey tamamen sentezle üretilir.
 - **Kapsam:**
   - Müzik: üç parça.
@@ -142,7 +143,7 @@ python3 tools/synth_audio.py assets/audio --samples /tmp/mos
     | Sweetie-16 | 0.126 |
     | PICO-8 | 0.188 |
   - Sonuç: 16 renkli paletler karanlık koridoru düz siyaha çeviriyor. Özel 32 renk yakın sonuç veriyor ama renkli ayrıntıları soldurur ve içerik değiştikçe yeniden üretilmesi gerekir. Mevcut yöntem korundu.
-- **Freesound, OpenGameArt:** Bu ortamdan erişilemedi.
+- **Freesound:** İndirme için hesap ve OAuth gerekiyor; OpenGameArt ve Meta Open Sound ihtiyacı karşıladı.
 
 ## Test
 
@@ -172,4 +173,5 @@ Mağazaya yüklemek için kendi upload anahtarını oluştur (`keytool -genkeypa
 
 - **Fontlar:** Pixelify Sans (© The Pixelify Sans Project Authors) ve Lora (© The Lora Project Authors), ikisi de SIL Open Font License 1.1. Lisans metinleri `assets/fonts/` altında.
 - **Piyano ve saha kayıtları:** Meta Open Sound, CC0 1.0 (kamu malı; atıf zorunlu değil, yine de teşekkürler).
+- **Kalem ve parazit kayıtları:** OpenGameArt, CC0 (`tools/audio_src/SOURCES.md`).
 - **Diğer her şey:** Kod, çizimler, sentez sesler ve metinler bu proje için üretildi.

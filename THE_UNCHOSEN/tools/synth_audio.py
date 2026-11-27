@@ -53,6 +53,15 @@ def rec(name, take=1):
     return None
 
 
+HERE = os.path.dirname(os.path.abspath(__file__))
+
+
+def vendored(name):
+    """Small CC0 recordings kept in tools/audio_src (see SOURCES.md)."""
+    path = os.path.join(HERE, "audio_src", name + ".ogg")
+    return load(path) if os.path.exists(path) else None
+
+
 def piano_sample(n, layer):
     if not SAMPLES:
         return None
@@ -373,7 +382,13 @@ def door_traffic():
 def door_pen():
     sec = 20
     x = lp(noise(sec), 400) * 0.08  # quiet room
+    pencil = vendored("oga_pencil_write")
     t = 0.5
+    while pencil is not None and t < sec - 2:
+        st = pencil * rng.uniform(0.5, 0.9)
+        place(x, st[: int(len(st) * rng.uniform(0.5, 1.0))], t)
+        t += len(st) / SR * rng.uniform(0.6, 1.0) + rng.uniform(0.3, 2.5)
+    t = sec if pencil is not None else 0.5
     while t < sec - 1:
         stroke = rng.uniform(0.6, 2.4)
         n = int(SR * stroke)
@@ -409,6 +424,9 @@ def door_tv():
     laugh_at = 13.0
     place(voice, bp(noise(1.5), 500, 3000) * env_ad(int(SR * 1.5), 0.1, 0.5) * 0.3, laugh_at)
     whine = np.sin(2 * np.pi * 15734 / 4 * t) * 0.01
+    static = vendored("oga_tv_static")
+    if static is not None:
+        whine = whine + bp(tile(static, sec, 0.5), 300, 5000) * 0.05
     x = lp(voice, 3000) + whine + lp(noise(sec), 300) * 0.1
     return norm(loopable(x, 1.0), 0.5)
 
@@ -590,6 +608,13 @@ def from_rec(name, peak=0.6, sec=None, fallback=None, verb=0.0):
     return make
 
 
+def sfx_pen():
+    p = vendored("oga_pencil_write")
+    if p is None:
+        return norm(bp(noise(0.8), 2000, 8000) * env_ad(int(SR * 0.8), 0.05, 0.3), 0.3)
+    return norm(p, 0.4)
+
+
 def sfx_horn():
     out = np.zeros(int(SR * 1.4))
     place(out, horn(0.55) * 0.8, 0.0)
@@ -604,6 +629,7 @@ SOUNDS = {
     "paper": from_rec("PAPRHndl_PaperCrumple", 0.35, sec=1.4),
     "car_door": from_rec("VEHDoor_CarDoorClose", 0.5, verb=0.2),
     "horn": sfx_horn,
+    "pen": sfx_pen,
     "corridor": amb_corridor,     # ambience in the corridor
     "rain": amb_rain,             # ambience inside 200 TL
     "room": amb_room,             # ambience inside Son Mektup

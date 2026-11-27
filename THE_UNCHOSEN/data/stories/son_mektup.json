@@ -96,7 +96,8 @@
 				"set": {
 					"m_unsaid": true
 				}
-			}
+			},
+			"sfx": "pen"
 		},
 		"m3_evening": {
 			"type": "card",
@@ -130,7 +131,8 @@
 				"set": {
 					"m_explain": true
 				}
-			}
+			},
+			"sfx": "pen"
 		},
 		"m4": {
 			"type": "card",
@@ -220,7 +222,8 @@
 				"set": {
 					"m_drawer": true
 				}
-			}
+			},
+			"sfx": "pen"
 		},
 		"m_post": {
 			"type": "text",
@@ -482,7 +485,8 @@
 					"text": "Okuyorsun. Havadan sudan, senin çocuklarından. Asıl cümle yok. Ama boşluğun nerede olduğunu biliyorsun."
 				}
 			],
-			"next": "k_choc"
+			"next": "k_choc",
+			"sfx": "pen"
 		},
 		"k_unopened": {
 			"type": "card",
