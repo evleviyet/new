@@ -103,7 +103,7 @@ THE_UNCHOSEN/
 ### Görsel dil
 
 - **Dünya:** Koridor 1/3, kart çizimleri 1/4 çözünürlükte çizilir. Ardından `pixel_dither.gdshader` ile Bayer dither uygulanır ve renk sayısı sınırlanır. Sonuç tutarlı bir piksel-art görünümü.
-- **Metinler:** Anlatı keskin kalır. Arayüzde Pixelify Sans, okunan metinlerde Lora ve Lora Italic kullanılır.
+- **Metinler:** Anlatı keskin kalır ve okuma hızında, daktilo gibi belirir; dokununca hemen tamamlanır. Tırnak içindeki konuşmalar italik ve sıcak tonda yazılır. Arayüzde Pixelify Sans, okunan metinlerde Lora ve Lora Italic kullanılır.
 - **Hazır görsel yok:** Hiçbir hazır görsel kullanılmadı, her şey kodla çiziliyor. Sonradan çizim eklemek için yalnızca `peek_scene.gd` içindeki ilgili fonksiyonu değiştirmek yeterli.
 
 ### Ses

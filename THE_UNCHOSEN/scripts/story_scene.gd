@@ -10,10 +10,14 @@ var _busy: bool = false
 var _pressing: bool = false
 var _press_pos := Vector2.ZERO
 var _last_perspective := ""
+var _reveal: Tween
+
+const DIALOGUE_COLOR := "#f1d9ae"
 
 @onready var background: TextureRect = $Background
 @onready var perspective: Label = $Perspective
-@onready var story_text: Label = $StoryText
+@onready var story_text: RichTextLabel = $StoryText
+@onready var text_shade: TextureRect = $TextShade
 @onready var card = $CardHolder/Card
 @onready var speaker: Label = $Speaker
 @onready var choices: Control = $Choices
@@ -37,8 +41,16 @@ func _ready() -> void:
 	UIStyle.style_title(chapter_title, 88)
 	UIStyle.style_title(hint, 22)
 	chapter_text.add_theme_font_override("font", UIStyle.italic())
+	story_text.add_theme_font_override("normal_font", UIStyle.serif())
+	story_text.add_theme_font_override("italics_font", UIStyle.italic())
+	text_shade.texture = _shade_texture()
+	for b: Button in [left_btn, right_btn, ending_btn]:
+		b.add_theme_font_override("font", UIStyle.italic())
+		b.add_theme_font_size_override("font_size", 27)
+	perspective.add_theme_font_override("font", UIStyle.spaced_pixel())
 	ending_closing.add_theme_font_override("font", UIStyle.italic())
-	card.choice_label.add_theme_font_override("font", UIStyle.pixel())
+	card.choice_label.add_theme_font_override("font", UIStyle.italic())
+	card.choice_label.add_theme_font_size_override("font_size", 32)
 	for b: Button in [left_btn, right_btn]:
 		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	background.texture = card.art_texture()
@@ -106,17 +118,17 @@ func _show_card(view: Dictionary) -> void:
 	perspective.text = String(view["perspective_name"]).to_upper()
 	perspective.add_theme_color_override("font_color", view["perspective_color"])
 	_fade(perspective, 0.85, 0.6)
-	story_text.text = view["text"]
-	story_text.modulate.a = 0.0
+	story_text.text = _rich(view["text"])
+	story_text.modulate.a = 1.0
+	_typewrite()
 	var tw := create_tween()
 	tw.tween_interval(0.15)
-	tw.tween_property(story_text, "modulate:a", 1.0, 0.7)
 	if view.get("echo", false):
 		# an earlier choice has come back
 		AudioManager.sfx("echo", -4.0)
-		story_text.add_theme_color_override("font_color", Color(1.0, 0.93, 0.80))
+		story_text.add_theme_color_override("default_color", Color(1.0, 0.94, 0.83))
 	else:
-		story_text.remove_theme_color_override("font_color")
+		story_text.add_theme_color_override("default_color", Color(0.93, 0.91, 0.86))
 	speaker.text = String(view.get("speaker", ""))
 	_fade(speaker, 0.7 if speaker.text != "" else 0.0, 0.6)
 	card.appear()
@@ -203,6 +215,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif type != "ending" and event.is_action_pressed("ui_accept"):
 		_advance()
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed and type == "text" and _revealing():
+			_reveal.kill()
+			story_text.visible_ratio = 1.0
+			return
 		if event.pressed:
 			_pressing = true
 			_press_pos = event.position
@@ -275,6 +291,58 @@ func _leave_life() -> void:
 	var tw := create_tween()
 	tw.tween_property(fade, "color", Color(0, 0, 0, 1), 1.4)
 	tw.tween_callback(GameManager.return_to_corridor)
+
+
+## Spoken words — anything between “ ” — are set in italics, warmer.
+func _rich(text: String) -> String:
+	var t := text.replace("[", "[lb]")
+	# keep amounts whole: "200 TL" never breaks across lines
+	var re := RegEx.create_from_string("(\\d) (TL|lira)")
+	t = re.sub(t, "$1\u00a0$2", true)
+	var out := ""
+	var inside := false
+	for ch in t:
+		if ch == "“" and not inside:
+			inside = true
+			out += "[i][color=%s]“" % DIALOGUE_COLOR
+		elif ch == "”" and inside:
+			inside = false
+			out += "”[/color][/i]"
+		else:
+			out += ch
+	if inside:
+		out += "[/color][/i]"
+	return out
+
+
+## The text arrives at the pace of reading, not all at once.
+func _typewrite() -> void:
+	if _reveal and _reveal.is_valid():
+		_reveal.kill()
+	story_text.visible_ratio = 0.0
+	var n := story_text.get_total_character_count()
+	_reveal = create_tween()
+	_reveal.tween_interval(0.2)
+	_reveal.tween_property(story_text, "visible_ratio", 1.0, clampf(n * 0.026, 0.4, 2.6))
+
+
+func _revealing() -> bool:
+	return _reveal != null and _reveal.is_running() and story_text.visible_ratio < 1.0
+
+
+func _shade_texture() -> Texture2D:
+	var g := Gradient.new()
+	g.set_color(0, Color(0, 0, 0, 0.0))
+	g.set_color(1, Color(0, 0, 0, 0.0))
+	g.add_point(0.25, Color(0, 0, 0, 0.5))
+	g.add_point(0.75, Color(0, 0, 0, 0.5))
+	var tex := GradientTexture2D.new()
+	tex.gradient = g
+	tex.fill_from = Vector2(0.5, 0.0)
+	tex.fill_to = Vector2(0.5, 1.0)
+	tex.width = 4
+	tex.height = 64
+	return tex
 
 
 func _fade(c: CanvasItem, a: float, d: float) -> void:

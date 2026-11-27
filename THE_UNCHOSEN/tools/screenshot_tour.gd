@@ -88,7 +88,7 @@ func _story_step(scene, delta: float) -> bool:
 	var id: String = view.get("id", "")
 	if id != story_last:
 		story_last = id
-		story_wait = 0.9
+		story_wait = 2.9
 		return false
 	story_wait -= delta
 	if story_wait > 0.0:

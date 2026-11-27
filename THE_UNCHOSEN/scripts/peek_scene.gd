@@ -137,13 +137,29 @@ func _rect(x0: float, y0: float, x1: float, y1: float, c: Color) -> void:
 	draw_rect(Rect2(a, b - a), c)
 
 
+static var _glow_tex: GradientTexture2D
+
+
+## Soft light falling off from a point. A radial gradient instead of stacked
+## circles: no rings, and the dither turns it into a clean pixel falloff.
 func _glow(center: Vector2, radius: float, c: Color, strength: float = 1.0) -> void:
-	var steps := 12
-	for i in steps:
-		var k := float(i) / steps
-		var col := c
-		col.a = 0.05 * strength * (0.4 + k)
-		draw_circle(center, radius * (1.0 - k * 0.92), col)
+	if _glow_tex == null:
+		var g := Gradient.new()
+		g.set_color(0, Color(1, 1, 1, 1))
+		g.set_color(1, Color(1, 1, 1, 0))
+		g.add_point(0.15, Color(1, 1, 1, 0.72))
+		g.add_point(0.42, Color(1, 1, 1, 0.34))
+		g.add_point(0.72, Color(1, 1, 1, 0.11))
+		_glow_tex = GradientTexture2D.new()
+		_glow_tex.gradient = g
+		_glow_tex.fill = GradientTexture2D.FILL_RADIAL
+		_glow_tex.fill_from = Vector2(0.5, 0.5)
+		_glow_tex.fill_to = Vector2(1.0, 0.5)
+		_glow_tex.width = 128
+		_glow_tex.height = 128
+	var col := c
+	col.a = clampf(0.62 * strength, 0.0, 1.0)
+	draw_texture_rect(_glow_tex, Rect2(center - Vector2(radius, radius), Vector2(radius, radius) * 2.0), false, col)
 
 
 ## A standing figure. It breathes and shifts its weight a little — nobody in

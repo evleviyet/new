@@ -15,6 +15,15 @@ static func pixel() -> Font:
 	return load("res://assets/fonts/pixel_ui.tres")
 
 
+## Pixelify with generous letter spacing, for small headings like ADAM.
+static func spaced_pixel() -> Font:
+	var f := FontVariation.new()
+	f.base_font = load(PIXEL_PATH)
+	f.spacing_glyph = 5
+	f.spacing_space = 10
+	return f
+
+
 static func serif() -> Font:
 	return load(SERIF_PATH)
 
