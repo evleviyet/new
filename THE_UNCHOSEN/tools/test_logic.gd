@@ -60,6 +60,7 @@ func _process(_d: float) -> bool:
 				gm.life_flags["200_tl"] = {"father_harsh": true, "chocolate": true, "gift": false}
 			var endings := {}
 			var echoes := 0
+			var interludes := 0
 			for run in 150:
 				sm.start(life, lpath)
 				var steps := 0
@@ -78,7 +79,17 @@ func _process(_d: float) -> bool:
 						check(String(v["closing"]) != "", "ending has closing")
 						endings[" / ".join(v["lines"])] = true
 						break
-					check(String(v["text"]) != "", "text present at %s:%s" % [life, v["id"]])
+					if v["type"] == "interlude":
+						interludes += 1
+						check(v["beats"].size() >= 3, "interlude has beats at %s:%s" % [life, v["id"]])
+						for b: Dictionary in v["beats"]:
+							check(String(b["text"]) != "", "beat text at " + v["id"])
+							if b["echo"]:
+								echoes += 1
+					else:
+						check(String(v["text"]) != "", "text present at %s:%s" % [life, v["id"]])
+					if v["type"] == "card" and v["pause"] > 0.0:
+						check(v["pause"] <= 4.0, "silences stay short at " + v["id"])
 					if v["type"] == "card":
 						cards += 1
 						check(String(v["left"]) != "" and String(v["right"]) != "", "card labels at " + v["id"])
@@ -90,7 +101,8 @@ func _process(_d: float) -> bool:
 					steps += 1
 				check(steps < 200, "run terminates")
 				check(cards >= 6 and cards <= 15, "6-15 decisions per run in %s (got %d)" % [life, cards])
-			print("%s%s: %d endings, %d echo screens" % [life, " (after 200 TL)" if inherited else "", endings.size(), echoes])
+			print("%s%s: %d endings, %d echo screens, %d interludes lived" % [life, " (after 200 TL)" if inherited else "", endings.size(), echoes, interludes])
+			check(interludes > 0, "interludes reached in " + life)
 			check(endings.size() >= 8, "many endings in " + life)
 			if inherited:
 				check(echoes > 0, "earlier lives echo in " + life)
@@ -139,6 +151,53 @@ func _process(_d: float) -> bool:
 	check(sm.node_id == node_before, "same node after load (%s)" % sm.node_id)
 	check(sm.flags == flags_before, "same flags after load")
 	check(int(gm.get_state("son_mektup")["turned_away"]) == 1, "door memory survives load")
+
+	# --- echoes across lives inside interludes -------------------------
+	var night_beats := func(lf: Dictionary) -> Array:
+		gm.life_flags.clear()
+		if not lf.is_empty():
+			gm.life_flags["200_tl"] = lf
+		sm.start("son_mektup", dm.get_door("son_mektup")["story"])
+		sm.advance()      # chapter
+		sm.advance()      # m1
+		sm.choose("right")  # “Oğlum, o akşam…”
+		sm.choose("left")   # özür
+		check(sm.node_id == "m_night", "the night interlude follows the first lines (at %s)" % sm.node_id)
+		var out: Array = []
+		for b: Dictionary in sm.current()["beats"]:
+			out.append(b["text"])
+		sm.stop()
+		gm.life_flags.clear()
+		return out
+	var plain: Array = night_beats.call({})
+	var echoed: Array = night_beats.call({"father_harsh": true})
+	check(echoed.size() == plain.size() + 1, "a lived life adds a remembered beat (%d vs %d)" % [echoed.size(), plain.size()])
+	check(" ".join(echoed).contains("O akşamki gibi"), "the rain of that evening comes back")
+	check(not " ".join(plain).contains("O akşamki gibi"), "nothing is remembered that was not lived")
+
+	# --- a 0.2 save still loads into 0.3 ---------------------------------
+	var old := {
+		"version": 1,
+		"game": {"door_states": {"200_tl": {"peeks": 1, "turned_away": 0, "entered": true, "completed": false},
+			"son_mektup": {"peeks": 2, "turned_away": 1}}, "life_flags": {}, "finale_seen": false},
+		"story": {"door_id": "200_tl", "story_path": "res://data/stories/200_tl.json", "node_id": "c_walk",
+			"flags": {"errand": true, "brought_bag": true}, "history": []},
+	}
+	var f_old := FileAccess.open(save.SAVE_PATH, FileAccess.WRITE)
+	f_old.store_string(JSON.stringify(old))
+	f_old.close()
+	sm.stop()
+	gm.reset()
+	save.load_game()
+	check(sm.is_active() and sm.node_id == "c_walk", "0.2 save resumes mid-life")
+	check(int(gm.get_state("son_mektup")["turned_away"]) == 1, "0.2 door memory kept")
+	sm.advance()
+	check(sm.node_id == "c_uphill", "an old save walks into the new interlude (%s)" % sm.node_id)
+	var up: Dictionary = sm.current()
+	check(" ".join(up["beats"].map(func(b): return b["text"])).contains("Poşet"), "the bag is felt on the way home")
+	sm.stop()
+	gm.reset()
+	save.new_game()
 
 	# --- completing a life ----------------------------------------------
 	check(not gm.any_story_completed(), "nothing lived yet")

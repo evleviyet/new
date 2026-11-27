@@ -4,6 +4,9 @@ extends Control
 ## to someone else, sometimes seen through someone else's eyes.
 
 const UIStyle := preload("res://scripts/ui_style.gd")
+const Fx := preload("res://scripts/fx.gd")
+## Screens shown since the last chapter title; music leaves after the first.
+const MUSIC_SCREENS := 1
 
 var _view: Dictionary = {}
 var _busy: bool = false
@@ -11,10 +14,15 @@ var _pressing: bool = false
 var _press_pos := Vector2.ZERO
 var _last_perspective := ""
 var _reveal: Tween
+var _beat := 0
+var _since_chapter := 0
 
 const DIALOGUE_COLOR := "#f1d9ae"
 
 @onready var background: TextureRect = $Background
+@onready var background_old: TextureRect = $BackgroundOld
+@onready var interlude: SubViewportContainer = $Interlude
+@onready var interlude_scene = $Interlude/View/Scene
 @onready var perspective: Label = $Perspective
 @onready var story_text: RichTextLabel = $StoryText
 @onready var text_shade: TextureRect = $TextShade
@@ -59,10 +67,14 @@ func _ready() -> void:
 	right_btn.pressed.connect(func() -> void: _choose_button("right"))
 	ending_btn.pressed.connect(_leave_life)
 	AudioManager.clear_doors()
+	AudioManager.clear_memory()
 	AudioManager.play_ambience(StoryManager.ambience() if StoryManager.is_active() else "rain")
-	AudioManager.play_music("life")
-	for c: CanvasItem in [perspective, story_text, speaker, choices, hint, chapter_box, ending_box]:
+	# music only where it means something: chapters and the ending
+	AudioManager.stop_music(2.0)
+	for c: CanvasItem in [perspective, story_text, speaker, choices, hint, chapter_box, ending_box, interlude, background_old]:
 		c.modulate.a = 0.0
+	interlude.visible = false
+	interlude_scene.active = false
 	ending_box.visible = false
 	fade.color = Color(1, 0.97, 0.92, 1)
 	var tw := create_tween()
@@ -80,18 +92,38 @@ func _show(view: Dictionary) -> void:
 	_view = view
 	_busy = true
 	var type := String(view.get("type", ""))
-	card.set_scene(view.get("art", ""), StoryManager.flags)
+	if type != "interlude":
+		_crossfade_background()
+		card.set_scene(view.get("art", ""), StoryManager.flags)
+	_since_chapter += 1
+	if _since_chapter > MUSIC_SCREENS and type != "ending":
+		AudioManager.stop_music(10.0)
+	if type != "interlude" and interlude.visible:
+		_close_interlude()
 	match type:
 		"chapter":
 			_show_chapter(view)
 		"ending":
 			_show_ending(view)
+		"interlude":
+			_show_interlude(view)
 		_:
 			_show_card(view)
 
 
+## The old picture lingers for a moment while the new one arrives.
+func _crossfade_background() -> void:
+	if background.modulate.a <= 0.01:
+		return
+	background_old.texture = ImageTexture.create_from_image(card.art_texture().get_image())
+	background_old.modulate.a = background.modulate.a
+	Fx.fade(background_old, 0.0, 0.9)
+
+
 func _show_chapter(view: Dictionary) -> void:
 	_last_perspective = view["perspective"]
+	_since_chapter = 0
+	AudioManager.play_music("life", 3.0)
 	_fade(perspective, 0.0, 0.3)
 	_fade(story_text, 0.0, 0.3)
 	_fade(speaker, 0.0, 0.3)
@@ -113,6 +145,7 @@ func _show_chapter(view: Dictionary) -> void:
 
 
 func _show_card(view: Dictionary) -> void:
+	_place_text("top")
 	_fade(chapter_box, 0.0, 0.5)
 	_fade(background, 0.32, 0.8)
 	perspective.text = String(view["perspective_name"]).to_upper()
@@ -215,7 +248,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif type != "ending" and event.is_action_pressed("ui_accept"):
 		_advance()
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
-		if event.pressed and type == "text" and _revealing():
+		if event.pressed and type in ["text", "interlude"] and _revealing():
 			_reveal.kill()
 			story_text.visible_ratio = 1.0
 			return
@@ -258,12 +291,24 @@ func _on_decided(side: String) -> void:
 	AudioManager.sfx("swipe")
 	_fade(story_text, 0.0, 0.25)
 	_fade(choices, 0.0, 0.25)
+	_fade(hint, 0.0, 0.25)
+	var pause := float(_view.get("pause", 0.0))
 	StoryManager.choose(side)
-	_next_after(0.35)
+	if pause > 0.0:
+		# a weighty choice: the world holds its breath before going on
+		AudioManager.duck(pause)
+		var dim := create_tween()
+		dim.tween_property(fade, "color", Color(0, 0, 0, 0.45), 0.6)
+		dim.tween_interval(maxf(0.0, pause - 1.2))
+		dim.tween_property(fade, "color", Color(0, 0, 0, 0.0), 0.6)
+	_next_after(0.35 + pause)
 
 
 func _advance() -> void:
 	_busy = true
+	if String(_view.get("type", "")) == "interlude" and _beat < _view["beats"].size() - 1:
+		_next_beat()
+		return
 	AudioManager.sfx("tap", -6.0)
 	if String(_view.get("type", "")) == "text":
 		card.leave(-1.0)
@@ -346,4 +391,93 @@ func _shade_texture() -> Texture2D:
 
 
 func _fade(c: CanvasItem, a: float, d: float) -> void:
-	create_tween().tween_property(c, "modulate:a", a, d)
+	Fx.fade(c, a, d)
+
+
+# --- interludes: a short moment lived step by step ---------------------
+
+func _show_interlude(view: Dictionary) -> void:
+	card.leave(0.0)
+	_fade(chapter_box, 0.0, 0.5)
+	_fade(background, 0.0, 0.6)
+	_fade(choices, 0.0, 0.3)
+	_fade(speaker, 0.0, 0.3)
+	perspective.text = String(view["perspective_name"]).to_upper()
+	perspective.add_theme_color_override("font_color", view["perspective_color"])
+	_fade(perspective, 0.85, 0.6)
+	interlude_scene.flags = StoryManager.flags
+	interlude_scene.progress = 0.0
+	interlude_scene.set_style(view["art"])
+	interlude_scene.active = true
+	interlude.visible = true
+	_fade(interlude, 1.0, 1.2)
+	_place_text(view.get("text_at", "top"))
+	_beat = 0
+	_show_beat()
+
+
+func _show_beat() -> void:
+	var beats: Array = _view["beats"]
+	if beats.is_empty():
+		_busy = false
+		return
+	var b: Dictionary = beats[_beat]
+	story_text.text = _rich(b["text"])
+	story_text.modulate.a = 1.0
+	story_text.add_theme_color_override("default_color", Color(1.0, 0.94, 0.83) if b["echo"] else Color(0.93, 0.91, 0.86))
+	if b["echo"]:
+		AudioManager.sfx("echo", -6.0)
+	_typewrite()
+	hint.text = "dokun"
+	var tw := create_tween()
+	tw.tween_interval(0.6)
+	tw.tween_callback(func() -> void:
+		_fade(hint, 0.45, 0.6)
+		_busy = false)
+
+
+## A tap moves the moment forward: the walk goes on, the night gets later.
+func _next_beat() -> void:
+	var n: int = _view["beats"].size()
+	_beat += 1
+	_fade(story_text, 0.0, 0.3)
+	_fade(hint, 0.0, 0.2)
+	if _view.get("walk", false):
+		AudioManager.sfx("steps", -6.0, 0.08)
+	interlude_scene.walking = true
+	var tw := create_tween()
+	tw.tween_property(interlude_scene, "progress", float(_beat) / float(maxi(1, n - 1)), 1.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tw.tween_callback(func() -> void:
+		interlude_scene.walking = false
+		_show_beat())
+
+
+## top: above the card; middle/bottom: for interludes whose subject is up high.
+func _place_text(where: String) -> void:
+	var a: Vector2
+	var o: Vector2
+	match where:
+		"bottom":
+			a = Vector2(1.0, 1.0)
+			o = Vector2(-470.0, -150.0)
+		"middle":
+			a = Vector2(0.5, 0.5)
+			o = Vector2(-190.0, 110.0)
+		_:
+			a = Vector2(0.0, 0.5)
+			o = Vector2(116.0, -196.0)
+	story_text.anchor_top = a.x
+	story_text.anchor_bottom = a.y
+	story_text.offset_top = o.x
+	story_text.offset_bottom = o.y
+	text_shade.anchor_top = a.x
+	text_shade.anchor_bottom = a.y
+	text_shade.offset_top = o.x - 20.0
+	text_shade.offset_bottom = o.y + 20.0
+
+
+func _close_interlude() -> void:
+	var tw := Fx.fade(interlude, 0.0, 0.8)
+	tw.tween_callback(func() -> void:
+		interlude.visible = false
+		interlude_scene.active = false)

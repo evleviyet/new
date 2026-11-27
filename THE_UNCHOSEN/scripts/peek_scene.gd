@@ -13,6 +13,11 @@ var flags: Dictionary = {}
 var after: bool = false
 ## The corridor's last moment: three strangers on one platform.
 var finale: bool = false
+## Interludes: how far the moment has gone (0..1), moved by the player's taps.
+var progress: float = 0.0
+## True while a figure is walking; legs swing, the step bobs.
+var walking: bool = false
+var _step: float = 0.0
 
 var t: float = 0.0
 var _rain: Array[Vector3] = []
@@ -37,6 +42,8 @@ func _process(delta: float) -> void:
 	if not active:
 		return
 	t += delta
+	if walking:
+		_step += delta * 7.0
 	queue_redraw()
 
 
@@ -104,6 +111,16 @@ func _draw() -> void:
 			_draw_window_street()
 		"suitcase":
 			_draw_suitcase()
+		"walk_to_market":
+			_draw_walk_to_market()
+		"car_away":
+			_draw_car_away()
+		"walk_home":
+			_draw_walk_home()
+		"night_letter":
+			_draw_night_letter()
+		"stair_wait":
+			_draw_stair_wait()
 		_:
 			_draw_dark()
 
@@ -1035,3 +1052,203 @@ func _draw_suitcase() -> void:
 		_rect(0.62, 0.06, 0.95, 0.56, Color(0.14, 0.11, 0.09))
 		_rect(0.66, 0.0, 0.90, 0.06, Color(0.30, 0.18, 0.12))
 	_rect(0.0, 0.86, 1.0, 1.0, Color(0.05, 0.05, 0.06))
+
+
+# --- INTERLUDES ------------------------------------------------------------
+# Short moments lived step by step. `progress` (0..1) is moved by taps;
+# the same streets, rooms and people as the cards, only longer.
+
+## A walking figure: legs and arms swing while `walking`, the step bobs.
+func _walker(feet: Vector2, h: float, c: Color, rim: Color = Color(0, 0, 0, 0), facing: float = 1.0) -> void:
+	var sw := sin(_step) if walking else 0.0
+	var bob := absf(sin(_step)) * h * 0.02 if walking else 0.0
+	var f := feet - Vector2(0, bob)
+	var hip := f + Vector2(0, -h * 0.46)
+	var leg := maxf(1.0, h * 0.075)
+	for side: float in [-1.0, 1.0]:
+		var foot := f + Vector2(sw * side * h * 0.13 * facing, 0)
+		if rim.a > 0.0:
+			draw_line(hip, foot, rim, leg + 2.0)
+		draw_line(hip, foot, c, leg)
+	var shoulder := f + Vector2(0, -h * 0.76)
+	for side: float in [-1.0, 1.0]:
+		var hand := shoulder + Vector2(-sw * side * h * 0.10 * facing, h * 0.30)
+		draw_line(shoulder, hand, c, maxf(1.0, h * 0.05))
+	var body := PackedVector2Array([hip + Vector2(-h * 0.09, 0), shoulder + Vector2(-h * 0.12, 0),
+		shoulder + Vector2(h * 0.12, 0), hip + Vector2(h * 0.09, 0)])
+	if rim.a > 0.0:
+		var grown := PackedVector2Array()
+		for v in body:
+			grown.append(v + (v - (hip + shoulder) * 0.5).normalized() * 1.5)
+		draw_colored_polygon(grown, rim)
+		draw_circle(f + Vector2(0, -h * 0.88), h * 0.075 + 1.5, rim)
+	draw_colored_polygon(body, c)
+	draw_circle(f + Vector2(0, -h * 0.88), h * 0.075, c)
+
+
+func _draw_walk_to_market() -> void:
+	var s := _s()
+	_gradient(Color(0.02, 0.025, 0.06), Color(0.08, 0.03, 0.05), 0.0, 0.70)
+	_lit_windows(0.18, 0.55, 41, Color(1.0, 0.8, 0.5, 0.35))
+	_rect(0.0, 0.30, 0.30, 0.70, Color(0.03, 0.03, 0.05))
+	_rect(0.55, 0.22, 1.0, 0.70, Color(0.035, 0.03, 0.05))
+	# the red light behind, the car waiting under it
+	_glow(_p(0.10, 0.20), s.x * 0.45, Color(1.0, 0.12, 0.08), 1.2)
+	draw_circle(_p(0.10, 0.20), s.x * 0.02, Color(1.0, 0.4, 0.3))
+	_gradient(Color(0.06, 0.03, 0.04), Color(0.02, 0.015, 0.02), 0.70, 1.0)
+	_poly([Vector2(-0.05, 0.74), Vector2(-0.05, 0.66), Vector2(0.10, 0.63), Vector2(0.20, 0.66), Vector2(0.22, 0.74)], Color(0.02, 0.02, 0.025))
+	_rect(0.17, 0.675, 0.21, 0.69, Color(1.0, 0.2, 0.15))
+	_glow(_p(0.19, 0.68), s.x * 0.12, Color(1.0, 0.15, 0.1), 0.8)
+	# the market, lit, at the end of the street
+	_rect(0.80, 0.50, 0.98, 0.72, Color(0.85, 0.95, 0.85))
+	_glow(_p(0.89, 0.60), s.x * 0.35, Color(0.8, 1.0, 0.85), 1.0)
+	draw_polygon(PackedVector2Array([_p(0.80, 0.72), _p(0.98, 0.72), _p(1.0, 1.0), _p(0.62, 1.0)]),
+		PackedColorArray([Color(0.8, 0.95, 0.8, 0.3), Color(0.8, 0.95, 0.8, 0.3), Color(0.8, 0.95, 0.8, 0.0), Color(0.8, 0.95, 0.8, 0.0)]))
+	draw_string(ThemeDB.fallback_font, _p(0.80, 0.47), "MARKET", HORIZONTAL_ALIGNMENT_LEFT, -1, int(s.x * 0.05), Color(0.9, 1.0, 0.9, 0.8))
+	# the child, walking towards it
+	var x := lerpf(0.26, 0.76, progress)
+	_walker(_p(x, 0.80), s.y * 0.13, Color(0.015, 0.012, 0.015), Color(0.8, 0.2, 0.15, 0.55 * (1.0 - progress) + 0.15))
+	# puddle reflections of the market light grow as the child gets near
+	_rect(x - 0.03, 0.805, x + 0.03, 0.812, Color(0.7, 0.9, 0.8, 0.25 * progress))
+	_rain_layer(Color(0.7, 0.7, 0.9, 0.22), 90, 0.55)
+
+
+func _draw_car_away() -> void:
+	var s := _s()
+	var sig := Color(0.25, 1.0, 0.45)
+	_gradient(Color(0.02, 0.03, 0.05), Color(0.03, 0.06, 0.05), 0.0, 0.62)
+	_glow(_p(0.62, 0.30), s.x * 0.5, sig, 1.0)
+	_lit_windows(0.25, 0.55, 53, Color(1.0, 0.8, 0.5, 0.25))
+	_gradient(Color(0.04, 0.05, 0.05), Color(0.02, 0.02, 0.03), 0.62, 1.0)
+	# road lines rushing towards the car
+	for i in 5:
+		var k := fmod(float(i) / 5.0 + t * 0.6, 1.0)
+		var y := lerpf(0.64, 0.98, k * k)
+		_rect(0.49 - 0.01 * k, y, 0.51 + 0.01 * k, y + 0.01 + 0.02 * k, Color(0.7, 0.7, 0.6, 0.5))
+	_drops(Rect2(0.05, 0.05, 0.9, 0.55), Color(0.8, 0.8, 1.0, 0.18))
+	# the rear-view mirror: the market door, smaller with every tap
+	var m0 := _p(0.24, 0.07)
+	var m1 := _p(0.76, 0.19)
+	draw_rect(Rect2(m0 - Vector2(3, 3), m1 - m0 + Vector2(6, 6)), Color(0.01, 0.01, 0.01))
+	draw_rect(Rect2(m0, m1 - m0), Color(0.04, 0.03, 0.05))
+	var k := 1.0 - 0.85 * progress
+	var c := (m0 + m1) * 0.5 + Vector2(0, (m1.y - m0.y) * 0.15)
+	var dw := (m1.x - m0.x) * 0.22 * k
+	var dh := (m1.y - m0.y) * 0.75 * k
+	draw_rect(Rect2(c - Vector2(dw * 0.5, dh * 0.5), Vector2(dw, dh)), Color(0.85, 0.95, 0.85))
+	_glow(c, s.x * 0.14 * k + 2.0, Color(0.8, 1.0, 0.85), 0.8)
+	if progress > 0.55:
+		# something small steps out of the door — or nothing does
+		var fig := c + Vector2(dw * 0.6, dh * 0.5)
+		draw_rect(Rect2(fig - Vector2(1, maxf(2.0, dh * 0.6)), Vector2(2, maxf(2.0, dh * 0.6))), Color(0.02, 0.02, 0.02))
+	# dashboard, wheel, hands
+	_poly([Vector2(0, 0.72), Vector2(1, 0.68), Vector2(1, 1), Vector2(0, 1)], Color(0.025, 0.02, 0.025))
+	draw_arc(_p(0.36, 1.03), s.x * 0.30, PI * 1.08, PI * 1.92, 24, Color(0.01, 0.01, 0.012), maxf(3.0, s.x * 0.04))
+	draw_circle(_p(0.20, 0.86), s.x * 0.04, Color(0.10, 0.07, 0.06))
+	draw_circle(_p(0.52, 0.86), s.x * 0.04, Color(0.10, 0.07, 0.06))
+
+
+func _draw_walk_home() -> void:
+	var s := _s()
+	_gradient(Color(0.03, 0.03, 0.06), Color(0.06, 0.05, 0.08))
+	for i in 5:
+		var x := 0.05 + i * 0.2
+		var top := 0.62 - i * 0.08
+		_rect(x, top, x + 0.19, 1.0, Color(0.05 + i * 0.004, 0.045, 0.06))
+		_poly([Vector2(x - 0.01, top), Vector2(x + 0.095, top - 0.06), Vector2(x + 0.2, top)], Color(0.04, 0.035, 0.05))
+	# the window: warm; a shadow passes until the child arrives
+	var wx := 0.80
+	var wy := 0.26
+	_rect(wx, wy, wx + 0.09, wy + 0.06, Color(1.0, 0.75, 0.40))
+	_glow(_p(wx + 0.045, wy + 0.03), s.x * 0.28, Color(1.0, 0.7, 0.35), 1.0)
+	var sh := fmod(t * 0.25, 1.0)
+	if sh < 0.5 and progress < 0.95:
+		_rect(wx + sh * 0.12, wy, wx + sh * 0.12 + 0.035, wy + 0.06, Color(0.25, 0.15, 0.08))
+	elif progress >= 0.95:
+		_rect(wx + 0.03, wy, wx + 0.065, wy + 0.06, Color(0.25, 0.15, 0.08))
+	_poly([Vector2(0, 1.0), Vector2(0, 0.94), Vector2(1, 0.60), Vector2(1, 1.0)], Color(0.07, 0.065, 0.07))
+	_rect(0.45, 0.48, 0.457, 0.79, Color(0.02, 0.02, 0.02))
+	_glow(_p(0.453, 0.48), s.x * 0.3, Color(1.0, 0.85, 0.55), 0.9)
+	# the child climbing the slope
+	var x := lerpf(0.10, 0.78, progress)
+	var y := lerpf(0.955, 0.665, progress)
+	_walker(_p(x, y), s.y * 0.10, Color(0.012, 0.01, 0.012), Color(1.0, 0.8, 0.5, 0.45))
+	if _f("brought_bag"):
+		_rect(x + 0.025, y - 0.05, x + 0.055, y - 0.02, Color(0.85, 0.85, 0.82))
+	_rain_layer(Color(0.7, 0.7, 0.9, 0.2), 80, 0.5)
+
+
+func _draw_night_letter() -> void:
+	var s := _s()
+	var f := _flicker(6.0, 0.08)
+	_gradient(Color(0.035, 0.025, 0.02), Color(0.012, 0.008, 0.006))
+	# window with rain, a clock on the wall
+	_rect(0.08, 0.08, 0.36, 0.30, Color(0.04, 0.05, 0.08))
+	for i in 25:
+		var r: Vector3 = _rain[i]
+		var y := fmod(r.y + t * 0.4 * r.z, 1.0)
+		draw_line(_p(0.08 + r.x * 0.28, 0.08 + y * 0.22), _p(0.08 + r.x * 0.28, 0.08 + y * 0.22 + 0.012), Color(0.6, 0.65, 0.8, 0.35), 1.0)
+	_rect(0.215, 0.08, 0.225, 0.30, Color(0.06, 0.04, 0.03))
+	var cc := _p(0.72, 0.16)
+	draw_circle(cc, s.x * 0.07, Color(0.55, 0.50, 0.42) * f)
+	draw_arc(cc, s.x * 0.07, 0, TAU, 24, Color(0.12, 0.09, 0.06), 1.5)
+	var hour := -PI * 0.5 + (2.0 + progress * 1.5) * TAU / 12.0
+	var minute := -PI * 0.5 + progress * TAU * 1.5 + t * 0.05
+	draw_line(cc, cc + Vector2(cos(hour), sin(hour)) * s.x * 0.035, Color(0.08, 0.05, 0.03), 2)
+	draw_line(cc, cc + Vector2(cos(minute), sin(minute)) * s.x * 0.055, Color(0.08, 0.05, 0.03), 1)
+	# the desk, the lamp, the paper filling up line by line
+	_glow(_p(0.62, 0.50), s.x * 0.7, Color(1.0, 0.72, 0.38), 1.4 * f)
+	_gradient(Color(0.20 * f, 0.12 * f, 0.07 * f), Color(0.06, 0.035, 0.02), 0.56, 1.0)
+	_poly([Vector2(0.56, 0.50), Vector2(0.72, 0.50), Vector2(0.68, 0.43), Vector2(0.60, 0.43)], Color(0.09, 0.06, 0.04))
+	var lines := 1 + int(progress * 7.0)
+	_paper(Vector2(0.44, 0.74), lines, 0.25 + 0.6 * fmod(progress * 7.0, 1.0), f)
+	var line_y := 0.74 + (-0.75 + (lines - 1) * 0.2) * 0.17 * 0.5
+	var pen_x := 0.30 + 0.30 * (0.5 + 0.5 * sin(t * 1.7))
+	_hand_with_pen(Vector2(pen_x, line_y + 0.02))
+	# steam from a cup going cold
+	_rect(0.10, 0.62, 0.18, 0.70, Color(0.32, 0.30, 0.28) * f)
+	for i in 3:
+		var yy := fmod(t * 0.08 + i * 0.33, 1.0)
+		draw_circle(_p(0.14 + 0.02 * sin(t + i), 0.60 - yy * 0.12), 1.5, Color(1, 1, 1, 0.12 * (1.0 - yy) * (1.0 - progress)))
+
+
+func _draw_stair_wait() -> void:
+	var s := _s()
+	# the stair light runs on a timer; it goes out on the third floor
+	var dark := progress > 0.55 and progress < 0.82
+	var on := 0.15 if dark else 1.0
+	_gradient(Color(0.20 * on, 0.21 * on, 0.18 * on), Color(0.06 * on, 0.06 * on, 0.055 * on))
+	if not dark:
+		_glow(_p(0.5, 0.04), s.x * 0.6, Color(0.9, 1.0, 0.85), 0.7)
+	# zig-zag flights
+	for i in 9:
+		var y := 0.96 - i * 0.1
+		var x := 0.10 + (i % 2) * 0.30
+		_rect(x, y, x + 0.55, y + 0.025, Color(0.30, 0.30, 0.28) * on)
+		_rect(x, y + 0.025, x + 0.55, y + 0.07, Color(0.16, 0.16, 0.15) * on)
+	for i in 8:
+		var x := 0.12 + (i % 2) * 0.62
+		draw_line(_p(x, 0.94 - i * 0.1), _p(x + (0.18 if i % 2 == 0 else -0.18), 0.86 - i * 0.1), Color(0.05, 0.05, 0.05), 2)
+	# the light switch: a small red eye in the dark
+	_rect(0.90, 0.50, 0.93, 0.52, Color(1.0, 0.25, 0.15) if dark else Color(0.5, 0.2, 0.15))
+	if dark:
+		_glow(_p(0.915, 0.51), s.x * 0.06, Color(1.0, 0.2, 0.1), 0.6)
+	# floor number
+	var floor_n := 1 + int(progress * 3.0 + 0.001)
+	draw_string(ThemeDB.fallback_font, _p(0.84, 0.12), str(mini(floor_n, 4)), HORIZONTAL_ALIGNMENT_LEFT, -1, int(s.x * 0.1), Color(0.9, 0.9, 0.8, 0.6 * on + 0.2))
+	# the courier climbing with the parcel
+	var cy := lerpf(0.90, 0.30, progress)
+	var cx := 0.30 + 0.25 * sin(progress * PI * 3.0)
+	var courier := Color(0.03, 0.03, 0.035)
+	_walker(_p(cx, cy), s.y * 0.13, courier, Color(0.9, 1.0, 0.85, 0.25 * on))
+	_rect(cx + 0.03, cy - 0.09, cx + 0.12, cy - 0.04, Color(0.55, 0.40, 0.25) * maxf(on, 0.3))
+	# one flight behind, keeping step: a man with flowers
+	if _f("y_let_in"):
+		var fy := minf(0.96, cy + 0.17)
+		var fx := 0.30 + 0.25 * sin((progress - 0.12) * PI * 3.0)
+		_walker(_p(fx, fy), s.y * 0.13, Color(0.04, 0.04, 0.045))
+		for i in 3:
+			draw_circle(_p(fx - 0.05 + i * 0.02, fy - 0.07), maxf(1.0, s.x * 0.012), Color(0.85, 0.3, 0.4) * maxf(on, 0.5))
+		if dark:
+			# his phone lights his chin in the dark
+			_rect(fx + 0.01, fy - 0.10, fx + 0.03, fy - 0.085, Color(0.7, 0.85, 1.0))

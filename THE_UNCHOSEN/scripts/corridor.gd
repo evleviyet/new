@@ -9,6 +9,15 @@ extends Node
 ## art); this script only directs it.
 
 const UIStyle := preload("res://scripts/ui_style.gd")
+const Fx := preload("res://scripts/fx.gd")
+## Seconds at a door before it gives away a little more.
+const DOOR_WAIT := 5.0
+## What each lived life still sounds like, far away in the corridor.
+const MEMORY := {
+	"200_tl": {"loop": "rain", "sounds": ["horn", "coins", "car_window"]},
+	"son_mektup": {"loop": "room", "sounds": ["pen", "knock"]},
+	"yanlis_kapi": {"loop": "stairwell", "sounds": ["steps", "door_close"]},
+}
 const IDLE_POS := Vector3(0.0, 1.6, 0.0)
 const MENU_POS := Vector3(0.0, 1.6, -1.6)
 const ENTER_HOLD := 1.1
@@ -22,6 +31,10 @@ var focus_door = null
 var _tween: Tween
 var _press_pos := Vector2.ZERO
 var _hinted := false
+var _door_wait := 0.0
+var _door_more_shown := false
+var _idle_event := 20.0
+var _memory_event := 30.0
 
 @onready var pixel: SubViewportContainer = $Pixel
 @onready var world = $Pixel/View/World
@@ -62,9 +75,11 @@ func _ready() -> void:
 		c.modulate.a = 0.0
 	menu.visible = false
 	AudioManager.play_ambience("corridor")
-	AudioManager.play_music("corridor")
+	if not GameManager.session_started:
+		AudioManager.play_music("corridor")
 	for d in world.doors:
 		AudioManager.door_loop(d.id, d.data.get("loop", ""))
+	_apply_living()
 	if GameManager.session_started:
 		_start_return()
 	else:
@@ -144,6 +159,8 @@ func _walk_in() -> void:
 		d.light_level = 1.0
 	fade.color.a = 0.0
 	AudioManager.sfx("steps")
+	# the music stays at the threshold; inside it is only the corridor
+	AudioManager.stop_music(8.0)
 	_move_camera([IDLE_POS, 0.0, 0.0], 3.2, func() -> void:
 		menu.visible = false
 		state = State.IDLE
@@ -231,6 +248,8 @@ func _approach(d) -> void:
 	_fade_ui(caption, 0.0, 0.3)
 	_fade_ui(note, 0.0, 0.3)
 	AudioManager.sfx("steps")
+	_door_wait = 0.0
+	_door_more_shown = false
 	_move_camera(d.view_approach(), 1.7, func() -> void:
 		state = State.AT_DOOR
 		if d.lived:
@@ -238,7 +257,7 @@ func _approach(d) -> void:
 			_set_buttons("", "Geri dön")
 		else:
 			_show_caption(d.text("sound"), "")
-			_set_buttons("Arala", "Geri dön"))
+			_set_buttons("Arala", "Geri dön"), true)
 
 
 func _leave_door() -> void:
@@ -249,7 +268,7 @@ func _leave_door() -> void:
 	AudioManager.sfx("steps")
 	_move_camera([IDLE_POS, 0.0, 0.0], 1.5, func() -> void:
 		state = State.IDLE
-		focus_door = null)
+		focus_door = null, true)
 
 
 ## 2. Aralamak: only this moment. Never what comes after.
@@ -266,8 +285,13 @@ func _peek() -> void:
 	d.peek_texture = peek_viewport.get_texture()
 	AudioManager.sfx("door_open")
 	AudioManager.open_door_sound(d.id, true)
+	# the handle goes down, the latch gives with a small jolt, then the gap
 	var tw := create_tween()
-	tw.tween_property(d, "open_angle", d.PEEK_ANGLE, 1.3).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT).set_delay(0.15)
+	tw.tween_property(d, "handle_turn", 1.0, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tw.tween_property(d, "open_angle", 0.05, 0.12).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_interval(0.3)
+	tw.tween_property(d, "handle_turn", 0.0, 0.3)
+	tw.parallel().tween_property(d, "open_angle", d.PEEK_ANGLE, 1.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	world.peek_zoom_out = 1.35
 	_move_camera(d.view_peek(), 1.5, func() -> void:
 		state = State.PEEKING
@@ -440,7 +464,8 @@ func _on_secondary() -> void:
 
 # --- per-frame -----------------------------------------------------------
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	_living_tick(delta)
 	# each life is heard louder the closer you stand to its door
 	for d in world.doors:
 		var dist: float = (world.cam_pos - (d.center + Vector3(0, 1.0, 0))).length()
@@ -458,8 +483,7 @@ func _show_caption(text: String, sub: String) -> void:
 
 
 func _fade_ui(c: CanvasItem, alpha: float, dur: float) -> void:
-	var tw := create_tween()
-	tw.tween_property(c, "modulate:a", alpha, dur)
+	Fx.fade(c, alpha, dur)
 
 
 func _set_buttons(primary_text: String, secondary_text: String, hold: float = 0.0) -> void:
@@ -476,9 +500,75 @@ func _set_buttons(primary_text: String, secondary_text: String, hold: float = 0.
 
 
 ## view = [position: Vector3, yaw: float, lens_shift: float]
-func _move_camera(view: Array, dur: float, done: Callable) -> void:
+## walking: the head bobs with the steps on the way.
+func _move_camera(view: Array, dur: float, done: Callable, walking: bool = false) -> void:
 	if _tween and _tween.is_valid():
 		_tween.kill()
 	_tween = create_tween()
 	_tween.tween_method(world.cam_lerp.bind(world.cam_pos, world.cam_yaw, world.cam_shift, view[0], view[1], view[2]), 0.0, 1.0, dur)
 	_tween.tween_callback(done)
+	if walking:
+		var w := create_tween()
+		w.tween_property(world, "walk", 1.0, dur * 0.25)
+		w.tween_interval(dur * 0.45)
+		w.tween_property(world, "walk", 0.0, dur * 0.3)
+
+
+# --- a corridor that remembers -------------------------------------------
+
+## Every life lived changes the corridor a little. Nothing says so.
+func _apply_living() -> void:
+	var lived: Array = []
+	for id in MEMORY:
+		if bool(GameManager.get_state(id)["completed"]):
+			lived.append(id)
+	world.warmth = lived.size() / 3.0
+	for d in world.doors:
+		if String(d.data["wall"]) == "end":
+			d.beckon = float(lived.size())
+	var loops: Array = []
+	for id in lived:
+		loops.append(MEMORY[id]["loop"])
+	AudioManager.set_memory_layers(loops)
+
+
+func _lived_ids() -> Array:
+	var out: Array = []
+	for id in MEMORY:
+		if bool(GameManager.get_state(id)["completed"]):
+			out.append(id)
+	return out
+
+
+func _living_tick(delta: float) -> void:
+	# waiting at a door: it gives away a little more, never the future
+	if state == State.AT_DOOR and focus_door and not focus_door.lived and not _door_more_shown:
+		_door_wait += delta
+		if _door_wait >= DOOR_WAIT:
+			_door_more_shown = true
+			focus_door.pass_shadow(2.6)
+			AudioManager.memory_sfx("steps")
+			var more: String = focus_door.text("sound_more")
+			if more != "":
+				var tw := Fx.fade(caption, 0.0, 0.6)
+				tw.tween_callback(func() -> void:
+					if state == State.AT_DOOR:
+						_show_caption(more, ""))
+	if state != State.IDLE and state != State.AT_DOOR:
+		return
+	# now and then someone passes behind a door
+	_idle_event -= delta
+	if _idle_event <= 0.0:
+		_idle_event = randf_range(16.0, 32.0)
+		var candidates: Array = world.doors.filter(func(d) -> bool: return not d.lived and d != focus_door)
+		if not candidates.is_empty():
+			candidates.pick_random().pass_shadow(randf_range(2.0, 3.2))
+	# and the lives already lived are heard, far away
+	var lived := _lived_ids()
+	if lived.is_empty():
+		return
+	_memory_event -= delta
+	if _memory_event <= 0.0:
+		_memory_event = randf_range(25.0, 55.0)
+		var sounds: Array = MEMORY[lived.pick_random()]["sounds"]
+		AudioManager.memory_sfx(sounds.pick_random())

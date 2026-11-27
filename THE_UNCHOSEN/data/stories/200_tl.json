@@ -103,7 +103,8 @@
 					"errand": true
 				}
 			},
-			"sfx": "car_window"
+			"sfx": "car_window",
+			"pause": 2.5
 		},
 		"a_gift": {
 			"type": "text",
@@ -157,7 +158,8 @@
 					"man_left": true
 				}
 			},
-			"sfx": "horn"
+			"sfx": "horn",
+			"pause": 2.0
 		},
 		"a_wait2": {
 			"type": "card",
@@ -202,7 +204,7 @@
 			"perspective": "adam",
 			"art": "car_interior_green",
 			"text": "Yeşil. Kamyonet korna çalıyor. Gidiyorsun. Dikiz aynasında market kapısı küçülüyor.",
-			"next": "a_left2",
+			"next": "a_drive",
 			"sfx": "horn"
 		},
 		"a_left2": {
@@ -245,7 +247,7 @@
 					"if": {
 						"errand": true
 					},
-					"next": "c_market1"
+					"next": "c_walk_market"
 				}
 			],
 			"next": "c_closed1"
@@ -404,7 +406,8 @@
 				"set": {
 					"brought_bag": true
 				}
-			}
+			},
+			"pause": 2.0
 		},
 		"c_waiting": {
 			"type": "card",
@@ -447,7 +450,7 @@
 			"perspective": "cocuk",
 			"art": "uphill",
 			"text": "Eve giden yokuş. Pencerede ışık var. Babanın gölgesi bir geçip bir duruyor.",
-			"next": "b_ch"
+			"next": "c_uphill"
 		},
 		"b_ch": {
 			"type": "chapter",
@@ -607,7 +610,8 @@
 			"right": {
 				"label": "Hiçbir şey söyleme",
 				"next": "b5"
-			}
+			},
+			"pause": 3.0
 		},
 		"b5": {
 			"type": "text",
@@ -656,6 +660,12 @@
 						"man_left": true
 					},
 					"text": "Gece. Uyuyamıyorsun. Kafanda bir korna sesi dönüp duruyor; nedenini bilmiyorsun. Oğlunun kapısının altından ince bir ışık sızıyor."
+				},
+				{
+					"if": {
+						"yanlis_kapi:y_let_in": true
+					},
+					"text": "Gece. Uyuyamıyorsun. Gözünün önüne bir apartman merdiveninde çiçek tutan bir el geliyor. Oğlunun kapısının altından ince bir ışık sızıyor."
 				}
 			],
 			"left": {
@@ -668,7 +678,8 @@
 			"right": {
 				"label": "Kapıya dokunma",
 				"next": "b_nopeek"
-			}
+			},
+			"pause": 2.5
 		},
 		"b_peek": {
 			"type": "text",
@@ -799,6 +810,88 @@
 				}
 			],
 			"closing": "Üçü de aynı 200 lirayı düşündü.\nHiçbiri aynı şeyi görmedi."
+		},
+		"c_walk_market": {
+			"type": "interlude",
+			"perspective": "cocuk",
+			"art": "walk_to_market",
+			"walk": true,
+			"beats": [
+				"Market sokağın sonunda. Kırk adım, belki elli.",
+				"Avucundaki para ıslanmasın diye yumruğunu sıkıyorsun.",
+				{
+					"text": "Arkanda bir araba seni bekliyor. Buna alışık değilsin.",
+					"variants": [
+						{
+							"if": {
+								"change_his": true
+							},
+							"text": "“Üstü senin” dedi. Üstünün ne kadar olacağını kafanda sayıyorsun; sayı bir türlü bitmiyor."
+						}
+					]
+				},
+				"Kapının zili çalıyor. İçerisi sıcak."
+			],
+			"next": "c_market1"
+		},
+		"a_drive": {
+			"type": "interlude",
+			"perspective": "adam",
+			"art": "car_away",
+			"beats": [
+				"Dikiz aynasında market kapısı.",
+				"Biraz daha küçük.",
+				"Kapıdan küçük bir şey çıkıyor. Ya da çıkmıyor; ayna çok küçük.",
+				"Bir sonraki ışık da yeşil. Bugün her şey yolunda gidiyor."
+			],
+			"next": "a_left2",
+			"text_at": "bottom"
+		},
+		"c_uphill": {
+			"type": "interlude",
+			"perspective": "cocuk",
+			"art": "walk_home",
+			"walk": true,
+			"beats": [
+				"Yokuş. Ayakkabının içi çoktan ıslanmış.",
+				{
+					"text": "Cebindeki bozukluklar her adımda şıngırdıyor.",
+					"variants": [
+						{
+							"if": {
+								"brought_bag": true
+							},
+							"text": "Poşet her adımda biraz daha ağırlaşıyor. Ekmek ıslanıyor."
+						},
+						{
+							"if": {
+								"gift": true
+							},
+							"text": "Elin cebinde; kâğıt paranın kenarını yokluyorsun. Hâlâ orada."
+						},
+						{
+							"if": {
+								"returned_goods": true
+							},
+							"text": "Avucundaki paranın kimin olduğunu düşünüyorsun. Sonra düşünmemeye çalışıyorsun."
+						}
+					]
+				},
+				"Pencerede babanın gölgesi bir geçip bir duruyor.",
+				{
+					"text": "Kapının önündesin. İçeriden televizyon sesi geliyor.",
+					"variants": [
+						{
+							"if": {
+								"yanlis_kapi:y_let_in": true
+							},
+							"text": "Kapının önündesin. Babanın ayakkabıları kapıda; tabanlarında başka bir apartmanın tozu."
+						}
+					]
+				}
+			],
+			"next": "b_ch",
+			"text_at": "middle"
 		}
 	},
 	"ambience": "rain"

@@ -18,6 +18,10 @@ var cam_shift: float = 0.0
 var peek_zoom_out: float = 1.35
 ## Breathing sway; switched off while stepping through a door.
 var breath: float = 1.0
+## 0..1 while walking: the head bobs with the steps.
+var walk: float = 0.0
+## 0..1, grows with every life lived: the corridor's darkness warms a little.
+var warmth: float = 0.0
 var doors: Array = []
 var time: float = 0.0
 
@@ -57,8 +61,10 @@ func view_size() -> Vector2:
 
 func cam_lerp(t: float, from_pos: Vector3, from_yaw: float, from_shift: float,
 		to_pos: Vector3, to_yaw: float, to_shift: float) -> void:
-	var e := smoothstep(0.0, 1.0, t)
-	var ey := smoothstep(0.1, 1.0, t)
+	# quintic ease: no jolt when a move starts or stops
+	var e := t * t * t * (t * (t * 6.0 - 15.0) + 10.0)
+	var ty := clampf((t - 0.08) / 0.92, 0.0, 1.0)
+	var ey := ty * ty * ty * (ty * (ty * 6.0 - 15.0) + 10.0)
 	cam_pos = from_pos.lerp(to_pos, e)
 	cam_yaw = lerp_angle(from_yaw, to_yaw, ey)
 	cam_shift = lerpf(from_shift, to_shift, e)
@@ -67,8 +73,9 @@ func cam_lerp(t: float, from_pos: Vector3, from_yaw: float, from_shift: float,
 func _process(delta: float) -> void:
 	time += delta
 	# a body breathing, not a camera floating
-	_eff_pos = cam_pos + Vector3(0, sin(time * 1.2) * 0.007 * breath, 0)
-	var yaw := cam_yaw + sin(time * 0.5) * 0.004 * breath
+	var step := sin(time * 8.5)
+	_eff_pos = cam_pos + Vector3(0, sin(time * 1.2) * 0.007 * breath - absf(step) * 0.022 * walk, 0)
+	var yaw := cam_yaw + sin(time * 0.5) * 0.004 * breath + step * 0.006 * walk
 	_cos = cos(yaw)
 	_sin = sin(yaw)
 	for d in doors:
@@ -84,7 +91,7 @@ func to_cam(p: Vector3) -> Vector3:
 
 
 func light_at(p: Vector3) -> Color:
-	var c := Color(0.030, 0.030, 0.038)
+	var c := Color(0.030, 0.030, 0.038).lerp(Color(0.040, 0.033, 0.028), warmth)
 	# what the eyes adjust to right around you
 	var dc := p - _eff_pos
 	c += Color(0.030, 0.030, 0.036) / (1.0 + dc.length_squared() * 0.7)

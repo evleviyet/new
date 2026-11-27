@@ -50,7 +50,15 @@
 			"perspective": "kurye",
 			"art": "apartment_entry",
 			"text": "Eski bir apartman. Zil paneli. Dördüncü kat, daire 9: S. A. Paket kucağında.",
-			"next": "y2"
+			"next": "y2",
+			"variants": [
+				{
+					"if": {
+						"200_tl:father_honked": true
+					},
+					"text": "Eski bir apartman. Zil paneli. Dördüncü kat, daire 9: S. A. Az önce bir kırmızı ışıkta korna çaldın; elin hâlâ direksiyondaymış gibi."
+				}
+			]
 		},
 		"y2": {
 			"type": "card",
@@ -71,7 +79,8 @@
 				"set": {
 					"y_let_in": true
 				}
-			}
+			},
+			"pause": 2.5
 		},
 		"y3_refused": {
 			"type": "card",
@@ -96,7 +105,7 @@
 			"perspective": "kurye",
 			"art": "stairwell",
 			"text": "Adam kapıyı tutuyor; önce sen geç diye. Teşekkür ediyorsun. Merdivenleri önden çıkıyorsun. Ne kadar kibar bir adam.",
-			"next": "y4"
+			"next": "y_stairs"
 		},
 		"y4": {
 			"type": "card",
@@ -195,7 +204,8 @@
 				"set": {
 					"s_opened": true
 				}
-			}
+			},
+			"pause": 2.0
 		},
 		"s_peep": {
 			"type": "text",
@@ -362,7 +372,8 @@
 				"set": {
 					"n_watched": true
 				}
-			}
+			},
+			"pause": 2.5
 		},
 		"n_window": {
 			"type": "card",
@@ -432,7 +443,8 @@
 			"right": {
 				"label": "Delikten bak",
 				"next": "end"
-			}
+			},
+			"pause": 2.5
 		},
 		"end": {
 			"type": "ending",
@@ -500,6 +512,19 @@
 				}
 			],
 			"closing": "Bazen doğru kapıyı yanlış kişiye açarız.\nBazen yanlış kapı, açmadığımız kapıdır."
+		},
+		"y_stairs": {
+			"type": "interlude",
+			"perspective": "kurye",
+			"art": "stair_wait",
+			"walk": true,
+			"beats": [
+				"Birinci kat. Işık otomatiği tıkırdıyor.",
+				"İkinci kat. Arkanda ayak sesleri; senin adımlarına uyuyor.",
+				"Üçüncü kat. Işık sönüyor. Karanlıkta kimse düğmeye basmıyor.",
+				"Dördüncü kat. Işık geri geliyor. Daire 9."
+			],
+			"next": "y4"
 		}
 	}
 }

@@ -30,6 +30,12 @@ var dim: float = 1.0
 var peek_texture: Texture2D
 ## The player has lived this life; the door stays shut and dark.
 var lived: bool = false
+## 0..1: the handle pressed down before the door gives.
+var handle_turn: float = 0.0
+## -1 = none; 0..1 = a shadow crossing the light under the door.
+var shadow_t: float = -1.0
+## How many lives are behind the player; the last door answers to it.
+var beckon: float = 0.0
 
 var _seed: float = 0.0
 var _intensity: float = 1.0
@@ -65,6 +71,7 @@ func setup(door_data: Dictionary, owner_corridor) -> void:
 func refresh_state() -> void:
 	var st: Dictionary = GameManager.get_state(id)
 	dim = maxf(0.55, pow(0.88, float(st["turned_away"])))
+	handle_turn = 0.0
 	lived = bool(st["completed"])
 	if lived:
 		dim = 0.12
@@ -119,6 +126,25 @@ func _pattern(t: float) -> float:
 
 func update_light(t: float) -> void:
 	_intensity = light_level * dim * _pattern(t)
+	if beckon > 0.0 and not lived:
+		# the far door breathes a little more with every life lived
+		_intensity *= 1.0 + beckon * 0.18 * (0.5 + 0.5 * sin(t * 0.8))
+
+
+## Someone walks past on the other side; the light under the door dips.
+func pass_shadow(duration: float = 2.4) -> void:
+	if lived:
+		return
+	var tw := create_tween()
+	tw.tween_property(self, "shadow_t", 1.0, duration).from(0.0).set_trans(Tween.TRANS_SINE)
+	tw.tween_callback(func() -> void: shadow_t = -1.0)
+
+
+func _shadow_at(u: float) -> float:
+	if shadow_t < 0.0:
+		return 1.0
+	var pos := shadow_t * 1.4 - 0.2
+	return 1.0 - 0.85 * exp(-pow((u - pos) / 0.13, 2.0))
 
 
 func light_contrib(p: Vector3) -> Color:
@@ -199,12 +225,42 @@ func _draw() -> void:
 		var a := hinge + dir * 0.16 + up * pr.x - normal * 0.0
 		var panel := PackedVector3Array([a, a + dir * (WIDTH - 0.32), a + dir * (WIDTH - 0.32) + up * (pr.y - pr.x), a + up * (pr.y - pr.x)])
 		corridor.draw_world_poly(self, panel, _shade_all(panel, base * 0.42 + self_light))
-	# handle
+	# handle: a lever that turns down before the door gives
 	var hp := hinge + dir * (WIDTH - 0.11) + up * 1.0
 	var n_leaf := dir.cross(up).normalized() * -1.0
-	var handle := PackedVector3Array([hp - dir * 0.03 + n_leaf * 0.01, hp + dir * 0.03 + n_leaf * 0.01,
-		hp + dir * 0.03 + up * 0.1 + n_leaf * 0.01, hp - dir * 0.03 + up * 0.1 + n_leaf * 0.01])
-	corridor.draw_world_poly(self, handle, _shade_all(handle, Color(0.35, 0.30, 0.22) + self_light * 3.0))
+	var rose := PackedVector3Array([hp - dir * 0.025 + n_leaf * 0.01 - up * 0.03, hp + dir * 0.025 + n_leaf * 0.01 - up * 0.03,
+		hp + dir * 0.025 + up * 0.03 + n_leaf * 0.01, hp - dir * 0.025 + up * 0.03 + n_leaf * 0.01])
+	corridor.draw_world_poly(self, rose, _shade_all(rose, Color(0.25, 0.21, 0.15) + self_light * 2.0))
+	var a := handle_turn * 0.65
+	var tip := hp - dir * 0.10 * cos(a) - up * 0.10 * sin(a) + n_leaf * 0.03
+	var w := up * 0.012
+	var lever := PackedVector3Array([hp + n_leaf * 0.03 - w, tip - w, tip + w, hp + n_leaf * 0.03 + w])
+	corridor.draw_world_poly(self, lever, _shade_all(lever, Color(0.40, 0.34, 0.24) + self_light * 3.0))
+	if lived:
+		_draw_token()
+
+
+## What a lived life left behind, on the floor in front of its door.
+func _draw_token() -> void:
+	var f := center + normal * 0.16 + Vector3(0, 0.004, 0)
+	match String(data.get("token", "")):
+		"tissues":
+			for i in 3:
+				var o := f + right * (0.10 * i - 0.05) + normal * (0.03 * (i % 2))
+				_floor_quad(o, 0.07, 0.045, Color(0.80, 0.80, 0.76))
+		"envelope":
+			_floor_quad(f + right * 0.05, 0.20, 0.13, Color(0.82, 0.78, 0.66))
+			_floor_quad(f + right * 0.11 - normal * 0.03, 0.03, 0.03, Color(0.70, 0.22, 0.18))
+		"flowers":
+			_floor_quad(f, 0.22, 0.03, Color(0.12, 0.25, 0.10))
+			for i in 4:
+				_floor_quad(f + right * (0.09 - 0.05 * i) + normal * (0.025 * (i % 2)), 0.04, 0.04, Color(0.75, 0.22, 0.30))
+
+
+func _floor_quad(c: Vector3, w: float, d: float, col: Color) -> void:
+	var q := PackedVector3Array([c - right * w * 0.5 - normal * d * 0.5, c + right * w * 0.5 - normal * d * 0.5,
+		c + right * w * 0.5 + normal * d * 0.5, c - right * w * 0.5 + normal * d * 0.5])
+	corridor.draw_world_poly(self, q, _shade_all(q, col))
 
 
 ## Called by the additive Glow child: the light that leaks out.
@@ -215,10 +271,21 @@ func draw_glow(canvas: CanvasItem) -> void:
 	if k <= 0.002:
 		return
 	var lc := _light
-	# strip under the door
-	var strip := _quad(center, right, up, WIDTH * 0.5, 0.0, 0.03, 0.012)
+	# strip under the door, in segments so a shadow can cross it
 	var sc := Color(lc.r, lc.g, lc.b, 1.0) * Color(k, k, k, 1.0)
-	corridor.draw_world_poly(canvas, strip, PackedColorArray([sc * 1.6, sc * 1.6, sc * 0.6, sc * 0.6]))
+	var segs := 8
+	var avg := 0.0
+	for i in segs:
+		var u0 := float(i) / segs
+		var u1 := float(i + 1) / segs
+		var m0 := _shadow_at(u0)
+		var m1 := _shadow_at(u1)
+		avg += (m0 + m1) * 0.5 / segs
+		var a0 := center + right * (WIDTH * (u0 - 0.5)) + normal * 0.012
+		var a1 := center + right * (WIDTH * (u1 - 0.5)) + normal * 0.012
+		var seg := PackedVector3Array([a0, a1, a1 + up * 0.03, a0 + up * 0.03])
+		corridor.draw_world_poly(canvas, seg, PackedColorArray([sc * 1.6 * m0, sc * 1.6 * m1, sc * 0.6 * m1, sc * 0.6 * m0]))
+	sc = sc * Color(avg, avg, avg, 1.0)
 	# hairline along the free edge
 	var e0 := center + right * (WIDTH * 0.5 - 0.006) + normal * 0.012
 	var edge := PackedVector3Array([e0, e0 + right * 0.012, e0 + right * 0.012 + up * HEIGHT, e0 + up * HEIGHT])

@@ -22,7 +22,9 @@
 			"enterable": true,
 			"entry_text": "Işık hâlâ kırmızı. Camın önünde küçük bir çocuk duruyor; elleri cebinde, gözleri parada.",
 			"loop": "door_traffic",
-			"story": "res://data/stories/200_tl.json"
+			"story": "res://data/stories/200_tl.json",
+			"sound_more": "Bir çocuk sesi, cama çok yakın: “Abi…” Sonra yalnızca yağmur.",
+			"token": "tissues"
 		},
 		{
 			"id": "son_mektup",
@@ -46,7 +48,9 @@
 			"enterable": true,
 			"loop": "door_pen",
 			"moment_after": "Bir masa. Yarım kalmış bir mektup: “Oğlum, o akşam sana—”",
-			"story": "res://data/stories/son_mektup.json"
+			"story": "res://data/stories/son_mektup.json",
+			"sound_more": "Bir sandalye gıcırdıyor. Biri kalkıyor, pencereye gidiyor, geri dönüyor.",
+			"token": "envelope"
 		},
 		{
 			"id": "yanlis_kapi",
@@ -70,7 +74,9 @@
 			"enterable": true,
 			"loop": "door_tv",
 			"moment_after": "Biri kapıyı tutmuş, gülümsüyor. Arkasındaki karanlıkta, elinde mendil paketleriyle bir çocuk bekliyor.",
-			"story": "res://data/stories/yanlis_kapi.json"
+			"story": "res://data/stories/yanlis_kapi.json",
+			"sound_more": "Televizyonun sesi kısılıyor. Biri kapıya doğru yürüyor; duruyor.",
+			"token": "flowers"
 		},
 		{
 			"id": "bekleme_salonu",
@@ -93,7 +99,8 @@
 			"moment": "Plastik sandalyeler. Bir kadın telefonunu elinde çevirip duruyor. Arayamıyor.",
 			"enterable": false,
 			"loop": "door_fluorescent",
-			"moment_after": "Plastik sandalyeler. Bir adam telefonda: “Toplantıya geç kaldım, bir çocuk yüzünden.” Kimse ona bakmıyor."
+			"moment_after": "Plastik sandalyeler. Bir adam telefonda: “Toplantıya geç kaldım, bir çocuk yüzünden.” Kimse ona bakmıyor.",
+			"sound_more": "Aynı isim bir kez daha okunuyor. Kimse kalkmıyor."
 		},
 		{
 			"id": "son_tren",
@@ -116,7 +123,8 @@
 			"moment": "Peronda tek bir bavul. Trenin kapıları açık. Kimse binmiyor.",
 			"enterable": false,
 			"loop": "door_train",
-			"moment_after": "Peronda tek bir bavul. Üstünde, kurusun diye dizilmiş mendil paketleri."
+			"moment_after": "Peronda tek bir bavul. Üstünde, kurusun diye dizilmiş mendil paketleri.",
+			"sound_more": "Bir düdük. Sonra uzun bir sessizlik; sanki tren birini bekliyor."
 		}
 	]
 }

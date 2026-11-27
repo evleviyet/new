@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Walks every possible playthrough of a story JSON and reports problems.
+"""Walks every possible playthrough of a story JSON and reports problems
+(missing targets, unreachable nodes, interludes without beats or art,
+silences that are too long).
 
 usage: python3 tools/validate_story.py data/stories/200_tl.json
 Same rules as scripts/story_manager.gd: "if" flags are AND-ed, a missing
@@ -35,6 +37,14 @@ def main(path):
         for c in n.get("cases", []):
             if c["next"] not in nodes:
                 errors.append(f"{nid}: case -> missing {c['next']}")
+        if n.get("type") == "interlude":
+            beats = n.get("beats", [])
+            if len(beats) < 3:
+                errors.append(f"{nid}: interlude needs at least 3 beats")
+            if not n.get("art"):
+                errors.append(f"{nid}: interlude needs art")
+        if n.get("pause", 0) > 4:
+            errors.append(f"{nid}: pause longer than 4s")
     seen = set()
     endings = Counter()
     decisions = []

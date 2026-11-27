@@ -92,7 +92,7 @@
 			},
 			"right": {
 				"label": "Böyle kalsın",
-				"next": "m4",
+				"next": "m_night",
 				"set": {
 					"m_unsaid": true
 				}
@@ -120,14 +120,14 @@
 			],
 			"left": {
 				"label": "Özür dile",
-				"next": "m4",
+				"next": "m_night",
 				"set": {
 					"m_apology": true
 				}
 			},
 			"right": {
 				"label": "Açıkla: borç, eczane, yorgunluk",
-				"next": "m4",
+				"next": "m_night",
 				"set": {
 					"m_explain": true
 				}
@@ -223,7 +223,8 @@
 					"m_drawer": true
 				}
 			},
-			"sfx": "pen"
+			"sfx": "pen",
+			"pause": 2.5
 		},
 		"m_post": {
 			"type": "text",
@@ -369,7 +370,8 @@
 				"set": {
 					"o_unopened": true
 				}
-			}
+			},
+			"pause": 2.0
 		},
 		"o_read": {
 			"type": "text",
@@ -554,7 +556,8 @@
 				"set": {
 					"k_slid": true
 				}
-			}
+			},
+			"pause": 3.0
 		},
 		"end": {
 			"type": "ending",
@@ -628,6 +631,52 @@
 				}
 			],
 			"closing": "Söylenmeyen sözler bir yere gitmez.\nSadece beklerler."
+		},
+		"m_night": {
+			"type": "interlude",
+			"perspective": "baba",
+			"art": "night_letter",
+			"beats": [
+				"Saat ikiyi geçiyor. Lambanın altında yalnızca kâğıt ve ellerin var.",
+				"Duvardaki saat. Senin nefesin. Başka ses yok.",
+				{
+					"text": "Bir satır yazıyorsun, siliyorsun. Bir satır daha.",
+					"variants": [
+						{
+							"if": {
+								"m_apology": true
+							},
+							"text": "“Özür dilerim” yazıyorsun. Kelime kâğıtta senden daha cesur duruyor."
+						},
+						{
+							"if": {
+								"m_explain": true
+							},
+							"text": "Borcu, eczaneyi, patronu yazıyorsun. Her açıklama bir öncekinden uzun."
+						},
+						{
+							"if": {
+								"m_unsaid": true
+							},
+							"text": "Havadan sudan, torunlardan. Asıl cümle kalemin ucunda bekliyor."
+						}
+					]
+				},
+				{
+					"if": {
+						"200_tl:father_harsh": true
+					},
+					"text": "Pencerenin dışında yağmur. O akşamki gibi."
+				},
+				{
+					"if": {
+						"yanlis_kapi:y_let_in": true
+					},
+					"text": "Bir apartman merdiveni geliyor aklına; yıllar önce bir yabancıya tuttuğun bir kapı. Neden şimdi?"
+				},
+				"Kâğıdın sonuna geldin. Gerisini kalem değil, sen bileceksin."
+			],
+			"next": "m4"
 		}
 	}
 }

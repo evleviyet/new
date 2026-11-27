@@ -48,6 +48,31 @@ Yaşanan bir hayatın kapısı bir daha açılmaz. Diğer kapıların ardındaki
 
 **Gizli final.** Üç hayat da yaşandığında koridorun sonundaki kapı kendiliğinden aralanır. Peronda birbirini tanımayan üç kişi bekliyor; trenin kapıları açık. Binebilir ya da vazgeçebilirsin. İkisi de bir cevap vermez.
 
+### 0.3: Duygusal derinlik
+
+Yeni hikâye eklenmedi; mevcut üç hayatın içinde daha uzun kalmak için yapıldı.
+
+- **Ara sahneler.** Kartların arasında, dokundukça ilerleyen kısa anlar var:
+  - Çocuğun markete yürüyüşü.
+  - Dikiz aynasında küçülen market kapısı.
+  - Eve dönüş yokuşu.
+  - Mektubun yazıldığı gece.
+  - Işığın söndüğü apartman merdiveni.
+
+  Kontrol aynı (dokunmak). Mekânlar ve figürler tekrar kullanılıyor; figürler yürüyor.
+- **Hatırlanan ayrıntılar.** Yaşanmış bir hayat, sonraki hayatın ara sahnesine bir satır ekler; örneğin "Pencerenin dışında yağmur. O akşamki gibi." Bunu söyleyen yok, yalnızca orada.
+- **Sessizlik.** Müzik yalnızca bölüm açılışlarında, finalde ve menüde çalar. Kartlar ortam sesiyle okunur. Ağır kararların ardından dünya birkaç saniye nefesini tutar: sesler kısılır, ekran kararır.
+- **Kapılar.**
+  - Kapının önünde beklersen biri öbür tarafta yürür: ışığın altından bir gölge geçer, ikinci bir ses duyulur.
+  - Kol iner, kilit hafifçe sarsılır, sonra aralık açılır.
+  - Gelecek hiçbir zaman gösterilmez.
+- **Yaşayan koridor.**
+  - Yaşanan her hayatın kapısının önünde bir iz kalır: mendil paketleri, bir zarf, çiçekler.
+  - Karanlık hafifçe ısınır ve sondaki kapının ışığı daha belirgin nefes alır.
+  - Uzaktan, duvarın ardından o hayatların sesleri gelir: yağmur, saat, merdiven.
+
+  Hiçbiri açıklanmaz. Son Tren'in açılma koşulu ve finali aynen korunuyor.
+
 ## Çalıştırma
 
 - **Editörde:** Godot 4.7 ile `project.godot` dosyasını açıp **F5**'e bas. Masaüstünde fare dokunmanın yerine geçer; kartlar ← → tuşlarıyla da seçilebilir.
@@ -86,16 +111,18 @@ THE_UNCHOSEN/
 ├── assets/fonts/            Pixelify Sans, Lora (SIL OFL 1.1, lisansları yanında)
 └── tools/
     ├── validate_story.py    bütün oynanışları dolaşır, kopuk/erişilemez düğümü bulur
+    ├── add_depth_03.py      0.3 veri geçişi: ara sahneler, sessizlikler, yankılar (tekrar çalıştırılabilir)
     ├── synth_audio.py       bütün sesleri sıfırdan sentezler (numpy + scipy + ffmpeg)
     ├── test_logic.gd        başsız mantık testleri (her hayatta 300 rastgele oynanış, kayıt/devam…)
     ├── screenshot_tour.gd   bir hayatı baştan sona oynayıp ekran görüntüsü alır (TOUR_DOOR=0/1/2)
     ├── finale_tour.gd       üç hayat yaşanmış gibi finali oynatır
-    └── art_gallery.gd       31 sahneyi tek bir sayfada render eder
+    ├── art_gallery.gd       kart sahnelerini tek bir sayfada render eder
+    └── interlude_gallery.gd ara sahneleri yürüyüşün başında, ortasında ve sonunda render eder
 ```
 
 ### Yeni bir hayat eklemek
 
-1. `data/stories/<id>.json` yaz. Daha önce yaşanmış bir hayatın bayrakları `"<hayat>:<bayrak>"` adıyla okunabilir (örneğin `"200_tl:father_harsh"`). Bir düğüme `"sfx"` eklersen kart açılırken o ses çalar. Düğüm tipleri: `chapter`, `text`, `card` (sol/sağ seçenekli), `branch`, `ending`. Koşullar `{"bayrak": değer}` biçiminde yazılır ve hepsinin tutması gerekir; tanımsız bayrak `false` sayılır. `variants` içinde koşulu tutan ilk metin seçilir; geç gelen sonuçlar bu yolla yazılır.
+1. `data/stories/<id>.json` yaz. Ara sahne için `"type": "interlude"`, `"art"`, `"beats"` (metin ya da `{"text","if","variants"}`), isteğe bağlı `"walk": true` ve `"text_at": "top|middle|bottom"` kullan. Ağır bir karara `"pause": 2.5` eklersen ardından o kadar saniye sessizlik olur. Daha önce yaşanmış bir hayatın bayrakları `"<hayat>:<bayrak>"` adıyla okunabilir (örneğin `"200_tl:father_harsh"`). Bir düğüme `"sfx"` eklersen kart açılırken o ses çalar. Düğüm tipleri: `chapter`, `text`, `card` (sol/sağ seçenekli), `branch`, `ending`. Koşullar `{"bayrak": değer}` biçiminde yazılır ve hepsinin tutması gerekir; tanımsız bayrak `false` sayılır. `variants` içinde koşulu tutan ilk metin seçilir; geç gelen sonuçlar bu yolla yazılır.
 2. `python3 tools/validate_story.py data/stories/<id>.json -v` ile bütün yolları kontrol et.
 3. `data/doors.json` içinde ilgili kapıya `"enterable": true` ve `"story": "res://data/stories/<id>.json"` ekle.
 4. Kartlardaki `art` anahtarları `scripts/peek_scene.gd` içindeki sahnelere karşılık gelir.

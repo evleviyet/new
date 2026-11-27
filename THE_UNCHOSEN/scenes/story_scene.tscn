@@ -1,8 +1,16 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/story_scene.gd" id="1_story"]
 [ext_resource type="PackedScene" path="res://scenes/decision_card.tscn" id="2_card"]
 [ext_resource type="Shader" path="res://shaders/vignette.gdshader" id="3_vig"]
+[ext_resource type="PackedScene" path="res://scenes/peek_scene.tscn" id="4_scene"]
+[ext_resource type="Shader" path="res://shaders/pixel_dither.gdshader" id="5_dither"]
+
+[sub_resource type="ShaderMaterial" id="dither_mat"]
+shader = ExtResource("5_dither")
+shader_parameter/levels = 12.0
+shader_parameter/dither = 1.0
+shader_parameter/tint = Vector3(1, 1, 1)
 
 [sub_resource type="ShaderMaterial" id="vignette_mat"]
 shader = ExtResource("3_vig")
@@ -41,6 +49,43 @@ grow_vertical = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 6
+
+[node name="BackgroundOld" type="TextureRect" parent="."]
+modulate = Color(1, 1, 1, 0)
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Interlude" type="SubViewportContainer" parent="."]
+visible = false
+texture_filter = 1
+material = SubResource("dither_mat")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+stretch = true
+stretch_shrink = 4
+
+[node name="View" type="SubViewport" parent="Interlude"]
+disable_3d = true
+handle_input_locally = false
+gui_disable_input = true
+canvas_item_default_texture_filter = 0
+size = Vector2i(180, 320)
+render_target_update_mode = 4
+
+[node name="Scene" parent="Interlude/View" instance=ExtResource("4_scene")]
 
 [node name="Vignette" type="ColorRect" parent="."]
 material = SubResource("vignette_mat")

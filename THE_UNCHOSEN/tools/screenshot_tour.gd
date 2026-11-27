@@ -86,6 +86,8 @@ func _story_step(scene, delta: float) -> bool:
 		return false
 	var view: Dictionary = scene._view
 	var id: String = view.get("id", "")
+	if view.get("type", "") == "interlude":
+		id += "_beat%d" % scene._beat
 	if id != story_last:
 		story_last = id
 		story_wait = 2.9
