@@ -47,7 +47,7 @@ func _ready() -> void:
 	right_btn.pressed.connect(func() -> void: _choose_button("right"))
 	ending_btn.pressed.connect(_leave_life)
 	AudioManager.clear_doors()
-	AudioManager.play_ambience("rain")
+	AudioManager.play_ambience(StoryManager.ambience() if StoryManager.is_active() else "rain")
 	AudioManager.play_music("life")
 	for c: CanvasItem in [perspective, story_text, speaker, choices, hint, chapter_box, ending_box]:
 		c.modulate.a = 0.0
@@ -121,6 +121,8 @@ func _show_card(view: Dictionary) -> void:
 	_fade(speaker, 0.7 if speaker.text != "" else 0.0, 0.6)
 	card.appear()
 	AudioManager.sfx("card", -6.0)
+	if String(view.get("sfx", "")) != "":
+		AudioManager.sfx(view["sfx"], -3.0)
 	if view["type"] == "card":
 		card.left_label = view["left"]
 		card.right_label = view["right"]
@@ -267,8 +269,9 @@ func _leave_life() -> void:
 	ending_btn.disabled = true
 	AudioManager.sfx("door_close")
 	var id := StoryManager.door_id
+	var lived := StoryManager.own_flags()
 	StoryManager.stop()
-	GameManager.complete_life(id)
+	GameManager.complete_life(id, lived)
 	var tw := create_tween()
 	tw.tween_property(fade, "color", Color(0, 0, 0, 1), 1.4)
 	tw.tween_callback(GameManager.return_to_corridor)

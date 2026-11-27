@@ -43,9 +43,10 @@
 			"peek_style": "letter",
 			"sound": "Bir kalem kâğıda sürtünüyor. Duruyor. Yeniden başlıyor.",
 			"moment": "Bir masa. Yarım kalmış bir mektup: “Sana hiç söylemedim ama—”",
-			"enterable": false,
+			"enterable": true,
 			"loop": "door_pen",
-			"moment_after": "Bir masa. Yarım kalmış bir mektup: “Oğlum, o akşam sana—”"
+			"moment_after": "Bir masa. Yarım kalmış bir mektup: “Oğlum, o akşam sana—”",
+			"story": "res://data/stories/son_mektup.json"
 		},
 		{
 			"id": "yanlis_kapi",
@@ -66,9 +67,10 @@
 			"peek_style": "wrong_door",
 			"sound": "Bir televizyon açık. Biri alçak sesle “teşekkür ederim” diyor.",
 			"moment": "Biri kapıyı tutmuş, gülümsüyor. Arkasındaki karanlıkta başka biri bekliyor.",
-			"enterable": false,
+			"enterable": true,
 			"loop": "door_tv",
-			"moment_after": "Biri kapıyı tutmuş, gülümsüyor. Arkasındaki karanlıkta, elinde mendil paketleriyle bir çocuk bekliyor."
+			"moment_after": "Biri kapıyı tutmuş, gülümsüyor. Arkasındaki karanlıkta, elinde mendil paketleriyle bir çocuk bekliyor.",
+			"story": "res://data/stories/yanlis_kapi.json"
 		},
 		{
 			"id": "bekleme_salonu",

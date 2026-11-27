@@ -15,30 +15,38 @@ Karanlık bir koridorda beş kapı var. Her kapının ardında başka bir hayat 
 
 İçeri girdiğinde Reigns tarzı kartlarla bir hayatı yaşarsın: kartı sola ya da sağa kaydırırsın. Gösterge yok, puan yok, iyi/kötü yok. Kararlar yalnızca sonradan ne olacağını değiştirir. Çoğu zaman sonuç hemen gelmez, bazen başka birinin gözünden gelir.
 
-### 200 TL — ilk hayat
+### Üç hayat
 
-Bir adam kırmızı ışıkta bekliyor. Camın önünde mendil satan bir çocuk var. Adamın cüzdanında tek bir kâğıt para duruyor: 200 TL.
+Koridorda beş kapı var; üçünün içine girilebiliyor. Hayatlar ayrı ayrı oynanabilir ama birbirine dokunurlar. Önce yaşadığın hayatın kararları sonraki hayatlarda geri gelir: başka bir cümlede, başka bir çizimde, başka birinin anısında.
 
-Aynı öğleden sonrayı üç kişinin gözünden yaşarsın: **Adam**, **Çocuk**, **Baba**.
+| Hayat | Bakış açıları | Düğüm | Farklı oynanış | Farklı son |
+| --- | --- | --- | --- | --- |
+| **200 TL**: iyi niyet ve beklenmeyen sonuçlar | Adam · Çocuk · Baba | 43 | 496 | 26 |
+| **Son Mektup**: söylenmeyen sözler | Baba (yıllar sonra) · Oğul · Kız kardeş | 34 | 700 | 22 |
+| **Yanlış Kapı**: yanlış kişiye kapı tutmak | Kurye · Kadın · Komşu | 25 | 64 | 15 |
 
-- **Yeniden görülen anlar:** Adamın camı tıklatılır. Aynı an daha sonra çocuğun gözünden, camdaki yansıma olarak geri gelir.
-- **Uzaktan duyulan korna:** Arkadaki beyaz kamyonetin kornası marketteki çocuğa da ulaşır. Babanın bölümünde o kamyonetin direksiyonunda kimin olduğunu öğrenirsin.
-- **Çizime yansıyan kararlar:** "Üstü senin" demek, çocuğun markette kardeşine çikolata alıp almamasını değiştirir. O çikolata gece çocuk odasında yeniden görünür.
-- **Son sahne:** Babanın son kararı oyunun kendisini tekrar eder: oğlunun kapısının altından ışık sızıyor. Aralayacak mısın?
+**200 TL.** Bir adam kırmızı ışıkta bekliyor. Camın önünde mendil satan bir çocuk var; adamın cüzdanında tek bir kâğıt para duruyor. Aynı öğleden sonrayı üç kişinin gözünden yaşarsın.
+- Adamın camını tıklatan çocuk, sonra çocuğun gözünden camdaki yansıma olarak geri gelir.
+- Arkadaki beyaz kamyonetin kornasını markette çocuk da duyar. Babanın bölümünde o kamyonetin direksiyonunda kimin olduğunu öğrenirsin.
+- Son sahnede baba, oğlunun kapısının altından sızan ışığın önünde durur: aralayacak mısın?
 
-Sayılar:
-- **Düğüm:** 43
-- **Karar kartı:** 15
-- **Farklı oynanış:** 496
-- **Farklı son:** 26 kombinasyon
-- **Oynanış başına karar:** 6–12
+**Son Mektup.** Yirmi yıl sonra yaşlanmış baba, oğluna o akşam söyleyemediklerini yazmaya çalışır.
+- 200 TL'de sesini yükselttiysen mektup bununla başlar.
+- Oğul'un bölümü yine bir kırmızı ışıkta açılır; bu kez camın önündeki mendil satan çocuğa o bakar.
+- Kız kardeş babanın evini boşaltırken çekmecede postalanmamış bir zarf bulabilir.
 
-Final **açıktır**: üç kişinin o akşam ne düşündüğünü söyler ama hiçbirini yargılamaz.
+**Yanlış Kapı.** Aynı öğleden sonra baba kurye olarak son teslimatını yapar ve çiçekli, kibar bir adama apartman kapısını tutar.
+- Dördüncü kattaki kadın kapı deliğinden bakar.
+- Karşı komşu her şeyi kendi kapı deliğinden izler.
+
+Hiçbir yerde gösterge, puan ya da iyi/kötü yok. Her hayatın sonu **açıktır**: üç kişinin o akşam ne düşündüğünü söyler, hiçbirini yargılamaz.
 
 > Üçü de aynı 200 lirayı düşündü.
 > Hiçbiri aynı şeyi görmedi.
 
-Bir hayatı yaşadıktan sonra o kapı bir daha açılmaz. Diğer kapıların ardındaki anlarda ise o hayatın izleri belirmeye başlar: peronda kurumaya bırakılmış mendil paketleri, bekleme salonunda telefonla konuşan bir adam… (A — *Paralel* katmanı.)
+Yaşanan bir hayatın kapısı bir daha açılmaz. Diğer kapıların ardındaki anlarda o hayatın izleri belirir: peronda kurumaya bırakılmış mendil paketleri, bekleme salonunda telefonla konuşan bir adam… (A — *Paralel* katmanı.)
+
+**Gizli final.** Üç hayat da yaşandığında koridorun sonundaki kapı kendiliğinden aralanır. Peronda birbirini tanımayan üç kişi bekliyor; trenin kapıları açık. Binebilir ya da vazgeçebilirsin. İkisi de bir cevap vermez.
 
 ## Çalıştırma
 
@@ -61,7 +69,7 @@ THE_UNCHOSEN/
 │   ├── corridor.gd          durum makinesi: MENU → IDLE → AT_DOOR → PEEKING → ENTERING
 │   ├── corridor_world.gd    küçük perspektif çizici (2D çokgenlerle 3D koridor)
 │   ├── door.gd              kapı geometrisi, ışık ritmi, kamera bakış noktaları
-│   ├── peek_scene.gd        17 prosedürel sahne (bayraklara göre ayrıntı değişir)
+│   ├── peek_scene.gd        31 prosedürel sahne (bayraklara göre ayrıntı değişir)
 │   ├── decision_card.gd     Reigns tarzı sürükle-bırak
 │   ├── story_scene.gd       kart akışı, yankı vurgusu, final
 │   ├── story_manager.gd     autoload: hikâye JSON yorumlayıcı (bayraklar, varyantlar)
@@ -72,20 +80,22 @@ THE_UNCHOSEN/
 │   └── hold_button.gd, ui_style.gd, world.gd, door_glow.gd
 ├── data/
 │   ├── doors.json           beş kapı: ışık, ses, an, yaşandıktan sonraki izler
-│   └── stories/200_tl.json  ilk hayat
+│   └── stories/             200_tl.json · son_mektup.json · yanlis_kapi.json
 ├── shaders/                 pixel_dither (Bayer 4×4), vignette
-├── assets/audio/            20 ses (tools/synth_audio.py ile üretildi)
+├── assets/audio/            28 ses (tools/synth_audio.py ile üretildi)
 ├── assets/fonts/            Pixelify Sans, Lora (SIL OFL 1.1, lisansları yanında)
 └── tools/
     ├── validate_story.py    bütün oynanışları dolaşır, kopuk/erişilemez düğümü bulur
     ├── synth_audio.py       bütün sesleri sıfırdan sentezler (numpy + scipy + ffmpeg)
-    ├── test_logic.gd        başsız mantık testleri (300 rastgele oynanış, kayıt/devam…)
-    └── screenshot_tour.gd   oyunu baştan sona oynayıp ekran görüntüsü alır
+    ├── test_logic.gd        başsız mantık testleri (her hayatta 300 rastgele oynanış, kayıt/devam…)
+    ├── screenshot_tour.gd   bir hayatı baştan sona oynayıp ekran görüntüsü alır (TOUR_DOOR=0/1/2)
+    ├── finale_tour.gd       üç hayat yaşanmış gibi finali oynatır
+    └── art_gallery.gd       31 sahneyi tek bir sayfada render eder
 ```
 
 ### Yeni bir hayat eklemek
 
-1. `data/stories/<id>.json` yaz. Düğüm tipleri: `chapter`, `text`, `card` (sol/sağ seçenekli), `branch`, `ending`. Koşullar `{"bayrak": değer}` biçiminde yazılır ve hepsinin tutması gerekir; tanımsız bayrak `false` sayılır. `variants` içinde koşulu tutan ilk metin seçilir; geç gelen sonuçlar bu yolla yazılır.
+1. `data/stories/<id>.json` yaz. Daha önce yaşanmış bir hayatın bayrakları `"<hayat>:<bayrak>"` adıyla okunabilir (örneğin `"200_tl:father_harsh"`). Bir düğüme `"sfx"` eklersen kart açılırken o ses çalar. Düğüm tipleri: `chapter`, `text`, `card` (sol/sağ seçenekli), `branch`, `ending`. Koşullar `{"bayrak": değer}` biçiminde yazılır ve hepsinin tutması gerekir; tanımsız bayrak `false` sayılır. `variants` içinde koşulu tutan ilk metin seçilir; geç gelen sonuçlar bu yolla yazılır.
 2. `python3 tools/validate_story.py data/stories/<id>.json -v` ile bütün yolları kontrol et.
 3. `data/doors.json` içinde ilgili kapıya `"enterable": true` ve `"story": "res://data/stories/<id>.json"` ekle.
 4. Kartlardaki `art` anahtarları `scripts/peek_scene.gd` içindeki sahnelere karşılık gelir.
@@ -98,12 +108,30 @@ THE_UNCHOSEN/
 
 ### Ses
 
-Bütün sesler `tools/synth_audio.py` ile sentezlendi; kayıt ya da lisanslı örnek kullanılmadı.
+Bütün sesleri `tools/synth_audio.py` üretiyor. Ne kullandığımı, neyi neden seçtiğimi karşılaştırarak belirledim:
 
-- **Müzik:** Üç parça var: koridor, hayatın içi ve final. Keçe piyano + pad + yankıdan oluşuyor.
-- **Ambiyans:** İki döngü var: koridor uğultusu ve yağmur.
-- **Kapı ardı sesleri:** Her kapının kendi döngüsü var: trafik, kalem, televizyon, floresan, tren. Kapı kapalıyken boğuk duyulur, aralayınca filtre açılır.
-- **Efektler:** On efekt var: adım, kapı, kart, kaydırma, yankı, bölüm geçişi ve diğerleri.
+- **Gerçek piyano ve saha kayıtları:** [facebookincubator/Meta-open-sound](https://github.com/facebookincubator/Meta-open-sound) (CC0 1.0).
+  - Müzikte 88 tuşlu gerçek bir upright piyano çalıyor.
+  - Kapı, ayak sesi, şehir yağmuru, araba motoru, araba camı, tren, bozuk para, sayfa ve whoosh sesleri gerçek kayıtlardan.
+- **Sentez:** Kayıt bulunmayan şeyler sentezleniyor: kapının ardındaki televizyon sesleri, kalem cızırtısı, floresan, korna, piyano altındaki pad'ler, "yankı" ve bölüm sesleri.
+- **Kayıtsız üretim:** Betik `--samples` olmadan da çalışır; o zaman her şey tamamen sentezle üretilir.
+- **Kapsam:**
+  - Müzik: üç parça.
+  - Ambiyans: dört döngü (koridor, yağmur, oda, merdiven boşluğu).
+  - Kapı ardı sesleri: beş döngü. Kapı kapalıyken boğuk duyulur, aralayınca filtre açılır.
+  - Efektler: on altı adet; bazıları belirli kartlarda çalar (araba camı, korna, bozuk para…).
+
+```bash
+git clone --depth 1 https://github.com/facebookincubator/Meta-open-sound /tmp/mos
+python3 tools/synth_audio.py assets/audio --samples /tmp/mos
+```
+
+### Araştırılan, kullanılmayanlar
+
+- **inkle/ink + inkgd:** Dallanan anlatı için sektör standardı. Ama kaydırmalı kart biçimine özel JSON motoru zaten var ve testleri yazılı. ink'e geçmek bir şey kazandırmıyor, karmaşıklık ekliyor.
+- **Kenney CC0 paketleri:** Platform/RPG tarzındalar, bu oyunun piksel diline uymuyorlar.
+- **Lospec/pikselart paletleri:** Sabit palet yerine algısal eğride Bayer dither kullanıldı. Karanlık koridorun tonlarını daha iyi koruyor.
+- **Freesound, OpenGameArt:** Bu ortamdan erişilemedi.
 
 ## Test
 
@@ -132,4 +160,5 @@ Mağazaya yüklemek için kendi upload anahtarını oluştur (`keytool -genkeypa
 ## Lisanslar
 
 - **Fontlar:** Pixelify Sans (© The Pixelify Sans Project Authors) ve Lora (© The Lora Project Authors), ikisi de SIL Open Font License 1.1. Lisans metinleri `assets/fonts/` altında.
-- **Diğer her şey:** Kod, ses ve çizimler bu proje için üretildi.
+- **Piyano ve saha kayıtları:** Meta Open Sound, CC0 1.0 (kamu malı; atıf zorunlu değil, yine de teşekkürler).
+- **Diğer her şey:** Kod, çizimler, sentez sesler ve metinler bu proje için üretildi.

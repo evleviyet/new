@@ -17,13 +17,14 @@ var story_wait := 0.0
 func _initialize() -> void:
 	var env := OS.get_environment("TOUR_CHOICES")
 	choices = Array((env if env != "" else "right,right,left,right,left,left,right,left,left,left").split(","))
+	var door := int(OS.get_environment("TOUR_DOOR")) if OS.get_environment("TOUR_DOOR") != "" else 0
 	print("choices: ", choices)
 	change_scene_to_file("res://scenes/corridor.tscn")
 	steps = [
 		[3.6, "shot", "menu"],
 		[0.0, "call", "_on_new_game"],
 		[3.8, "shot", "idle"],
-		[0.0, "approach", 0],
+		[0.0, "approach", door],
 		[2.1, "shot", "at_door"],
 		[0.0, "call", "_peek"],
 		[2.2, "shot", "peek"],
@@ -35,7 +36,7 @@ func _initialize() -> void:
 		[2.2, "call", "_peek"],
 		[2.2, "shot", "peek_after_train"],
 		[0.0, "call", "_turn_away"],
-		[2.4, "approach", 0],
+		[2.4, "approach", door],
 		[2.2, "shot", "lived_door"],
 		[0.5, "quit", ""],
 	]

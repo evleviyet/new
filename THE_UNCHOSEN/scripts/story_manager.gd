@@ -31,6 +31,13 @@ func start(id: String, path: String) -> void:
 	if not _load(path):
 		node_id = ""
 		return
+	# what happened in lives already lived, readable as "<life>:<flag>"
+	for life in GameManager.life_flags:
+		if life == id:
+			continue
+		var lf: Dictionary = GameManager.life_flags[life]
+		for k in lf:
+			flags["%s:%s" % [life, k]] = lf[k]
 	_enter(String(story.get("start", "")))
 
 
@@ -111,6 +118,7 @@ func current() -> Dictionary:
 		"art": String(n.get("art", "")),
 		"speaker": String(n.get("speaker", "")),
 		"title": String(n.get("title", "")),
+		"sfx": String(n.get("sfx", "")),
 		"echo": false,
 	}
 	var text := String(n.get("text", ""))
@@ -160,6 +168,19 @@ func advance() -> void:
 	history.append({"node": node_id, "choice": ""})
 	_enter(String(n.get("next", "")))
 	SaveManager.save()
+
+
+func ambience() -> String:
+	return String(story.get("ambience", "rain"))
+
+
+## Flags set inside this life only (not the inherited "<life>:" ones).
+func own_flags() -> Dictionary:
+	var out := {}
+	for k: String in flags:
+		if not k.contains(":"):
+			out[k] = flags[k]
+	return out
 
 
 func to_dict() -> Dictionary:

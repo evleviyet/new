@@ -80,7 +80,8 @@
 				"set": {
 					"window_closed": false
 				}
-			}
+			},
+			"sfx": "knock"
 		},
 		"a3_open": {
 			"type": "card",
@@ -101,14 +102,16 @@
 				"set": {
 					"errand": true
 				}
-			}
+			},
+			"sfx": "car_window"
 		},
 		"a_gift": {
 			"type": "text",
 			"perspective": "adam",
 			"art": "car_window_open",
 			"text": "Çocuk parayı iki eliyle alıyor. Teşekkür etmeyi unutuyor. Sonra hatırlıyor; ama sen camı çoktan kapatmışsın.",
-			"next": "a_green_gift"
+			"next": "a_green_gift",
+			"sfx": "paper"
 		},
 		"a_green_gift": {
 			"type": "text",
@@ -153,7 +156,8 @@
 				"set": {
 					"man_left": true
 				}
-			}
+			},
+			"sfx": "horn"
 		},
 		"a_wait2": {
 			"type": "card",
@@ -183,7 +187,8 @@
 			"set": {
 				"change_his": true
 			},
-			"next": "a_late"
+			"next": "a_late",
+			"sfx": "car_door"
 		},
 		"a_late": {
 			"type": "text",
@@ -197,7 +202,8 @@
 			"perspective": "adam",
 			"art": "car_interior_green",
 			"text": "Yeşil. Kamyonet korna çalıyor. Gidiyorsun. Dikiz aynasında market kapısı küçülüyor.",
-			"next": "a_left2"
+			"next": "a_left2",
+			"sfx": "horn"
 		},
 		"a_left2": {
 			"type": "text",
@@ -249,7 +255,8 @@
 			"perspective": "cocuk",
 			"art": "glass_reflection",
 			"text": "Bir arabanın camı. İçeride bir adam başını çeviriyor. Camda yalnızca kendi yüzünü görüyorsun.",
-			"next": "c_closed2"
+			"next": "c_closed2",
+			"sfx": "knock"
 		},
 		"c_closed2": {
 			"type": "card",
@@ -357,7 +364,8 @@
 			"perspective": "cocuk",
 			"art": "market",
 			"text": "Kuyruk ilerlemiyor. Dışarıdan bir korna sesi geliyor. Bir tane daha.",
-			"next": "c_market_route"
+			"next": "c_market_route",
+			"sfx": "horn"
 		},
 		"c_market_route": {
 			"type": "branch",
@@ -431,7 +439,8 @@
 					"text": "Kasiyer suyu ve ekmeği geri alıyor. Çikolatanın paketi açılmış, onu geri almıyor. Avucunda 180 lira kalıyor. Ama bu para kimin?"
 				}
 			],
-			"next": "c_walk"
+			"next": "c_walk",
+			"sfx": "coins"
 		},
 		"c_walk": {
 			"type": "text",
@@ -482,7 +491,8 @@
 			"right": {
 				"label": "Bekle",
 				"next": "b2"
-			}
+			},
+			"sfx": "horn"
 		},
 		"b2": {
 			"type": "text",
@@ -552,7 +562,8 @@
 					"text": "Akşam. Kapı açılıyor. Oğlun sırılsıklam. Avucunda dörde katlanmış bir 200 lira."
 				}
 			],
-			"next": "b4"
+			"next": "b4",
+			"sfx": "door_open"
 		},
 		"b4": {
 			"type": "card",
@@ -685,7 +696,8 @@
 					"text": "Oğlun uyumuyor. Sırtı kapıya dönük. Sen kapıyı araladığında nefesi bir an duruyor. İçeri girmiyorsun."
 				}
 			],
-			"next": "end"
+			"next": "end",
+			"sfx": "door_open"
 		},
 		"b_nopeek": {
 			"type": "text",
@@ -788,5 +800,6 @@
 			],
 			"closing": "Üçü de aynı 200 lirayı düşündü.\nHiçbiri aynı şeyi görmedi."
 		}
-	}
+	},
+	"ambience": "rain"
 }

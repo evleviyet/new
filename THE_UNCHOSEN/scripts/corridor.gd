@@ -15,7 +15,7 @@ const ENTER_HOLD := 1.1
 ## Finger-sized door targets, in screen pixels.
 const MIN_TARGET := Vector2(96, 150)
 
-enum State { MENU, INTRO, IDLE, MOVING, AT_DOOR, PEEKING, ENTERING }
+enum State { MENU, INTRO, IDLE, MOVING, AT_DOOR, PEEKING, ENTERING, FINALE }
 
 var state: State = State.MENU
 var focus_door = null
@@ -163,6 +163,10 @@ func _start_return() -> void:
 	fade.color = Color(1, 0.97, 0.92, 1)
 	var tw := create_tween()
 	tw.tween_property(fade, "color:a", 0.0, 1.8)
+	if GameManager.pending_epilogue and GameManager.all_lives_completed() and not GameManager.finale_seen:
+		GameManager.pending_epilogue = false
+		tw.tween_callback(_finale)
+		return
 	if GameManager.pending_epilogue:
 		GameManager.pending_epilogue = false
 		tw.tween_callback(func() -> void:
@@ -325,7 +329,95 @@ func _enter() -> void:
 	ft.tween_callback(func() -> void: GameManager.enter_life(d.id))
 
 
+# --- the last door ---------------------------------------------------------
+
+## Every life behind the corridor has been lived. The last door opens by
+## itself. It does not explain anything.
+func _finale() -> void:
+	state = State.FINALE
+	var d = world.doors[world.doors.size() - 1]
+	focus_door = d
+	_show_caption("Arkanda üç kapı kapandı.", "Koridorun sonunda bir kapı kendiliğinden aralanıyor.")
+	AudioManager.play_music("ending", 4.0)
+	var tw := create_tween()
+	tw.tween_interval(4.0)
+	tw.tween_callback(func() -> void:
+		_fade_ui(caption, 0.0, 0.6)
+		_fade_ui(note, 0.0, 0.6)
+		AudioManager.sfx("steps")
+		_move_camera(d.view_approach(), 2.6, func() -> void:
+			peek_scene.set_style("train")
+			peek_scene.after = true
+			peek_scene.finale = true
+			peek_scene.active = true
+			peek_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+			d.peek_texture = peek_viewport.get_texture()
+			AudioManager.sfx("door_open")
+			AudioManager.open_door_sound(d.id, true)
+			create_tween().tween_property(d, "open_angle", d.PEEK_ANGLE, 1.6).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+			world.peek_zoom_out = 1.35
+			_move_camera(d.view_peek(), 1.8, func() -> void:
+				_show_caption("Peronda üç kişi bekliyor. Hiçbiri diğerini tanımıyor.", "Trenin kapıları açık.")
+				_set_buttons("Bin", "Vazgeç", ENTER_HOLD))))
+
+
+func _finale_choice(boarded: bool) -> void:
+	state = State.ENTERING
+	GameManager.finale_seen = true
+	SaveManager.save()
+	_set_buttons("", "")
+	_fade_ui(caption, 0.0, 0.5)
+	_fade_ui(note, 0.0, 0.5)
+	var d = focus_door
+	var tw := create_tween()
+	if boarded:
+		Input.vibrate_handheld(60)
+		AudioManager.sfx("enter")
+		create_tween().tween_property(d, "open_angle", d.ENTER_ANGLE, 1.6)
+		_move_camera(d.view_enter(), 2.0, func() -> void: pass)
+		fade.color = Color(1, 0.97, 0.92, 0)
+		tw.tween_interval(1.2)
+		tw.tween_property(fade, "color:a", 1.0, 1.0)
+		tw.tween_callback(func() -> void:
+			_credits("Trene biniyorsun. Nereye gittiğini bilmiyorsun.\nKimse bilmiyor."))
+	else:
+		AudioManager.open_door_sound(d.id, false)
+		create_tween().tween_property(d, "open_angle", 0.0, 1.0)
+		tw.tween_interval(1.0)
+		tw.tween_callback(func() -> void: AudioManager.sfx("door_close"))
+		_move_camera([IDLE_POS, 0.0, 0.0], 2.5, func() -> void: pass)
+		fade.color = Color(0, 0, 0, 0)
+		tw.tween_interval(1.8)
+		tw.tween_property(fade, "color:a", 1.0, 1.5)
+		tw.tween_callback(func() -> void:
+			_credits("Kapı kapanıyor. Tren gidiyor.\nKoridor hâlâ orada."))
+
+
+func _credits(last_line: String) -> void:
+	title_box.get_node("Tagline").text = last_line + "\n\n\nHer kapı bir hayat.\nHer hayat bir ihtimal.\nHer seçim bir vazgeçiş."
+	title_box.modulate.a = 0.0
+	caption.text = ""
+	# credits sit above the fade, which settles into darkness
+	title_box.move_to_front()
+	note.move_to_front()
+	create_tween().tween_property(fade, "color", Color(0.015, 0.015, 0.02, 1), 2.5)
+	note.text = "Müzik ve kayıtlar: Meta Open Sound (CC0) · Fontlar: Pixelify Sans, Lora (OFL) · Godot Engine"
+	var tw := create_tween()
+	tw.tween_interval(1.5)
+	tw.tween_property(title_box, "modulate:a", 1.0, 2.5)
+	tw.tween_property(note, "modulate:a", 0.6, 1.5)
+	tw.tween_interval(9.0)
+	tw.tween_property(title_box, "modulate:a", 0.0, 2.0)
+	tw.parallel().tween_property(note, "modulate:a", 0.0, 2.0)
+	tw.tween_callback(func() -> void:
+		GameManager.session_started = false
+		get_tree().reload_current_scene())
+
+
 func _on_primary() -> void:
+	if state == State.FINALE:
+		_finale_choice(true)
+		return
 	match state:
 		State.AT_DOOR:
 			_peek()
@@ -336,6 +428,9 @@ func _on_primary() -> void:
 
 func _on_secondary() -> void:
 	AudioManager.sfx("ui")
+	if state == State.FINALE:
+		_finale_choice(false)
+		return
 	match state:
 		State.AT_DOOR:
 			_leave_door()

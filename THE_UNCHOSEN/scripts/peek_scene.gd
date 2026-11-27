@@ -11,6 +11,8 @@ extends Node2D
 var flags: Dictionary = {}
 ## True once a life has been lived: other doors show traces of it.
 var after: bool = false
+## The corridor's last moment: three strangers on one platform.
+var finale: bool = false
 
 var t: float = 0.0
 var _rain: Array[Vector3] = []
@@ -76,6 +78,32 @@ func _draw() -> void:
 			_draw_night_door()
 		"child_room":
 			_draw_child_room()
+		"letter_blank":
+			_draw_letter_blank()
+		"phone_table":
+			_draw_phone_table()
+		"postbox":
+			_draw_postbox()
+		"drawer":
+			_draw_drawer()
+		"envelope_door":
+			_draw_envelope_door()
+		"old_room":
+			_draw_old_room()
+		"apartment_entry":
+			_draw_apartment_entry()
+		"stairwell":
+			_draw_stairwell()
+		"door_ajar":
+			_draw_door_ajar()
+		"door_inside":
+			_draw_door_inside()
+		"peephole":
+			_draw_peephole()
+		"window_street":
+			_draw_window_street()
+		"suitcase":
+			_draw_suitcase()
 		_:
 			_draw_dark()
 
@@ -334,6 +362,11 @@ func _draw_train() -> void:
 	if after:
 		for i in 4:
 			_rect(0.565 + i * 0.022, 0.725, 0.583 + i * 0.022, 0.74, Color(0.85, 0.85, 0.80))
+	if finale:
+		# a man in a coat, a young man, an old man — apart, not looking at each other
+		_person_rim(_p(0.36, 0.90), s.y * 0.30, Color(0.03, 0.03, 0.035), Color(1, 0.92, 0.75, 0.5))
+		_person_rim(_p(0.50, 0.92), s.y * 0.26, Color(0.03, 0.03, 0.035), Color(1, 0.92, 0.75, 0.5))
+		_person_rim(_p(0.65, 0.91), s.y * 0.29, Color(0.03, 0.03, 0.035), Color(1, 0.92, 0.75, 0.5))
 	# headlight of the next one sweeping past now and then
 	var sweep := fmod(t * 0.18, 1.0)
 	if sweep < 0.35:
@@ -697,3 +730,283 @@ func _draw_child_room() -> void:
 	# seen through a crack: dark edges
 	_rect(0.0, 0.0, 0.12, 1.0, Color(0, 0, 0, 0.85))
 	_rect(0.88, 0.0, 1.0, 1.0, Color(0, 0, 0, 0.6))
+
+
+# --- SON MEKTUP ----------------------------------------------------------
+
+func _desk_lamp(f: float) -> void:
+	var s := _s()
+	_gradient(Color(0.05, 0.035, 0.025), Color(0.02, 0.012, 0.01))
+	_glow(_p(0.72, 0.30), s.x * 0.45, Color(1.0, 0.72, 0.38), 1.3 * f)
+	_poly([Vector2(0.64, 0.30), Vector2(0.80, 0.30), Vector2(0.76, 0.22), Vector2(0.68, 0.22)], Color(0.09, 0.06, 0.04))
+	draw_line(_p(0.72, 0.22), _p(0.86, 0.02), Color(0.06, 0.04, 0.03), 2)
+	_gradient(Color(0.20 * f, 0.12 * f, 0.07 * f), Color(0.06, 0.035, 0.02), 0.58, 1.0)
+
+
+func _paper(c: Vector2, lines: int, last: float, f: float) -> void:
+	var s := _s()
+	var u := Vector2(cos(-0.06), sin(-0.06)) * s.x * 0.24
+	var v := Vector2(-sin(-0.06), cos(-0.06)) * s.y * 0.17
+	var pc := _p(c.x, c.y)
+	draw_colored_polygon(PackedVector2Array([pc - u - v, pc + u - v, pc + u + v, pc - u + v]), Color(0.88 * f, 0.82 * f, 0.66 * f))
+	for i in lines:
+		var k := -0.75 + i * 0.2
+		var length := 0.85 if i < lines - 1 else last
+		var a := pc - u * 0.85 + v * k
+		draw_line(a, a + u * 1.7 * length, Color(0.18, 0.12, 0.10, 0.75), 1.0)
+
+
+func _hand_with_pen(at: Vector2) -> void:
+	var s := _s()
+	var hand := Color(0.10, 0.07, 0.05)
+	draw_circle(_p(at.x, at.y), s.x * 0.05, hand)
+	draw_line(_p(at.x - 0.02, at.y + 0.01), _p(at.x + 0.25, at.y + 0.25), hand, s.x * 0.06)
+	draw_line(_p(at.x - 0.03, at.y - 0.02), _p(at.x - 0.08, at.y + 0.02), Color(0.02, 0.02, 0.02), 2)
+
+
+func _draw_letter_blank() -> void:
+	var f := _flicker(6.0, 0.1)
+	_desk_lamp(f)
+	_paper(Vector2(0.45, 0.72), 0, 0.0, f)
+	_hand_with_pen(Vector2(0.62, 0.70))
+	# a cup that went cold
+	_rect(0.10, 0.56, 0.18, 0.66, Color(0.30, 0.28, 0.26) * f)
+	_rect(0.11, 0.565, 0.17, 0.58, Color(0.12, 0.07, 0.04))
+
+
+func _draw_phone_table() -> void:
+	var s := _s()
+	var f := _flicker(6.0, 0.08)
+	_desk_lamp(f)
+	_paper(Vector2(0.30, 0.74), 6, 0.4, f)
+	# old phone, screen lit, a name
+	var ring := 0.5 + 0.5 * sin(t * 9.0)
+	_rect(0.56, 0.62, 0.76, 0.86, Color(0.04, 0.04, 0.05))
+	_rect(0.575, 0.635, 0.745, 0.80, Color(0.55 + 0.3 * ring, 0.75, 0.95))
+	_glow(_p(0.66, 0.72), s.x * 0.22, Color(0.6, 0.8, 1.0), 0.6 + 0.6 * ring)
+	draw_string(ThemeDB.fallback_font, _p(0.585, 0.70), "Oğlum", HORIZONTAL_ALIGNMENT_LEFT, -1, int(s.x * 0.06), Color(0.05, 0.08, 0.12))
+
+
+func _draw_postbox() -> void:
+	var s := _s()
+	_gradient(Color(0.05, 0.05, 0.08), Color(0.09, 0.08, 0.10), 0.0, 0.7)
+	_lit_windows(0.1, 0.5, 31, Color(1.0, 0.8, 0.5, 0.3))
+	_gradient(Color(0.08, 0.07, 0.08), Color(0.03, 0.03, 0.035), 0.7, 1.0)
+	_glow(_p(0.25, 0.25), s.x * 0.3, Color(1.0, 0.85, 0.55), 0.8)
+	_rect(0.245, 0.25, 0.255, 0.75, Color(0.02, 0.02, 0.02))
+	# the yellow box
+	var y := Color(0.85, 0.68, 0.12)
+	_rect(0.46, 0.38, 0.70, 0.80, y)
+	_poly([Vector2(0.46, 0.38), Vector2(0.58, 0.32), Vector2(0.70, 0.38)], y.darkened(0.2))
+	_rect(0.50, 0.46, 0.66, 0.49, Color(0.08, 0.06, 0.02))
+	draw_string(ThemeDB.fallback_font, _p(0.52, 0.60), "PTT", HORIZONTAL_ALIGNMENT_LEFT, -1, int(s.x * 0.07), Color(0.15, 0.10, 0.02))
+	# the envelope, half in
+	var drop := clampf(fmod(t * 0.3, 1.0) * 1.5, 0.0, 1.0)
+	_rect(0.53, 0.40 + drop * 0.06, 0.63, 0.47, Color(0.92, 0.90, 0.84))
+	_rect(0.585, 0.58, 0.62, 0.80, Color(0.02, 0.02, 0.02))
+	_rain_layer(Color(0.7, 0.7, 0.9, 0.18), 50, 0.45)
+
+
+func _draw_drawer() -> void:
+	var s := _s()
+	_gradient(Color(0.06, 0.045, 0.03), Color(0.02, 0.015, 0.01))
+	_glow(_p(0.5, 0.0), s.x * 0.6, Color(1.0, 0.8, 0.5), 0.6)
+	# the desk front and an open drawer seen from above
+	_rect(0.05, 0.20, 0.95, 0.42, Color(0.16, 0.10, 0.06))
+	_poly([Vector2(0.12, 0.42), Vector2(0.88, 0.42), Vector2(0.96, 0.92), Vector2(0.04, 0.92)], Color(0.10, 0.065, 0.04))
+	_poly([Vector2(0.18, 0.46), Vector2(0.82, 0.46), Vector2(0.88, 0.86), Vector2(0.12, 0.86)], Color(0.05, 0.035, 0.025))
+	# envelope with a stamp; an old photo under it
+	_poly([Vector2(0.26, 0.60), Vector2(0.62, 0.56), Vector2(0.66, 0.76), Vector2(0.30, 0.80)], Color(0.80, 0.75, 0.62))
+	_rect(0.55, 0.59, 0.60, 0.645, Color(0.75, 0.25, 0.20))
+	draw_line(_p(0.34, 0.68), _p(0.52, 0.66), Color(0.2, 0.15, 0.1, 0.7), 1.0)
+	_poly([Vector2(0.58, 0.66), Vector2(0.80, 0.64), Vector2(0.82, 0.80), Vector2(0.60, 0.82)], Color(0.35, 0.30, 0.25))
+	_rect(0.6, 0.44, 0.7, 0.46, Color(0.5, 0.4, 0.25))
+
+
+func _draw_envelope_door() -> void:
+	var s := _s()
+	_gradient(Color(0.04, 0.04, 0.05), Color(0.015, 0.015, 0.02))
+	# a front door from inside, the floor, light from the stairwell under it
+	_rect(0.22, 0.04, 0.78, 0.80, Color(0.09, 0.07, 0.06))
+	_rect(0.26, 0.08, 0.74, 0.40, Color(0.075, 0.058, 0.05))
+	_rect(0.26, 0.44, 0.74, 0.78, Color(0.075, 0.058, 0.05))
+	_rect(0.66, 0.42, 0.70, 0.45, Color(0.5, 0.45, 0.3))
+	_rect(0.22, 0.795, 0.78, 0.805, Color(1.0, 0.85, 0.55, 0.8))
+	_gradient(Color(0.06, 0.05, 0.045), Color(0.03, 0.025, 0.02), 0.80, 1.0)
+	# the envelope on the floor
+	_poly([Vector2(0.36, 0.84), Vector2(0.62, 0.82), Vector2(0.66, 0.92), Vector2(0.38, 0.95)], Color(0.86, 0.82, 0.70))
+	draw_line(_p(0.36, 0.84), _p(0.51, 0.90), Color(0.5, 0.45, 0.35), 1.0)
+	draw_line(_p(0.62, 0.82), _p(0.51, 0.90), Color(0.5, 0.45, 0.35), 1.0)
+	_glow(_p(0.5, 0.82), s.x * 0.25, Color(1.0, 0.85, 0.55), 0.4)
+
+
+func _draw_old_room() -> void:
+	var s := _s()
+	_gradient(Color(0.10, 0.09, 0.08), Color(0.05, 0.045, 0.04))
+	# daylight through a window, dust in it
+	_rect(0.62, 0.12, 0.90, 0.50, Color(0.75, 0.78, 0.80))
+	draw_polygon(PackedVector2Array([_p(0.62, 0.12), _p(0.90, 0.12), _p(0.60, 1.0), _p(0.20, 1.0)]),
+		PackedColorArray([Color(0.9, 0.9, 0.85, 0.18), Color(0.9, 0.9, 0.85, 0.18), Color(0.9, 0.9, 0.85, 0.0), Color(0.9, 0.9, 0.85, 0.0)]))
+	for i in 18:
+		var r: Vector3 = _rain[i]
+		var y := fmod(r.y + t * 0.02 * r.z, 1.0)
+		draw_circle(_p(0.35 + r.x * 0.4, 0.2 + y * 0.7), 1.0, Color(1, 1, 0.9, 0.4))
+	# the desk, the chair, boxes
+	_rect(0.10, 0.60, 0.50, 0.63, Color(0.20, 0.13, 0.08))
+	_rect(0.12, 0.63, 0.14, 0.85, Color(0.15, 0.10, 0.06))
+	_rect(0.46, 0.63, 0.48, 0.85, Color(0.15, 0.10, 0.06))
+	_rect(0.20, 0.54, 0.32, 0.60, Color(0.85, 0.82, 0.72))
+	_rect(0.55, 0.70, 0.75, 0.88, Color(0.45, 0.35, 0.22))
+	_rect(0.58, 0.62, 0.74, 0.70, Color(0.50, 0.40, 0.26))
+	_rect(0.0, 0.88, 1.0, 1.0, Color(0.09, 0.07, 0.06))
+
+
+# --- YANLIŞ KAPI ----------------------------------------------------------
+
+func _draw_apartment_entry() -> void:
+	var s := _s()
+	_gradient(Color(0.05, 0.05, 0.07), Color(0.08, 0.08, 0.09), 0.0, 1.0)
+	# building front and the glass door
+	_rect(0.10, 0.0, 0.90, 0.86, Color(0.12, 0.11, 0.11))
+	_rect(0.30, 0.18, 0.62, 0.86, Color(0.25, 0.30, 0.28))
+	_rect(0.32, 0.20, 0.60, 0.84, Color(0.55, 0.62, 0.50, 0.6))
+	_glow(_p(0.46, 0.35), s.x * 0.25, Color(0.8, 0.95, 0.75), 0.6)
+	# buzzer panel
+	_rect(0.66, 0.40, 0.76, 0.62, Color(0.35, 0.33, 0.30))
+	for i in 5:
+		_rect(0.68, 0.42 + i * 0.038, 0.74, 0.45 + i * 0.038, Color(0.75, 0.70, 0.55) if i == 1 else Color(0.55, 0.52, 0.45))
+	_rect(0.0, 0.86, 1.0, 1.0, Color(0.05, 0.05, 0.055))
+	# the courier with a box, and the man with flowers
+	var c := Color(0.03, 0.03, 0.035)
+	_person(_p(0.22, 0.98), s.y * 0.58, c)
+	_rect(0.20, 0.62, 0.32, 0.72, Color(0.55, 0.40, 0.25))
+	var m := Color(0.045, 0.04, 0.05)
+	_person_rim(_p(0.80, 0.98), s.y * 0.62, m, Color(0.75, 0.85, 0.75, 0.35))
+	for i in 5:
+		draw_circle(_p(0.70 + (i % 3) * 0.025, 0.56 + (i / 3) * 0.025), maxf(1.5, s.x * 0.014), Color(0.85, 0.25 + i * 0.1, 0.35))
+	_rain_layer(Color(0.7, 0.7, 0.9, 0.12), 30, 0.5)
+
+
+func _draw_stairwell() -> void:
+	var s := _s()
+	var on := 1.0 if fmod(t * 0.2, 1.0) < 0.9 else 0.6
+	_gradient(Color(0.20 * on, 0.21 * on, 0.18 * on), Color(0.07, 0.07, 0.065))
+	_glow(_p(0.5, 0.05), s.x * 0.5, Color(0.9, 1.0, 0.85), 0.7 * on)
+	# zig-zag stairs and railing
+	for i in 7:
+		var y := 0.95 - i * 0.1
+		var x := 0.1 + i * 0.09
+		_rect(x, y, x + 0.5, y + 0.03, Color(0.30, 0.30, 0.28))
+		_rect(x, y + 0.03, x + 0.5, y + 0.10, Color(0.16, 0.16, 0.15))
+	draw_line(_p(0.08, 0.80), _p(0.70, 0.18), Color(0.05, 0.05, 0.05), 3)
+	for i in 8:
+		var x := 0.10 + i * 0.08
+		draw_line(_p(x, 0.80 - i * 0.08), _p(x, 0.90 - i * 0.08), Color(0.05, 0.05, 0.05), 1)
+	# a figure waiting one floor down, phone light on the face
+	_person(_p(0.30, 0.90), s.y * 0.34, Color(0.03, 0.03, 0.035))
+	_rect(0.32, 0.66, 0.34, 0.68, Color(0.7, 0.85, 1.0))
+	if not _f("y_refused"):
+		for i in 3:
+			draw_circle(_p(0.24 + i * 0.02, 0.72), maxf(1.0, s.x * 0.012), Color(0.85, 0.35, 0.4))
+
+
+func _draw_door_ajar() -> void:
+	var s := _s()
+	_gradient(Color(0.14, 0.14, 0.12), Color(0.06, 0.06, 0.055))
+	_rect(0.25, 0.08, 0.75, 0.96, Color(0.18, 0.12, 0.08))
+	# the gap: warm room light, a chain, half a face
+	_rect(0.50, 0.10, 0.60, 0.96, Color(0.95, 0.80, 0.55))
+	_glow(_p(0.55, 0.45), s.x * 0.3, Color(1.0, 0.8, 0.5), 0.8)
+	draw_line(_p(0.50, 0.40), _p(0.60, 0.43), Color(0.6, 0.6, 0.6), 2)
+	draw_circle(_p(0.57, 0.33), s.x * 0.05, Color(0.20, 0.12, 0.08))
+	_rect(0.535, 0.40, 0.60, 0.70, Color(0.25, 0.15, 0.12))
+	_rect(0.25, 0.08, 0.50, 0.96, Color(0.20, 0.13, 0.09))
+	_rect(0.44, 0.50, 0.47, 0.53, Color(0.6, 0.5, 0.3))
+	_rect(0.0, 0.96, 1.0, 1.0, Color(0.05, 0.05, 0.05))
+
+
+func _draw_door_inside() -> void:
+	var s := _s()
+	_gradient(Color(0.10, 0.08, 0.07), Color(0.04, 0.035, 0.03))
+	# inside her flat: the door, double lock, the stairwell light under it
+	_rect(0.28, 0.06, 0.72, 0.90, Color(0.20, 0.15, 0.11))
+	_rect(0.64, 0.46, 0.68, 0.50, Color(0.7, 0.6, 0.4))
+	_rect(0.64, 0.38, 0.68, 0.41, Color(0.7, 0.6, 0.4))
+	draw_circle(_p(0.50, 0.30), maxf(1.5, s.x * 0.012), Color(0.9, 0.9, 0.8))
+	_rect(0.28, 0.895, 0.72, 0.905, Color(0.95, 1.0, 0.85, 0.8))
+	var sh := fmod(t * 0.3, 1.0)
+	if _f("y_let_in") and sh < 0.6:
+		_rect(0.36 + sh * 0.2, 0.895, 0.44 + sh * 0.2, 0.905, Color(0.05, 0.05, 0.05))
+	# boxes not yet unpacked
+	_rect(0.04, 0.70, 0.22, 0.92, Color(0.45, 0.34, 0.22))
+	_rect(0.78, 0.76, 0.98, 0.94, Color(0.42, 0.32, 0.20))
+	_rect(0.0, 0.92, 1.0, 1.0, Color(0.06, 0.05, 0.045))
+
+
+func _draw_peephole() -> void:
+	var s := _s()
+	_rect(0.0, 0.0, 1.0, 1.0, Color(0.0, 0.0, 0.0))
+	var c := _p(0.5, 0.5)
+	var r := s.x * 0.44
+	draw_circle(c, r, Color(0.20, 0.21, 0.18))
+	# bent corridor through the lens
+	var n := 18
+	for i in n:
+		var a0 := TAU * i / n
+		var a1 := TAU * (i + 1) / n
+		var shade := 0.10 + 0.06 * sin(a0 * 2.0)
+		draw_colored_polygon(PackedVector2Array([c, c + Vector2(cos(a0), sin(a0)) * r, c + Vector2(cos(a1), sin(a1)) * r]),
+			Color(shade + 0.05, shade + 0.06, shade + 0.04))
+	draw_circle(c + Vector2(0, -r * 0.1), r * 0.45, Color(0.30, 0.32, 0.27))
+	_glow(c + Vector2(0, -r * 0.7), r * 0.6, Color(0.9, 1.0, 0.85), 0.6)
+	# who stands there
+	if _f("y_let_in") and not _f("n_spoke"):
+		_person_rim(c + Vector2(r * 0.05, r * 0.95), r * 1.25, Color(0.03, 0.03, 0.035), Color(0.8, 0.9, 0.8, 0.3))
+		for i in 4:
+			draw_circle(c + Vector2(-r * 0.30 + i * r * 0.07, r * 0.15), maxf(1.5, r * 0.05), Color(0.85, 0.3, 0.4))
+	elif _f("y_refused") or _f("y_handed"):
+		_person(c + Vector2(-r * 0.2, r * 0.95), r * 1.1, Color(0.04, 0.04, 0.045))
+		_rect(0.40, 0.55, 0.52, 0.64, Color(0.55, 0.40, 0.25))
+	# the brass ring of the lens
+	draw_arc(c, r, 0, TAU, 48, Color(0.35, 0.28, 0.12), maxf(3.0, s.x * 0.03))
+
+
+func _draw_window_street() -> void:
+	var s := _s()
+	_gradient(Color(0.03, 0.03, 0.06), Color(0.06, 0.05, 0.07))
+	# the street below, a lamp, a man with flowers looking up
+	_rect(0.0, 0.62, 1.0, 1.0, Color(0.06, 0.06, 0.07))
+	_rect(0.58, 0.20, 0.59, 0.72, Color(0.02, 0.02, 0.02))
+	_glow(_p(0.585, 0.22), s.x * 0.28, Color(1.0, 0.85, 0.55), 1.1)
+	draw_polygon(PackedVector2Array([_p(0.585, 0.22), _p(0.585, 0.22), _p(0.78, 0.84), _p(0.40, 0.84)]),
+		PackedColorArray([Color(1, 0.85, 0.55, 0.3), Color(1, 0.85, 0.55, 0.3), Color(1, 0.85, 0.55, 0.0), Color(1, 0.85, 0.55, 0.0)]))
+	_person_rim(_p(0.60, 0.84), s.y * 0.22, Color(0.03, 0.03, 0.035), Color(1, 0.85, 0.55, 0.4))
+	for i in 3:
+		draw_circle(_p(0.56 + i * 0.015, 0.72), maxf(1.0, s.x * 0.01), Color(0.85, 0.3, 0.4))
+	_rain_layer(Color(0.7, 0.7, 0.9, 0.15), 40, 0.4)
+	# window frame and curtain edge
+	_rect(0.0, 0.0, 1.0, 0.04, Color(0.12, 0.10, 0.09))
+	_rect(0.0, 0.96, 1.0, 1.0, Color(0.12, 0.10, 0.09))
+	_rect(0.0, 0.0, 0.05, 1.0, Color(0.12, 0.10, 0.09))
+	_rect(0.95, 0.0, 1.0, 1.0, Color(0.12, 0.10, 0.09))
+	_rect(0.48, 0.0, 0.52, 1.0, Color(0.12, 0.10, 0.09))
+	_poly([Vector2(0.05, 0.04), Vector2(0.22, 0.04), Vector2(0.16, 0.96), Vector2(0.05, 0.96)], Color(0.35, 0.18, 0.20, 0.9))
+	_drops(Rect2(0.05, 0.04, 0.9, 0.92), Color(0.8, 0.8, 1.0, 0.18))
+
+
+func _draw_suitcase() -> void:
+	var s := _s()
+	_gradient(Color(0.06, 0.06, 0.09), Color(0.02, 0.02, 0.03))
+	_glow(_p(0.85, 0.20), s.x * 0.3, Color(0.6, 0.7, 1.0), 0.5)
+	# bed and, on it or above the wardrobe, a suitcase
+	_rect(0.05, 0.62, 0.95, 0.80, Color(0.22, 0.20, 0.26))
+	_rect(0.05, 0.80, 0.95, 0.86, Color(0.10, 0.09, 0.12))
+	if _f("y_let_in"):
+		_poly([Vector2(0.25, 0.62), Vector2(0.70, 0.62), Vector2(0.74, 0.48), Vector2(0.21, 0.48)], Color(0.30, 0.18, 0.12))
+		_rect(0.27, 0.50, 0.68, 0.60, Color(0.12, 0.08, 0.06))
+		for i in 4:
+			_rect(0.30 + i * 0.09, 0.52, 0.37 + i * 0.09, 0.58, Color.from_hsv(0.1 * i, 0.3, 0.6))
+	else:
+		_rect(0.62, 0.06, 0.95, 0.56, Color(0.14, 0.11, 0.09))
+		_rect(0.66, 0.0, 0.90, 0.06, Color(0.30, 0.18, 0.12))
+	_rect(0.0, 0.86, 1.0, 1.0, Color(0.05, 0.05, 0.06))

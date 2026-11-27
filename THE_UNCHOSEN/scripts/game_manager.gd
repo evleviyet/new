@@ -14,12 +14,26 @@ var current_door_id: String = ""
 var session_started: bool = false
 ## Set when a life ends; the corridor shows a short epilogue on return.
 var pending_epilogue: bool = false
+## id -> flags of a life once it has been lived. Other lives can read them
+## as "<id>:<flag>" — the lives are separate, but they touch.
+var life_flags: Dictionary = {}
+## The corridor's last moment, after every enterable life has been lived.
+var finale_seen: bool = false
 
 
 func reset() -> void:
 	door_states.clear()
+	life_flags.clear()
 	current_door_id = ""
 	pending_epilogue = false
+	finale_seen = false
+
+
+func all_lives_completed() -> bool:
+	for d: Dictionary in DoorManager.get_doors():
+		if d["enterable"] and not bool(get_state(d["id"])["completed"]):
+			return false
+	return true
 
 
 func get_state(id: String) -> Dictionary:
@@ -67,8 +81,9 @@ func resume_life() -> void:
 	get_tree().change_scene_to_file.call_deferred(STORY_SCENE)
 
 
-func complete_life(id: String) -> void:
+func complete_life(id: String, flags: Dictionary = {}) -> void:
 	get_state(id)["completed"] = true
+	life_flags[id] = flags.duplicate(true)
 	pending_epilogue = true
 	SaveManager.save()
 	door_state_changed.emit(id)
@@ -80,8 +95,11 @@ func return_to_corridor() -> void:
 
 
 func to_dict() -> Dictionary:
-	return {"door_states": door_states.duplicate(true)}
+	return {"door_states": door_states.duplicate(true), "life_flags": life_flags.duplicate(true),
+		"finale_seen": finale_seen}
 
 
 func from_dict(d: Dictionary) -> void:
 	door_states = d.get("door_states", {}).duplicate(true)
+	life_flags = d.get("life_flags", {}).duplicate(true)
+	finale_seen = bool(d.get("finale_seen", false))

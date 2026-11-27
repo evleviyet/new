@@ -1,0 +1,629 @@
+{
+	"id": "son_mektup",
+	"title": "Son Mektup",
+	"start": "m_ch",
+	"ambience": "room",
+	"perspectives": {
+		"baba": {
+			"name": "Baba",
+			"color": [
+				0.55,
+				0.7,
+				0.9
+			]
+		},
+		"ogul": {
+			"name": "Oğul",
+			"color": [
+				0.85,
+				0.3,
+				0.25
+			]
+		},
+		"kardes": {
+			"name": "Kız kardeş",
+			"color": [
+				0.8,
+				0.65,
+				0.95
+			]
+		}
+	},
+	"nodes": {
+		"m_ch": {
+			"type": "chapter",
+			"perspective": "baba",
+			"title": "BABA",
+			"text": "Altmış yaşında. Doktor “acele etmeyin” dedi.\nO, acele etmeye karar verdi.",
+			"next": "m1"
+		},
+		"m1": {
+			"type": "text",
+			"perspective": "baba",
+			"art": "letter_blank",
+			"sfx": "paper",
+			"text": "Masada boş bir kâğıt. Bir kalem. Yirmi yıldır aynı masa.",
+			"variants": [
+				{
+					"if": {
+						"200_tl:father_harsh": true
+					},
+					"text": "Masada boş bir kâğıt. Yirmi yıldır aynı masa. Yirmi yıldır aklında aynı yağmurlu akşam."
+				}
+			],
+			"next": "m2"
+		},
+		"m2": {
+			"type": "card",
+			"perspective": "baba",
+			"art": "letter_blank",
+			"text": "Oğluna yazacaksın. Nereden başlayacaksın?",
+			"variants": [
+				{
+					"if": {
+						"200_tl:chocolate": true
+					},
+					"text": "Oğluna yazacaksın. Aklına nedense bir çikolata paketi geliyor. Nereden başlayacaksın?"
+				}
+			],
+			"left": {
+				"label": "“Oğlum, nasılsın?”",
+				"next": "m3_small"
+			},
+			"right": {
+				"label": "“Oğlum, o akşam…”",
+				"next": "m3_evening",
+				"set": {
+					"m_evening": true
+				}
+			}
+		},
+		"m3_small": {
+			"type": "card",
+			"perspective": "baba",
+			"art": "letter",
+			"text": "Havadan sudan, kardeşinin çocuklarından yazıyorsun. İki sayfa oldu. Asıl cümle hâlâ yok.",
+			"left": {
+				"label": "Asıl cümleyi yaz",
+				"next": "m3_evening",
+				"set": {
+					"m_evening": true
+				}
+			},
+			"right": {
+				"label": "Böyle kalsın",
+				"next": "m4",
+				"set": {
+					"m_unsaid": true
+				}
+			}
+		},
+		"m3_evening": {
+			"type": "card",
+			"perspective": "baba",
+			"art": "letter",
+			"text": "“O akşam…” Kalem duruyor. Özür mü yazacaksın, açıklama mı?",
+			"variants": [
+				{
+					"if": {
+						"200_tl:father_harsh": true
+					},
+					"text": "“O akşam sesimi yükselttim…” Kalem duruyor. Özür mü yazacaksın, açıklama mı?"
+				},
+				{
+					"if": {
+						"200_tl:father_peeked": true
+					},
+					"text": "“O gece kapını araladım ve içeri girmedim…” Kalem duruyor. Özür mü yazacaksın, açıklama mı?"
+				}
+			],
+			"left": {
+				"label": "Özür dile",
+				"next": "m4",
+				"set": {
+					"m_apology": true
+				}
+			},
+			"right": {
+				"label": "Açıkla: borç, eczane, yorgunluk",
+				"next": "m4",
+				"set": {
+					"m_explain": true
+				}
+			}
+		},
+		"m4": {
+			"type": "card",
+			"perspective": "baba",
+			"art": "phone_table",
+			"sfx": "tap",
+			"text": "Telefon elinin altında. Oğlunun numarası hâlâ kayıtlı.",
+			"left": {
+				"label": "Ara",
+				"next": "m5",
+				"set": {
+					"m_called": true
+				}
+			},
+			"right": {
+				"label": "Mektup yeter",
+				"next": "m6"
+			}
+		},
+		"m5": {
+			"type": "card",
+			"perspective": "baba",
+			"art": "phone_table",
+			"text": "Çalıyor. Bir. İki. Üç.",
+			"left": {
+				"label": "Kapat",
+				"next": "m6",
+				"set": {
+					"m_hung_up": true
+				}
+			},
+			"right": {
+				"label": "Bekle",
+				"next": "m5b"
+			}
+		},
+		"m5b": {
+			"type": "card",
+			"perspective": "baba",
+			"art": "phone_table",
+			"text": "Dört. Beş. Bir ses: “Şu anda size ulaşılamıyor. Sinyal sesinden sonra…” Bip.",
+			"left": {
+				"label": "Bir şey söyle",
+				"next": "m5c",
+				"set": {
+					"m_voicemail": true
+				}
+			},
+			"right": {
+				"label": "Kapat",
+				"next": "m6",
+				"set": {
+					"m_hung_up": true
+				}
+			}
+		},
+		"m5c": {
+			"type": "text",
+			"perspective": "baba",
+			"art": "phone_table",
+			"text": "“Oğlum, benim. Bir şey yok. Sadece… sesini duymak istedim.” Asıl cümleyi yine söylemiyorsun.",
+			"next": "m6"
+		},
+		"m6": {
+			"type": "card",
+			"perspective": "baba",
+			"art": "letter",
+			"text": "Mektup bitti. Ya da bitti sayılır.",
+			"variants": [
+				{
+					"if": {
+						"m_unsaid": true
+					},
+					"text": "Mektup bitti. Asıl cümle içinde yok. Ama bitti sayılır."
+				}
+			],
+			"left": {
+				"label": "Postaya ver",
+				"next": "m_post",
+				"set": {
+					"m_sent": true
+				}
+			},
+			"right": {
+				"label": "Çekmeceye koy",
+				"next": "m_drawer",
+				"set": {
+					"m_drawer": true
+				}
+			}
+		},
+		"m_post": {
+			"type": "text",
+			"perspective": "baba",
+			"art": "postbox",
+			"sfx": "paper",
+			"text": "Köşedeki sarı posta kutusu. Zarf ağzında bir an duruyor. Sonra düşüyor.",
+			"next": "o_ch"
+		},
+		"m_drawer": {
+			"type": "text",
+			"perspective": "baba",
+			"art": "drawer",
+			"text": "Çekmeceyi kapatıyorsun. Bir gün, belki. Yarın, belki.",
+			"next": "o_ch"
+		},
+		"o_ch": {
+			"type": "chapter",
+			"perspective": "ogul",
+			"title": "OĞUL",
+			"text": "Otuz iki yaşında. Bir toplantıdan çıkıyor, bir başkasına geç kalıyor.",
+			"next": "o1"
+		},
+		"o1": {
+			"type": "card",
+			"perspective": "ogul",
+			"art": "car_window",
+			"speaker": "Çocuk",
+			"text": "Kırmızı ışık. Camın önünde mendil satan bir çocuk. Saçları yağmurdan alnına yapışmış.",
+			"variants": [
+				{
+					"if": {
+						"200_tl:gift": true
+					},
+					"text": "Kırmızı ışık. Camın önünde mendil satan bir çocuk. Bir an, avucunda katlanmış bir kâğıdın ağırlığını hatırlıyorsun."
+				}
+			],
+			"left": {
+				"label": "Camı indir",
+				"next": "o1b",
+				"set": {
+					"o_window": true
+				}
+			},
+			"right": {
+				"label": "Başını çevir",
+				"next": "o2",
+				"set": {
+					"o_turned": true
+				}
+			}
+		},
+		"o1b": {
+			"type": "text",
+			"perspective": "ogul",
+			"art": "car_window_open",
+			"sfx": "car_window",
+			"text": "Cüzdanından bir kâğıt para çıkarıyorsun. Çocuk iki eliyle alıyor. Teşekkür etmeyi unutuyor. Sen bunu tanıyorsun.",
+			"next": "o2"
+		},
+		"o2": {
+			"type": "branch",
+			"cases": [
+				{
+					"if": {
+						"m_called": true
+					},
+					"next": "o_phone"
+				}
+			],
+			"next": "o_home"
+		},
+		"o_phone": {
+			"type": "card",
+			"perspective": "ogul",
+			"art": "car_interior_green",
+			"text": "Telefon titriyor. Ekranda: Babam. Üç kez çalıyor, susuyor.",
+			"variants": [
+				{
+					"if": {
+						"m_voicemail": true
+					},
+					"text": "Telefon titriyor. Ekranda: Babam. Susuyor. Bir sesli mesaj bırakmış."
+				}
+			],
+			"left": {
+				"label": "Geri ara",
+				"next": "o_callback",
+				"set": {
+					"o_called_back": true
+				}
+			},
+			"right": {
+				"label": "Sonra ararım",
+				"next": "o_home",
+				"set": {
+					"o_later": true
+				}
+			}
+		},
+		"o_callback": {
+			"type": "text",
+			"perspective": "ogul",
+			"art": "car_interior_green",
+			"text": "Çalıyor. Açılıyor. “Bir şey yok oğlum,” diyor babanın sesi. “Sadece sesini duymak istedim.” Arkada bir kalem sesi.",
+			"variants": [
+				{
+					"if": {
+						"m_voicemail": true
+					},
+					"text": "Mesajı dinliyorsun: “Sadece sesini duymak istedim.” Geri arıyorsun. Meşgul. Belki o da seni arıyordur."
+				}
+			],
+			"next": "o_home"
+		},
+		"o_home": {
+			"type": "branch",
+			"cases": [
+				{
+					"if": {
+						"m_sent": true
+					},
+					"next": "o_letter"
+				}
+			],
+			"next": "o_nothing"
+		},
+		"o_letter": {
+			"type": "card",
+			"perspective": "ogul",
+			"art": "envelope_door",
+			"text": "Kapının önünde bir zarf. Babanın el yazısı. Babanın el yazısını en son ne zaman gördüğünü hatırlamıyorsun.",
+			"left": {
+				"label": "Aç",
+				"next": "o_read",
+				"set": {
+					"o_read": true
+				}
+			},
+			"right": {
+				"label": "Masaya bırak",
+				"next": "o_unopened",
+				"set": {
+					"o_unopened": true
+				}
+			}
+		},
+		"o_read": {
+			"type": "text",
+			"perspective": "ogul",
+			"art": "letter",
+			"text": "Havadan sudan iki sayfa. Kardeşinin çocukları. Sonunda bir boşluk. Sanki bir cümle sığsın diye bırakılmış.",
+			"variants": [
+				{
+					"if": {
+						"m_apology": true,
+						"200_tl:father_harsh": true
+					},
+					"text": "“O akşam sesimi yükselttim. Sen bir şeyi yanlış yaptığını sandın. Yanlış yapan bendim. Özür dilerim.”"
+				},
+				{
+					"if": {
+						"m_apology": true
+					},
+					"text": "“O akşam için özür dilerim.” Hangi akşam olduğunu yazmamış. Yazmasına gerek yok."
+				},
+				{
+					"if": {
+						"m_explain": true
+					},
+					"text": "“O akşam eczaneye borcumuz vardı. Yorgundum. Patron…” Üç sayfa açıklama. Özür kelimesi yok. Ama her satırın altında duruyor."
+				}
+			],
+			"next": "o_end"
+		},
+		"o_unopened": {
+			"type": "text",
+			"perspective": "ogul",
+			"art": "envelope_door",
+			"text": "Zarf masada kalıyor. Bir gün, belki. Yarın, belki.",
+			"next": "o_end"
+		},
+		"o_nothing": {
+			"type": "text",
+			"perspective": "ogul",
+			"art": "envelope_door",
+			"text": "Posta kutusunda faturalar. Zaten kimse mektup yazmıyor artık.",
+			"next": "o_end"
+		},
+		"o_end": {
+			"type": "text",
+			"perspective": "ogul",
+			"art": "uphill",
+			"text": "Eve giden yokuş. Bir pencerede ışık var. Senin pencerende değil.",
+			"next": "k_ch"
+		},
+		"k_ch": {
+			"type": "chapter",
+			"perspective": "kardes",
+			"title": "KIZ KARDEŞ",
+			"text": "Yirmi sekiz yaşında. Babasının evini boşaltıyor.\nHer şey yerli yerinde.",
+			"next": "k1"
+		},
+		"k1": {
+			"type": "text",
+			"perspective": "kardes",
+			"art": "old_room",
+			"text": "Masa, kalem, kaloriferin üstünde kurumayı bekleyen bir şey yok artık. Evin kokusu hâlâ aynı.",
+			"next": "k_route"
+		},
+		"k_route": {
+			"type": "branch",
+			"cases": [
+				{
+					"if": {
+						"m_drawer": true
+					},
+					"next": "k_drawer"
+				},
+				{
+					"if": {
+						"o_unopened": true
+					},
+					"next": "k_unopened"
+				}
+			],
+			"next": "k_read"
+		},
+		"k_drawer": {
+			"type": "card",
+			"perspective": "kardes",
+			"art": "drawer",
+			"text": "Çekmecede bir zarf. Üstünde abinin adı. Pulu yapıştırılmış, hiç postalanmamış.",
+			"left": {
+				"label": "Abine götür",
+				"next": "k_choc",
+				"set": {
+					"k_deliver": true
+				}
+			},
+			"right": {
+				"label": "Önce sen oku",
+				"next": "k_self_read",
+				"set": {
+					"k_read_first": true
+				}
+			}
+		},
+		"k_self_read": {
+			"type": "text",
+			"perspective": "kardes",
+			"art": "letter",
+			"text": "Okuyorsun. Sonra zarfı yeniden kapatıyorsun; sanki hiç açmamışsın gibi. Bu cümle senin değil.",
+			"variants": [
+				{
+					"if": {
+						"m_unsaid": true
+					},
+					"text": "Okuyorsun. Havadan sudan, senin çocuklarından. Asıl cümle yok. Ama boşluğun nerede olduğunu biliyorsun."
+				}
+			],
+			"next": "k_choc"
+		},
+		"k_unopened": {
+			"type": "card",
+			"perspective": "kardes",
+			"art": "envelope_door",
+			"text": "Geçen ay abinin evinde, masada açılmamış bir zarf görmüştün. Babanın el yazısı.",
+			"left": {
+				"label": "Abine sor",
+				"next": "k_choc",
+				"set": {
+					"k_asked": true
+				}
+			},
+			"right": {
+				"label": "Sorma",
+				"next": "k_choc"
+			}
+		},
+		"k_read": {
+			"type": "text",
+			"perspective": "kardes",
+			"art": "old_room",
+			"text": "Abin mektubu sana hiç göstermedi. Ama cüzdanında, dörde katlanmış bir kâğıt taşıyor.",
+			"variants": [
+				{
+					"if": {
+						"m_sent": false
+					},
+					"text": "Babanın yazdığı bir şey yok ortada. Sadece telefonunda, abinin numarasının yanında bir yıldız."
+				}
+			],
+			"next": "k_choc"
+		},
+		"k_choc": {
+			"type": "text",
+			"perspective": "kardes",
+			"art": "old_room",
+			"text": "Mutfak dolabının arkasında eski, boş bir çikolata paketi. Neden saklandığını hiç bilmeyeceksin.",
+			"variants": [
+				{
+					"if": {
+						"200_tl:chocolate": true
+					},
+					"text": "Mutfak dolabının arkasında eski, boş bir çikolata paketi. Hatırlıyorsun: bir gece, abinin yanında, yağmur sesi."
+				}
+			],
+			"next": "k_door"
+		},
+		"k_door": {
+			"type": "card",
+			"perspective": "kardes",
+			"art": "night_door",
+			"sfx": "knock",
+			"text": "Abinin kapısının önündesin. Altından ince bir ışık sızıyor.",
+			"left": {
+				"label": "Kapıyı çal",
+				"next": "end",
+				"set": {
+					"k_knocked": true
+				}
+			},
+			"right": {
+				"label": "Zarfı kapının altından it",
+				"next": "end",
+				"set": {
+					"k_slid": true
+				}
+			}
+		},
+		"end": {
+			"type": "ending",
+			"lines": [
+				{
+					"variants": [
+						{
+							"if": {
+								"m_apology": true,
+								"m_sent": true
+							},
+							"text": "Baba bir kez, kâğıt üstünde, özür diledi."
+						},
+						{
+							"if": {
+								"m_drawer": true
+							},
+							"text": "Baba cümlesini yazdı ve çekmeceye koydu."
+						},
+						{
+							"if": {
+								"m_unsaid": true
+							},
+							"text": "Baba iki sayfa yazdı. Asıl cümleyi hiç yazmadı."
+						},
+						{
+							"if": {},
+							"text": "Baba anlattı, açıkladı, sustu."
+						}
+					]
+				},
+				{
+					"variants": [
+						{
+							"if": {
+								"o_read": true
+							},
+							"text": "Oğul o kâğıdı cüzdanında taşıdı."
+						},
+						{
+							"if": {
+								"o_called_back": true
+							},
+							"text": "Oğul babasının sesini son kez duydu. Kalem sesini de."
+						},
+						{
+							"if": {
+								"o_unopened": true
+							},
+							"text": "Oğul zarfı açmadı. Açmamanın da bir cevap olduğunu düşündü."
+						},
+						{
+							"if": {},
+							"text": "Oğul o yıl hiç mektup almadı."
+						}
+					]
+				},
+				{
+					"variants": [
+						{
+							"if": {
+								"k_knocked": true
+							},
+							"text": "Kız kardeş bir kapıyı çaldı ve açılmasını bekledi."
+						},
+						{
+							"if": {},
+							"text": "Kız kardeş zarfı kapının altından itti ve merdivenleri yavaş indi."
+						}
+					]
+				}
+			],
+			"closing": "Söylenmeyen sözler bir yere gitmez.\nSadece beklerler."
+		}
+	}
+}
