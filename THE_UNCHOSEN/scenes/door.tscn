@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/door.gd" id="1_door"]
+[ext_resource type="Script" path="res://scripts/door_glow.gd" id="2_glow"]
+
+[sub_resource type="CanvasItemMaterial" id="add"]
+blend_mode = 1
+
+[node name="Door" type="Node2D"]
+script = ExtResource("1_door")
+
+[node name="Glow" type="Node2D" parent="."]
+material = SubResource("add")
+script = ExtResource("2_glow")
