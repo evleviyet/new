@@ -9,11 +9,19 @@ config/name="THE UNCHOSEN"
 config/description="A game about choices, possibilities and lives never lived."
 run/main_scene="res://scenes/corridor.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
+config/icon="res://icon.png"
+config/version="0.1.0"
+config/quit_on_go_back=false
+boot_splash/bg_color=Color(0, 0, 0, 1)
+boot_splash/show_image=false
 
 [autoload]
 
 DoorManager="*res://scripts/door_manager.gd"
 GameManager="*res://scripts/game_manager.gd"
+StoryManager="*res://scripts/story_manager.gd"
+AudioManager="*res://scripts/audio_manager.gd"
+SaveManager="*res://scripts/save_manager.gd"
 
 [display]
 

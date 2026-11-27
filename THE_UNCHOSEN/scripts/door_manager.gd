@@ -39,7 +39,7 @@ func _normalize(raw: Dictionary) -> Dictionary:
 	d["enterable"] = bool(d.get("enterable", false))
 	d["light_pattern"] = String(d.get("light_pattern", "steady"))
 	d["peek_style"] = String(d.get("peek_style", ""))
-	for key in ["title", "sound", "moment", "entry_text"]:
+	for key in ["title", "sound", "moment", "entry_text", "sound_after", "moment_after", "loop", "story"]:
 		d[key] = String(d.get(key, ""))
 	return d
 

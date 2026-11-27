@@ -1,7 +1,13 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/story_scene.gd" id="1_story"]
-[ext_resource type="PackedScene" path="res://scenes/peek_scene.tscn" id="2_peek"]
+[ext_resource type="PackedScene" path="res://scenes/decision_card.tscn" id="2_card"]
+[ext_resource type="Shader" path="res://shaders/vignette.gdshader" id="3_vig"]
+
+[sub_resource type="ShaderMaterial" id="vignette_mat"]
+shader = ExtResource("3_vig")
+shader_parameter/strength = 0.9
+shader_parameter/grain = 0.04
 
 [node name="StoryScene" type="Control"]
 layout_mode = 3
@@ -10,11 +16,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 script = ExtResource("1_story")
 
-[node name="Background" parent="." instance=ExtResource("2_peek")]
-
-[node name="Shade" type="ColorRect" parent="."]
+[node name="Black" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,9 +27,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0, 0, 0, 0.55)
+color = Color(0, 0, 0, 1)
 
-[node name="Margin" type="MarginContainer" parent="."]
+[node name="Background" type="TextureRect" parent="."]
+modulate = Color(1, 1, 1, 0)
+texture_filter = 1
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -32,44 +39,176 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 56
-theme_override_constants/margin_top = 160
-theme_override_constants/margin_right = 56
-theme_override_constants/margin_bottom = 110
+expand_mode = 1
+stretch_mode = 6
 
-[node name="VBox" type="VBoxContainer" parent="Margin"]
-layout_mode = 2
+[node name="Vignette" type="ColorRect" parent="."]
+material = SubResource("vignette_mat")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/separation = 36
 
-[node name="Title" type="Label" parent="Margin/VBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 64
+[node name="Perspective" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 64.0
+offset_bottom = 104.0
+grow_horizontal = 2
+text = "ADAM"
 horizontal_alignment = 1
 
-[node name="Body" type="Label" parent="Margin/VBox"]
-layout_mode = 2
+[node name="StoryText" type="Label" parent="."]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 48.0
+offset_top = 116.0
+offset_right = -48.0
+offset_bottom = -196.0
+grow_horizontal = 2
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
 theme_override_constants/shadow_outline_size = 10
+theme_override_font_sizes/font_size = 31
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="CardHolder" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -176.0
+offset_right = 280.0
+offset_bottom = 384.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Card" parent="CardHolder" instance=ExtResource("2_card")]
+layout_mode = 0
+
+[node name="Speaker" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = 396.0
+offset_right = 280.0
+offset_bottom = 436.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_alignment = 1
+
+[node name="Choices" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 28.0
+offset_top = -190.0
+offset_right = -28.0
+offset_bottom = -70.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 20
+
+[node name="Left" type="Button" parent="Choices"]
+custom_minimum_size = Vector2(0, 110)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 25
+text = "← Sol"
+
+[node name="Right" type="Button" parent="Choices"]
+custom_minimum_size = Vector2(0, 110)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 25
+text = "Sağ →"
+
+[node name="Hint" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -62.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "dokun"
+horizontal_alignment = 1
+
+[node name="Chapter" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 56.0
+offset_right = -56.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="Title" type="Label" parent="Chapter"]
+layout_mode = 2
+text = "ADAM"
+horizontal_alignment = 1
+
+[node name="Text" type="Label" parent="Chapter"]
+modulate = Color(1, 1, 1, 0.85)
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Ending" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 56.0
+offset_top = 120.0
+offset_right = -56.0
+offset_bottom = -90.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 56
+alignment = 1
+
+[node name="Lines" type="VBoxContainer" parent="Ending"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 34
+
+[node name="Closing" type="Label" parent="Ending"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.93, 0.8, 1)
 theme_override_font_sizes/font_size = 32
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="Spacer" type="Control" parent="Margin/VBox"]
-layout_mode = 2
-size_flags_vertical = 3
-mouse_filter = 2
-
-[node name="Note" type="Label" parent="Margin/VBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 22
-horizontal_alignment = 1
-autowrap_mode = 3
-
-[node name="Back" type="Button" parent="Margin/VBox"]
+[node name="Back" type="Button" parent="Ending"]
 custom_minimum_size = Vector2(0, 96)
 layout_mode = 2
-text = "Koridora dön (prototip)"
+text = "Kapıdan çık"
 
 [node name="Fade" type="ColorRect" parent="."]
 layout_mode = 1

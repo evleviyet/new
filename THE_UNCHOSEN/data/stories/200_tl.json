@@ -1,0 +1,792 @@
+{
+	"id": "200_tl",
+	"title": "200 TL",
+	"start": "a_ch",
+	"perspectives": {
+		"adam": {
+			"name": "Adam",
+			"color": [
+				0.85,
+				0.3,
+				0.25
+			]
+		},
+		"cocuk": {
+			"name": "Çocuk",
+			"color": [
+				0.95,
+				0.75,
+				0.4
+			]
+		},
+		"baba": {
+			"name": "Baba",
+			"color": [
+				0.55,
+				0.7,
+				0.9
+			]
+		}
+	},
+	"nodes": {
+		"a_ch": {
+			"type": "chapter",
+			"perspective": "adam",
+			"title": "ADAM",
+			"text": "Kırk bir yaşında. Geç kalıyor.\nArabanın içi sıcak, dışarısı yağmur.",
+			"next": "a1"
+		},
+		"a1": {
+			"type": "text",
+			"perspective": "adam",
+			"art": "car_interior",
+			"text": "Kırmızı ışık. Sayaç doksandan geriye sayıyor. Silecekler gidip geliyor.",
+			"next": "a2"
+		},
+		"a2": {
+			"type": "card",
+			"perspective": "adam",
+			"art": "car_window",
+			"speaker": "Çocuk",
+			"text": "Camın önüne bir çocuk geliyor. Elinde mendil paketleri. Saçları yağmurdan alnına yapışmış.",
+			"left": {
+				"label": "Camı açma",
+				"next": "a3_closed",
+				"set": {
+					"window_closed": true
+				}
+			},
+			"right": {
+				"label": "Camı indir",
+				"next": "a3_open"
+			}
+		},
+		"a3_closed": {
+			"type": "card",
+			"perspective": "adam",
+			"art": "car_window",
+			"speaker": "Çocuk",
+			"text": "Çocuk camı tıklatıyor. Bir kez. İki kez. Sayaç altmış.",
+			"left": {
+				"label": "Başını çevir",
+				"next": "a_green_alone",
+				"set": {
+					"man_turned": true
+				}
+			},
+			"right": {
+				"label": "Camı indir",
+				"next": "a3_open",
+				"set": {
+					"window_closed": false
+				}
+			}
+		},
+		"a3_open": {
+			"type": "card",
+			"perspective": "adam",
+			"art": "car_window_open",
+			"speaker": "Çocuk",
+			"text": "“Abi, mendil alır mısın?”\nCüzdanında tek bir kâğıt para var: 200 TL.",
+			"left": {
+				"label": "Parayı ver. “Üstü kalsın.”",
+				"next": "a_gift",
+				"set": {
+					"gift": true
+				}
+			},
+			"right": {
+				"label": "“Bana marketten su ve ekmek alır mısın?”",
+				"next": "a_errand",
+				"set": {
+					"errand": true
+				}
+			}
+		},
+		"a_gift": {
+			"type": "text",
+			"perspective": "adam",
+			"art": "car_window_open",
+			"text": "Çocuk parayı iki eliyle alıyor. Teşekkür etmeyi unutuyor. Sonra hatırlıyor; ama sen camı çoktan kapatmışsın.",
+			"next": "a_green_gift"
+		},
+		"a_green_gift": {
+			"type": "text",
+			"perspective": "adam",
+			"art": "car_interior_green",
+			"text": "Yeşil. Yola devam ediyorsun. İçinde hafif, sıcak bir şey.",
+			"next": "c_ch"
+		},
+		"a_errand": {
+			"type": "card",
+			"perspective": "adam",
+			"art": "car_window_open",
+			"speaker": "Çocuk",
+			"text": "Çocuk köşedeki markete bakıyor, sonra sana.\n“Üstü?”",
+			"left": {
+				"label": "“Üstü senin.”",
+				"next": "a_wait",
+				"set": {
+					"change_his": true
+				}
+			},
+			"right": {
+				"label": "“Getir, bakarız.”",
+				"next": "a_wait"
+			}
+		},
+		"a_wait": {
+			"type": "card",
+			"perspective": "adam",
+			"art": "car_interior",
+			"text": "Çocuk koşarak gidiyor. Sayaç on. Dokuz. Arkadaki beyaz kamyonet şimdiden korna çalıyor.",
+			"left": {
+				"label": "Sağa çek, bekle",
+				"next": "a_wait2",
+				"set": {
+					"pulled_over": true
+				}
+			},
+			"right": {
+				"label": "Işık yanınca git",
+				"next": "a_left",
+				"set": {
+					"man_left": true
+				}
+			}
+		},
+		"a_wait2": {
+			"type": "card",
+			"perspective": "adam",
+			"art": "car_interior_green",
+			"text": "Sağa çektin. Beş dakika oldu. Telefon titriyor: toplantı başladı.",
+			"left": {
+				"label": "Biraz daha bekle",
+				"next": "a_return_kid",
+				"set": {
+					"waited_long": true
+				}
+			},
+			"right": {
+				"label": "Git. Çocuk anlar.",
+				"next": "a_left",
+				"set": {
+					"man_left": true
+				}
+			}
+		},
+		"a_return_kid": {
+			"type": "text",
+			"perspective": "adam",
+			"art": "car_window_open",
+			"text": "Çocuk elinde poşetle geliyor, nefes nefese. Poşeti alıyorsun. Uzattığı paranın üstünü almıyorsun: “Senin olsun.”",
+			"set": {
+				"change_his": true
+			},
+			"next": "a_late"
+		},
+		"a_late": {
+			"type": "text",
+			"perspective": "adam",
+			"art": "car_interior_green",
+			"text": "Toplantıya yirmi dakika geç kalıyorsun. Kimse bir şey demiyor. Akşam bunu eşine anlatıyorsun; hikâye, anlattıkça güzelleşiyor.",
+			"next": "c_ch"
+		},
+		"a_left": {
+			"type": "text",
+			"perspective": "adam",
+			"art": "car_interior_green",
+			"text": "Yeşil. Kamyonet korna çalıyor. Gidiyorsun. Dikiz aynasında market kapısı küçülüyor.",
+			"next": "a_left2"
+		},
+		"a_left2": {
+			"type": "text",
+			"perspective": "adam",
+			"art": "car_interior_green",
+			"text": "İyi bir şey yaptın. Ekmek de su da önemli değil. Çocuk parayı alır, olur biter.",
+			"next": "c_ch"
+		},
+		"a_green_alone": {
+			"type": "text",
+			"perspective": "adam",
+			"art": "car_interior_green",
+			"text": "Yeşil. Gidiyorsun. Dikiz aynasında çocuk, bir sonraki arabanın camına yürüyor.",
+			"next": "c_ch"
+		},
+		"c_ch": {
+			"type": "chapter",
+			"perspective": "cocuk",
+			"title": "ÇOCUK",
+			"text": "On yaşında. Sabahtan beri yağmurda.\nBabası çıkarken “Akşama 200 getir” dedi.",
+			"next": "c_route"
+		},
+		"c_route": {
+			"type": "branch",
+			"cases": [
+				{
+					"if": {
+						"man_turned": true
+					},
+					"next": "c_closed1"
+				},
+				{
+					"if": {
+						"gift": true
+					},
+					"next": "c_gift1"
+				},
+				{
+					"if": {
+						"errand": true
+					},
+					"next": "c_market1"
+				}
+			],
+			"next": "c_closed1"
+		},
+		"c_closed1": {
+			"type": "text",
+			"perspective": "cocuk",
+			"art": "glass_reflection",
+			"text": "Bir arabanın camı. İçeride bir adam başını çeviriyor. Camda yalnızca kendi yüzünü görüyorsun.",
+			"next": "c_closed2"
+		},
+		"c_closed2": {
+			"type": "card",
+			"perspective": "cocuk",
+			"art": "red_light",
+			"text": "Akşam oluyor. Cebinde 45 lira var. Mendillerin yarısı ıslandı.",
+			"left": {
+				"label": "Bir saat daha kal",
+				"next": "c_closed3",
+				"set": {
+					"stayed_late": true
+				}
+			},
+			"right": {
+				"label": "Eve dön",
+				"next": "c_walk"
+			}
+		},
+		"c_closed3": {
+			"type": "text",
+			"perspective": "cocuk",
+			"art": "red_light",
+			"text": "Bir saat daha. Yirmi lira daha. Ellerini artık hissetmiyorsun.",
+			"next": "c_walk"
+		},
+		"c_gift1": {
+			"type": "text",
+			"perspective": "cocuk",
+			"art": "car_window_open",
+			"text": "Adam bir kâğıt uzatıyor: 200 lira. Böylesini hiç tutmamıştın. Teşekkür etmeyi unutuyorsun. Cam kapanıyor.",
+			"next": "c_gift2"
+		},
+		"c_gift2": {
+			"type": "card",
+			"perspective": "cocuk",
+			"art": "red_light",
+			"text": "Bütün günün parası avucunda. Saat daha üç.",
+			"left": {
+				"label": "Hemen eve koş",
+				"next": "c_gift_home",
+				"set": {
+					"went_home_early": true
+				}
+			},
+			"right": {
+				"label": "Kal, biraz daha sat",
+				"next": "c_gift_more",
+				"set": {
+					"stayed_late": true
+				}
+			}
+		},
+		"c_gift_more": {
+			"type": "text",
+			"perspective": "cocuk",
+			"art": "red_light",
+			"text": "Akşama kadar 200'ün yanına kırk lira daha ekliyorsun. Babanın yüzünü düşünüyorsun.",
+			"next": "c_walk"
+		},
+		"c_gift_home": {
+			"type": "text",
+			"perspective": "cocuk",
+			"art": "uphill",
+			"text": "Koşuyorsun. Para cebinde, elin cebinde.",
+			"next": "c_walk"
+		},
+		"c_market1": {
+			"type": "text",
+			"perspective": "cocuk",
+			"art": "market",
+			"text": "Market sıcak. Kasada uzun bir kuyruk. Bir elinde su ve ekmek, öbüründe 200 lira.",
+			"next": "c_market2"
+		},
+		"c_market2": {
+			"type": "card",
+			"perspective": "cocuk",
+			"art": "market",
+			"text": "Rafta kardeşinin sevdiği çikolata duruyor.",
+			"variants": [
+				{
+					"if": {
+						"change_his": true
+					},
+					"text": "Adam “Üstü senin” dedi. Rafta kardeşinin sevdiği çikolata duruyor."
+				},
+				{
+					"if": {},
+					"text": "Adam “Getir, bakarız” dedi. Rafta kardeşinin sevdiği çikolata duruyor."
+				}
+			],
+			"left": {
+				"label": "Çikolatayı da al",
+				"next": "c_market3",
+				"set": {
+					"chocolate": true
+				}
+			},
+			"right": {
+				"label": "Sadece su ve ekmek",
+				"next": "c_market3"
+			}
+		},
+		"c_market3": {
+			"type": "text",
+			"perspective": "cocuk",
+			"art": "market",
+			"text": "Kuyruk ilerlemiyor. Dışarıdan bir korna sesi geliyor. Bir tane daha.",
+			"next": "c_market_route"
+		},
+		"c_market_route": {
+			"type": "branch",
+			"cases": [
+				{
+					"if": {
+						"waited_long": true
+					},
+					"next": "c_man_waited"
+				}
+			],
+			"next": "c_car_gone"
+		},
+		"c_man_waited": {
+			"type": "text",
+			"perspective": "cocuk",
+			"art": "car_window_open",
+			"text": "Adam hâlâ orada. Poşeti alıyor, üstünü sana bırakıyor: “Senin olsun.” Gülümsüyor. Sen de gülümsüyorsun, ne yapacağını bilmeden.",
+			"next": "c_walk"
+		},
+		"c_car_gone": {
+			"type": "card",
+			"perspective": "cocuk",
+			"art": "empty_street",
+			"text": "Dışarı çıkıyorsun. Işık yeşil. Araba yok.",
+			"left": {
+				"label": "Bekle, belki döner",
+				"next": "c_waiting",
+				"set": {
+					"waited_for_man": true
+				}
+			},
+			"right": {
+				"label": "Poşetle eve dön",
+				"next": "c_walk",
+				"set": {
+					"brought_bag": true
+				}
+			}
+		},
+		"c_waiting": {
+			"type": "card",
+			"perspective": "cocuk",
+			"art": "empty_street",
+			"text": "Yarım saat geçti. Ekmek yağmurdan ıslanıyor. Kasiyer kapıdan sana bakıyor.",
+			"left": {
+				"label": "Poşeti markete geri ver",
+				"next": "c_return",
+				"set": {
+					"returned_goods": true
+				}
+			},
+			"right": {
+				"label": "Eve dön",
+				"next": "c_walk",
+				"set": {
+					"brought_bag": true
+				}
+			}
+		},
+		"c_return": {
+			"type": "text",
+			"perspective": "cocuk",
+			"art": "market",
+			"text": "Kasiyer önce sana, sonra poşete bakıyor. Kasayı açıyor. Avucunda yine 200 lira var. Ama bu para artık kimin?",
+			"variants": [
+				{
+					"if": {
+						"chocolate": true
+					},
+					"text": "Kasiyer suyu ve ekmeği geri alıyor. Çikolatanın paketi açılmış, onu geri almıyor. Avucunda 180 lira kalıyor. Ama bu para kimin?"
+				}
+			],
+			"next": "c_walk"
+		},
+		"c_walk": {
+			"type": "text",
+			"perspective": "cocuk",
+			"art": "uphill",
+			"text": "Eve giden yokuş. Pencerede ışık var. Babanın gölgesi bir geçip bir duruyor.",
+			"next": "b_ch"
+		},
+		"b_ch": {
+			"type": "chapter",
+			"perspective": "baba",
+			"title": "BABA",
+			"text": "Otuz sekiz yaşında. Sabahtan beri patronunun kamyonetiyle teslimatta.\nEczaneye borcu var: 200 lira.",
+			"next": "b1"
+		},
+		"b1": {
+			"type": "card",
+			"perspective": "baba",
+			"art": "pickup_cab",
+			"text": "Öğleden sonra. Kırmızı ışık. Öndeki arabanın camında bir çocuk. Yağmurdan yüzünü göremiyorsun.",
+			"variants": [
+				{
+					"if": {
+						"errand": true
+					},
+					"text": "Öğleden sonra. Işık yeşile dönmek üzere. Öndeki arabanın sürücüsü markete doğru bakıyor, kımıldamıyor. Teslimata on dakika var."
+				},
+				{
+					"if": {
+						"gift": true
+					},
+					"text": "Öğleden sonra. Kırmızı ışık. Öndeki sürücü camdan bir çocuğa bir şey uzatıyor. Yağmurdan çocuğun yüzünü göremiyorsun."
+				},
+				{
+					"if": {
+						"man_turned": true
+					},
+					"text": "Öğleden sonra. Kırmızı ışık. Öndeki arabanın camını bir çocuk tıklatıyor. Sürücü başını çeviriyor. Yağmurdan çocuğun yüzünü göremiyorsun."
+				}
+			],
+			"left": {
+				"label": "Korna çal",
+				"next": "b2",
+				"set": {
+					"father_honked": true
+				}
+			},
+			"right": {
+				"label": "Bekle",
+				"next": "b2"
+			}
+		},
+		"b2": {
+			"type": "text",
+			"perspective": "baba",
+			"art": "pickup_cab",
+			"text": "Işık değişiyor. Yola devam ediyorsun. Aklında eczane.",
+			"variants": [
+				{
+					"if": {
+						"errand": true,
+						"father_honked": true,
+						"pulled_over": false
+					},
+					"text": "Öndeki araba sarsılarak hareket ediyor. Arkasından geçiyorsun. Aklında eczane."
+				},
+				{
+					"if": {
+						"errand": true,
+						"pulled_over": true
+					},
+					"text": "Öndeki araba sonunda sağa çekiyor. Yanından geçerken sürücüye bir bakış atıyorsun. Aklında eczane."
+				},
+				{
+					"if": {
+						"father_honked": false
+					},
+					"text": "Sen beklemeyi seçiyorsun ama arkandakiler senin yerine korna çalıyor. Işık değişiyor. Aklında eczane."
+				}
+			],
+			"next": "b3"
+		},
+		"b3": {
+			"type": "text",
+			"perspective": "baba",
+			"art": "home_door",
+			"text": "Akşam. Kapı açılıyor. Oğlun sırılsıklam. Avucunda birkaç bozukluk.",
+			"variants": [
+				{
+					"if": {
+						"returned_goods": true
+					},
+					"text": "Akşam. Kapı açılıyor. Oğlun sırılsıklam. Avucunu açıyor: katlanmış kâğıt paralar."
+				},
+				{
+					"if": {
+						"brought_bag": true,
+						"chocolate": true
+					},
+					"text": "Akşam. Kapı açılıyor. Oğlun sırılsıklam. Elinde bir poşet: su, ıslak bir ekmek ve bir çikolata."
+				},
+				{
+					"if": {
+						"brought_bag": true
+					},
+					"text": "Akşam. Kapı açılıyor. Oğlun sırılsıklam. Elinde bir poşet: su ve ıslak bir ekmek."
+				},
+				{
+					"if": {
+						"waited_long": true
+					},
+					"text": "Akşam. Kapı açılıyor. Oğlun sırılsıklam. Avucunda bozuk paralar ve kâğıt paralar."
+				},
+				{
+					"if": {
+						"gift": true
+					},
+					"text": "Akşam. Kapı açılıyor. Oğlun sırılsıklam. Avucunda dörde katlanmış bir 200 lira."
+				}
+			],
+			"next": "b4"
+		},
+		"b4": {
+			"type": "card",
+			"perspective": "baba",
+			"art": "home_door",
+			"speaker": "Oğlun",
+			"text": "“Kimse almadı baba. Yağmur vardı.”",
+			"variants": [
+				{
+					"if": {
+						"returned_goods": true
+					},
+					"text": "“Bir adam verdi. Markete gönderdi, sonra gitti. Ben de aldıklarımı geri verdim.”"
+				},
+				{
+					"if": {
+						"brought_bag": true
+					},
+					"text": "“Bir adam 200 verdi, markete gönderdi. Döndüğümde gitmişti.”"
+				},
+				{
+					"if": {
+						"waited_long": true
+					},
+					"text": "“Adam bekledi baba. Üstü senin dedi.”\nSayıyorsun. 200 etmiyor."
+				},
+				{
+					"if": {
+						"gift": true
+					},
+					"text": "“Bir adam verdi. Kendisi verdi baba, ben istemedim.”"
+				}
+			],
+			"left": {
+				"label": "Sesini yükselt",
+				"next": "b5",
+				"set": {
+					"father_harsh": true
+				}
+			},
+			"right": {
+				"label": "Hiçbir şey söyleme",
+				"next": "b5"
+			}
+		},
+		"b5": {
+			"type": "text",
+			"perspective": "baba",
+			"art": "home_inside",
+			"text": "Oğlun odasına gidiyor. Kapı kapanıyor. Masada ne getirdiyse öylece duruyor.",
+			"variants": [
+				{
+					"if": {
+						"father_harsh": true,
+						"gift": true
+					},
+					"text": "“Kim verir sana 200 lira?” diyorsun. Kendi sesin sana yabancı geliyor. Oğlun odasına gidiyor. Para masada kalıyor."
+				},
+				{
+					"if": {
+						"father_harsh": true,
+						"brought_bag": true
+					},
+					"text": "“Ekmeği mi yiyeceğiz, ilacı mı?” diyorsun. Oğlun cevap vermiyor. Odasına gidiyor. Poşet masada kalıyor."
+				},
+				{
+					"if": {
+						"father_harsh": true
+					},
+					"text": "Sesin duvarlara çarpıyor. Oğlun cevap vermiyor. Odasına gidiyor. Kapı yavaşça kapanıyor."
+				},
+				{
+					"if": {
+						"gift": true
+					},
+					"text": "Hiçbir şey söylemiyorsun. Parayı alıyorsun. Oğlun bir süre bekliyor; bir şey söylemeni bekliyor. Sonra odasına gidiyor."
+				}
+			],
+			"next": "b_night"
+		},
+		"b_night": {
+			"type": "card",
+			"perspective": "baba",
+			"art": "night_door",
+			"text": "Gece. Uyuyamıyorsun. Oğlunun kapısının altından ince bir ışık sızıyor.",
+			"variants": [
+				{
+					"if": {
+						"father_honked": true,
+						"man_left": true
+					},
+					"text": "Gece. Uyuyamıyorsun. Kafanda bir korna sesi dönüp duruyor; nedenini bilmiyorsun. Oğlunun kapısının altından ince bir ışık sızıyor."
+				}
+			],
+			"left": {
+				"label": "Kapıyı arala",
+				"next": "b_peek",
+				"set": {
+					"father_peeked": true
+				}
+			},
+			"right": {
+				"label": "Kapıya dokunma",
+				"next": "b_nopeek"
+			}
+		},
+		"b_peek": {
+			"type": "text",
+			"perspective": "baba",
+			"art": "child_room",
+			"text": "Oğlun uyumuş. Islak mendil paketleri kaloriferin üstüne dizilmiş.",
+			"variants": [
+				{
+					"if": {
+						"chocolate": true
+					},
+					"text": "Oğlun uyumuş. Yanında kız kardeşi. İkisinin arasında açılmış bir çikolata paketi."
+				},
+				{
+					"if": {
+						"gift": true,
+						"father_harsh": false
+					},
+					"text": "Oğlun uyumuş. Avucu hâlâ yarı kapalı, bir şey tutuyormuş gibi."
+				},
+				{
+					"if": {
+						"father_harsh": true
+					},
+					"text": "Oğlun uyumuyor. Sırtı kapıya dönük. Sen kapıyı araladığında nefesi bir an duruyor. İçeri girmiyorsun."
+				}
+			],
+			"next": "end"
+		},
+		"b_nopeek": {
+			"type": "text",
+			"perspective": "baba",
+			"art": "night_door",
+			"text": "Işık bir süre daha yanıyor. Sonra sönüyor. Ne gördüğünü hiç bilmeyeceksin.",
+			"next": "end"
+		},
+		"end": {
+			"type": "ending",
+			"lines": [
+				{
+					"variants": [
+						{
+							"if": {
+								"man_turned": true
+							},
+							"text": "Adam o günü hiç hatırlamadı."
+						},
+						{
+							"if": {
+								"waited_long": true
+							},
+							"text": "Adam o akşam bir hikâye anlattı. İçinde kendisi vardı."
+						},
+						{
+							"if": {
+								"man_left": true
+							},
+							"text": "Adam o akşam iyi bir şey yaptığını düşündü. Ekmeği hiç merak etmedi."
+						},
+						{
+							"if": {},
+							"text": "Adam o akşam iyi bir şey yaptığını düşündü."
+						}
+					]
+				},
+				{
+					"variants": [
+						{
+							"if": {
+								"father_harsh": true,
+								"returned_goods": true
+							},
+							"text": "Çocuk, doğru olanı mı yaptığını bir türlü bilemedi."
+						},
+						{
+							"if": {
+								"father_harsh": true
+							},
+							"text": "Çocuk o akşam bir şeyi yanlış yaptığını düşündü. Neyi, bilemedi."
+						},
+						{
+							"if": {
+								"chocolate": true
+							},
+							"text": "Çocuk o akşam kardeşini düşündü."
+						},
+						{
+							"if": {},
+							"text": "Çocuk o akşam babasının sessizliğini düşündü."
+						}
+					]
+				},
+				{
+					"variants": [
+						{
+							"if": {
+								"father_harsh": true,
+								"father_honked": true,
+								"man_left": true
+							},
+							"text": "Baba o akşam haklı olduğunu düşündü. Bir korna sesi dışında."
+						},
+						{
+							"if": {
+								"father_peeked": true
+							},
+							"text": "Baba o gece bir kapıyı araladı ve içeri girmedi."
+						},
+						{
+							"if": {
+								"father_harsh": true
+							},
+							"text": "Baba o akşam haklı olduğunu düşündü."
+						},
+						{
+							"if": {
+								"father_honked": true,
+								"man_left": true
+							},
+							"text": "Baba o akşam hiçbir şey düşünmemeye çalıştı. Bir korna sesi dışında."
+						},
+						{
+							"if": {},
+							"text": "Baba o akşam hiçbir şey düşünmemeye çalıştı."
+						}
+					]
+				}
+			],
+			"closing": "Üçü de aynı 200 lirayı düşündü.\nHiçbiri aynı şeyi görmedi."
+		}
+	}
+}

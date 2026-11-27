@@ -28,6 +28,8 @@ var light_level: float = 0.0
 ## Each time the player turns away, the light under this door settles a little.
 var dim: float = 1.0
 var peek_texture: Texture2D
+## The player has lived this life; the door stays shut and dark.
+var lived: bool = false
 
 var _seed: float = 0.0
 var _intensity: float = 1.0
@@ -57,8 +59,22 @@ func setup(door_data: Dictionary, owner_corridor) -> void:
 			center = Vector3(0.0, 0.0, World.Z_END)
 			right = Vector3(1, 0, 0)
 			normal = Vector3(0, 0, -1)
+	refresh_state()
+
+
+func refresh_state() -> void:
 	var st: Dictionary = GameManager.get_state(id)
 	dim = maxf(0.55, pow(0.88, float(st["turned_away"])))
+	lived = bool(st["completed"])
+	if lived:
+		dim = 0.12
+
+
+## Door text; once any life has been lived, some doors whisper something else.
+func text(key: String) -> String:
+	if GameManager.any_story_completed() and String(data.get(key + "_after", "")) != "":
+		return data[key + "_after"]
+	return data.get(key, "")
 
 
 # --- camera views --------------------------------------------------------

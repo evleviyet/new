@@ -1,41 +1,278 @@
 extends Control
-## Inside a life. For prototype 0.1 this is the threshold only: the player
-## has committed, the moment keeps going behind them, and the decision cards
-## (story_manager + decision_card) will start here in the next milestone.
+## Inside a life. Cards in the manner of Reigns — swipe left or right — but
+## there are no meters: a choice only changes what happens later, sometimes
+## to someone else, sometimes seen through someone else's eyes.
 
 const UIStyle := preload("res://scripts/ui_style.gd")
 
-@onready var background = $Background
-@onready var title: Label = $Margin/VBox/Title
-@onready var body: Label = $Margin/VBox/Body
-@onready var note: Label = $Margin/VBox/Note
-@onready var back: Button = $Margin/VBox/Back
+var _view: Dictionary = {}
+var _busy: bool = false
+var _pressing: bool = false
+var _press_pos := Vector2.ZERO
+var _last_perspective := ""
+
+@onready var background: TextureRect = $Background
+@onready var perspective: Label = $Perspective
+@onready var story_text: Label = $StoryText
+@onready var card = $CardHolder/Card
+@onready var speaker: Label = $Speaker
+@onready var choices: Control = $Choices
+@onready var left_btn: Button = $Choices/Left
+@onready var right_btn: Button = $Choices/Right
+@onready var hint: Label = $Hint
+@onready var chapter_box: Control = $Chapter
+@onready var chapter_title: Label = $Chapter/Title
+@onready var chapter_text: Label = $Chapter/Text
+@onready var ending_box: Control = $Ending
+@onready var ending_lines: VBoxContainer = $Ending/Lines
+@onready var ending_closing: Label = $Ending/Closing
+@onready var ending_btn: Button = $Ending/Back
 @onready var fade: ColorRect = $Fade
 
 
 func _ready() -> void:
 	theme = UIStyle.make_theme()
-	var door: Dictionary = DoorManager.get_door(GameManager.current_door_id)
-	if door.is_empty():
-		door = DoorManager.get_door("200_tl")
-	background.set_style(door.get("peek_style", ""))
-	title.text = door.get("title", "")
-	body.text = door.get("entry_text", "")
-	note.text = "Artık sadece bakmıyorsun. Bu hayatın içindesin.\n\n[Prototip 0.1 — karar kartları bir sonraki aşamada burada başlayacak.]"
-	back.pressed.connect(_on_back)
-	for c: CanvasItem in [title, body, note, back]:
+	UIStyle.style_title(perspective, 26)
+	UIStyle.style_title(speaker, 24)
+	UIStyle.style_title(chapter_title, 88)
+	UIStyle.style_title(hint, 22)
+	chapter_text.add_theme_font_override("font", UIStyle.italic())
+	ending_closing.add_theme_font_override("font", UIStyle.italic())
+	card.choice_label.add_theme_font_override("font", UIStyle.pixel())
+	for b: Button in [left_btn, right_btn]:
+		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	background.texture = card.art_texture()
+	card.decided.connect(_on_decided)
+	left_btn.pressed.connect(func() -> void: _choose_button("left"))
+	right_btn.pressed.connect(func() -> void: _choose_button("right"))
+	ending_btn.pressed.connect(_leave_life)
+	AudioManager.clear_doors()
+	AudioManager.play_ambience("rain")
+	AudioManager.play_music("life")
+	for c: CanvasItem in [perspective, story_text, speaker, choices, hint, chapter_box, ending_box]:
 		c.modulate.a = 0.0
+	ending_box.visible = false
 	fade.color = Color(1, 0.97, 0.92, 1)
 	var tw := create_tween()
-	tw.tween_property(fade, "color:a", 0.0, 1.8)
-	tw.tween_property(title, "modulate:a", 1.0, 1.0)
-	tw.tween_property(body, "modulate:a", 1.0, 1.4)
-	tw.tween_property(note, "modulate:a", 0.7, 1.0).set_delay(0.6)
-	tw.tween_property(back, "modulate:a", 1.0, 0.6)
+	tw.tween_property(fade, "color:a", 0.0, 1.6)
+	if not StoryManager.is_active():
+		# nothing to live (missing story file): go back rather than hang
+		tw.tween_callback(GameManager.return_to_corridor)
+		return
+	_show(StoryManager.current())
 
 
-func _on_back() -> void:
-	back.disabled = true
+# --- showing nodes -------------------------------------------------------
+
+func _show(view: Dictionary) -> void:
+	_view = view
+	_busy = true
+	var type := String(view.get("type", ""))
+	card.set_scene(view.get("art", ""), StoryManager.flags)
+	match type:
+		"chapter":
+			_show_chapter(view)
+		"ending":
+			_show_ending(view)
+		_:
+			_show_card(view)
+
+
+func _show_chapter(view: Dictionary) -> void:
+	_last_perspective = view["perspective"]
+	_fade(perspective, 0.0, 0.3)
+	_fade(story_text, 0.0, 0.3)
+	_fade(speaker, 0.0, 0.3)
+	_fade(choices, 0.0, 0.3)
+	_fade(hint, 0.0, 0.3)
+	card.leave(0.0)
+	_fade(background, 0.0, 0.6)
+	AudioManager.sfx("chapter")
+	chapter_title.text = view["title"]
+	chapter_title.add_theme_color_override("font_color", view["perspective_color"])
+	chapter_text.text = view["text"]
 	var tw := create_tween()
-	tw.tween_property(fade, "color", Color(0, 0, 0, 1), 0.9)
+	tw.tween_interval(0.5)
+	tw.tween_property(chapter_box, "modulate:a", 1.0, 1.2)
+	tw.tween_callback(func() -> void:
+		hint.text = "dokun"
+		_fade(hint, 0.6, 0.8)
+		_busy = false)
+
+
+func _show_card(view: Dictionary) -> void:
+	_fade(chapter_box, 0.0, 0.5)
+	_fade(background, 0.32, 0.8)
+	perspective.text = String(view["perspective_name"]).to_upper()
+	perspective.add_theme_color_override("font_color", view["perspective_color"])
+	_fade(perspective, 0.85, 0.6)
+	story_text.text = view["text"]
+	story_text.modulate.a = 0.0
+	var tw := create_tween()
+	tw.tween_interval(0.15)
+	tw.tween_property(story_text, "modulate:a", 1.0, 0.7)
+	if view.get("echo", false):
+		# an earlier choice has come back
+		AudioManager.sfx("echo", -4.0)
+		story_text.add_theme_color_override("font_color", Color(1.0, 0.93, 0.80))
+	else:
+		story_text.remove_theme_color_override("font_color")
+	speaker.text = String(view.get("speaker", ""))
+	_fade(speaker, 0.7 if speaker.text != "" else 0.0, 0.6)
+	card.appear()
+	AudioManager.sfx("card", -6.0)
+	if view["type"] == "card":
+		card.left_label = view["left"]
+		card.right_label = view["right"]
+		left_btn.text = "← " + String(view["left"])
+		right_btn.text = String(view["right"]) + " →"
+		var decided := 0
+		for h: Dictionary in StoryManager.history:
+			if h.get("choice", "") != "":
+				decided += 1
+		if decided < 2:
+			# first cards only: show how a card is decided
+			hint.text = "← kartı kaydır →"
+			_fade(hint, 0.55, 0.8)
+		else:
+			_fade(hint, 0.0, 0.3)
+		_fade(choices, 1.0, 0.6)
+		tw.tween_callback(func() -> void:
+			card.interactive = true
+			_busy = false)
+	else:
+		_fade(choices, 0.0, 0.3)
+		hint.text = "dokun"
+		tw.tween_callback(func() -> void:
+			_fade(hint, 0.5, 0.6)
+			_busy = false)
+
+
+func _show_ending(view: Dictionary) -> void:
+	_fade(perspective, 0.0, 0.4)
+	_fade(story_text, 0.0, 0.4)
+	_fade(speaker, 0.0, 0.4)
+	_fade(choices, 0.0, 0.4)
+	_fade(hint, 0.0, 0.4)
+	_fade(chapter_box, 0.0, 0.4)
+	card.leave(0.0)
+	_fade(background, 0.0, 1.0)
+	AudioManager.play_music("ending", 3.0)
+	for c in ending_lines.get_children():
+		c.queue_free()
+	ending_box.visible = true
+	ending_box.modulate.a = 1.0
+	ending_closing.text = view.get("closing", "")
+	ending_closing.modulate.a = 0.0
+	ending_btn.modulate.a = 0.0
+	ending_btn.disabled = true
+	var tw := create_tween()
+	tw.tween_interval(1.2)
+	for line: String in view.get("lines", []):
+		var l := Label.new()
+		l.text = line
+		l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		l.add_theme_font_size_override("font_size", 30)
+		l.modulate.a = 0.0
+		ending_lines.add_child(l)
+		tw.tween_property(l, "modulate:a", 1.0, 1.4)
+		tw.tween_interval(1.4)
+	tw.tween_interval(0.6)
+	tw.tween_property(ending_closing, "modulate:a", 1.0, 2.0)
+	tw.tween_interval(1.0)
+	tw.tween_callback(func() -> void:
+		ending_btn.disabled = false
+		_busy = false)
+	tw.tween_property(ending_btn, "modulate:a", 1.0, 1.0)
+
+
+# --- input ---------------------------------------------------------------
+
+func _unhandled_input(event: InputEvent) -> void:
+	if _busy or _view.is_empty():
+		return
+	var type := String(_view.get("type", ""))
+	if type == "card":
+		if event.is_action_pressed("ui_left"):
+			_choose_button("left")
+		elif event.is_action_pressed("ui_right"):
+			_choose_button("right")
+	elif type != "ending" and event.is_action_pressed("ui_accept"):
+		_advance()
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		if event.pressed:
+			_pressing = true
+			_press_pos = event.position
+		elif _pressing:
+			_pressing = false
+			var moved: float = event.position.x - _press_pos.x
+			if type == "card":
+				if absf(moved) < 12.0:
+					card.nudge()
+				else:
+					card.release()
+					if not card.interactive:
+						_busy = true
+			elif type != "ending" and (absf(moved) < 30.0 or absf(moved) > 80.0):
+				_advance()
+	elif event is InputEventMouseMotion and _pressing and type == "card":
+		card.drag_to(event.position.x - _press_pos.x)
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
+		# there is no stepping out of a life halfway; the app just closes
+		SaveManager.save()
+		get_tree().quit()
+
+
+func _choose_button(side: String) -> void:
+	if _busy or String(_view.get("type", "")) != "card" or not card.interactive:
+		return
+	_busy = true
+	card.decide(side)
+
+
+func _on_decided(side: String) -> void:
+	_busy = true
+	Input.vibrate_handheld(25)
+	AudioManager.sfx("swipe")
+	_fade(story_text, 0.0, 0.25)
+	_fade(choices, 0.0, 0.25)
+	StoryManager.choose(side)
+	_next_after(0.35)
+
+
+func _advance() -> void:
+	_busy = true
+	AudioManager.sfx("tap", -6.0)
+	if String(_view.get("type", "")) == "text":
+		card.leave(-1.0)
+		_fade(story_text, 0.0, 0.25)
+	else:
+		_fade(chapter_box, 0.0, 0.4)
+	_fade(hint, 0.0, 0.2)
+	StoryManager.advance()
+	_next_after(0.35)
+
+
+func _next_after(delay: float) -> void:
+	var tw := create_tween()
+	tw.tween_interval(delay)
+	tw.tween_callback(func() -> void: _show(StoryManager.current()))
+
+
+func _leave_life() -> void:
+	ending_btn.disabled = true
+	AudioManager.sfx("door_close")
+	var id := StoryManager.door_id
+	StoryManager.stop()
+	GameManager.complete_life(id)
+	var tw := create_tween()
+	tw.tween_property(fade, "color", Color(0, 0, 0, 1), 1.4)
 	tw.tween_callback(GameManager.return_to_corridor)
+
+
+func _fade(c: CanvasItem, a: float, d: float) -> void:
+	create_tween().tween_property(c, "modulate:a", a, d)
