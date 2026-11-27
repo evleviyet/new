@@ -1,0 +1,530 @@
+{
+	"id": "yanlis_kapi",
+	"title": "Yanlış Kapı",
+	"start": "y_ch",
+	"ambience": "stairwell",
+	"perspectives": {
+		"kurye": {
+			"name": "Kurye",
+			"color": [
+				0.55,
+				0.7,
+				0.9
+			]
+		},
+		"kadin": {
+			"name": "Kadın",
+			"color": [
+				0.62,
+				0.95,
+				0.72
+			]
+		},
+		"komsu": {
+			"name": "Komşu",
+			"color": [
+				0.95,
+				0.75,
+				0.4
+			]
+		}
+	},
+	"nodes": {
+		"y_ch": {
+			"type": "chapter",
+			"perspective": "kurye",
+			"title": "KURYE",
+			"text": "Otuz sekiz yaşında. Eve gitmeden önce son teslimat.\nYağmur dinmek üzere.",
+			"variants": [
+				{
+					"if": {
+						"200_tl:father_harsh": true
+					},
+					"text": "Otuz sekiz yaşında. Eve gitmeden önce son teslimat.\nBu akşam sesini yükselteceğin birini henüz bilmiyorsun."
+				}
+			],
+			"next": "y1"
+		},
+		"y1": {
+			"type": "text",
+			"perspective": "kurye",
+			"art": "apartment_entry",
+			"text": "Eski bir apartman. Zil paneli. Dördüncü kat, daire 9: S. A. Paket kucağında.",
+			"next": "y2",
+			"variants": [
+				{
+					"if": {
+						"200_tl:father_honked": true
+					},
+					"text": "Eski bir apartman. Zil paneli. Dördüncü kat, daire 9: S. A. Az önce bir kırmızı ışıkta korna çaldın; elin hâlâ direksiyondaymış gibi."
+				}
+			]
+		},
+		"y2": {
+			"type": "card",
+			"perspective": "kurye",
+			"art": "apartment_entry",
+			"speaker": "Adam",
+			"text": "Kapının önünde iyi giyimli bir adam. Elinde çiçek. Gülümsüyor: “Kardeşimin doğum günü, sürpriz yapacağım. Zile basmayalım, olur mu?”",
+			"left": {
+				"label": "“Olmaz. Zile basıyorum.”",
+				"next": "y3_refused",
+				"set": {
+					"y_refused": true
+				}
+			},
+			"right": {
+				"label": "Kapıyı birlikte gir",
+				"next": "y3_in",
+				"set": {
+					"y_let_in": true
+				}
+			},
+			"pause": 2.5
+		},
+		"y3_refused": {
+			"type": "card",
+			"perspective": "kurye",
+			"art": "apartment_entry",
+			"sfx": "tap",
+			"text": "Adam omuz silkiyor, gülümsemesi yerinde. Zile basıyorsun. Hoparlörden kısık bir ses: “Kim?”",
+			"left": {
+				"label": "“Kargo.”",
+				"next": "y_up"
+			},
+			"right": {
+				"label": "“Kargo. Bir de aşağıda biri sizi soruyor.”",
+				"next": "y_up",
+				"set": {
+					"y_warned": true
+				}
+			}
+		},
+		"y3_in": {
+			"type": "text",
+			"perspective": "kurye",
+			"art": "stairwell",
+			"text": "Adam kapıyı tutuyor; önce sen geç diye. Teşekkür ediyorsun. Merdivenleri önden çıkıyorsun. Ne kadar kibar bir adam.",
+			"next": "y_stairs"
+		},
+		"y4": {
+			"type": "card",
+			"perspective": "kurye",
+			"art": "stairwell",
+			"text": "Dördüncü kat. Adam bir kat aşağıda durmuş, telefonuna bakıyor. Seni bekliyor gibi.",
+			"left": {
+				"label": "Paketi kapıya bırak, git",
+				"next": "y_leave",
+				"set": {
+					"y_left_quick": true
+				}
+			},
+			"right": {
+				"label": "Zile bas, paketi elden ver",
+				"next": "y_hand",
+				"set": {
+					"y_handed": true
+				}
+			}
+		},
+		"y_up": {
+			"type": "text",
+			"perspective": "kurye",
+			"art": "stairwell",
+			"text": "Kapı otomatiğe basılıyor. Merdivenleri çıkıyorsun. Arkanda kapı yavaşça kapanıyor; adam dışarıda kalıyor.",
+			"next": "y_hand"
+		},
+		"y_hand": {
+			"type": "text",
+			"perspective": "kurye",
+			"art": "door_ajar",
+			"sfx": "door_open",
+			"text": "Kapı zincirli aralanıyor. Bir kadın. Seni görünce omuzları düşüyor; rahatlıyor. “Teşekkürler.”",
+			"variants": [
+				{
+					"if": {
+						"y_let_in": true
+					},
+					"text": "Kapı aralanıyor. Bir kadın. Seni görünce rahatlıyor. Sonra omzunun üstünden merdivene bakıyor ve yüzü değişiyor."
+				}
+			],
+			"next": "y_leave"
+		},
+		"y_leave": {
+			"type": "text",
+			"perspective": "kurye",
+			"art": "stairwell",
+			"text": "Merdivenlerden iniyorsun. Aklında eczane. Kimsenin yüzünü uzun süre hatırlamayacaksın.",
+			"variants": [
+				{
+					"if": {
+						"y_left_quick": true
+					},
+					"text": "Paketi kapının önüne bırakıp iniyorsun. Merdivende adamla omuz omuza geçiyorsun. “İyi akşamlar,” diyor. Aklında eczane."
+				}
+			],
+			"next": "s_ch"
+		},
+		"s_ch": {
+			"type": "chapter",
+			"perspective": "kadin",
+			"title": "KADIN",
+			"text": "Yirmi dokuz yaşında. Üç ay önce taşındı.\nYeni şehir, yeni iş, yeni numara. Eski bir korku.",
+			"next": "s1"
+		},
+		"s1": {
+			"type": "card",
+			"perspective": "kadin",
+			"art": "door_inside",
+			"text": "Zil. Saat beş. Bir paket bekliyordun.",
+			"variants": [
+				{
+					"if": {
+						"y_warned": true
+					},
+					"text": "Hoparlör: “Kargo. Bir de aşağıda biri sizi soruyor.” Midende bir boşluk açılıyor."
+				},
+				{
+					"if": {
+						"y_left_quick": true
+					},
+					"text": "Kapının önünde bir hışırtı. Biri bir şey bırakıyor. Sonra merdivende ayak sesleri. Biri iniyor; biri çıkıyor."
+				}
+			],
+			"left": {
+				"label": "Kapı deliğinden bak",
+				"next": "s_peep",
+				"set": {
+					"s_peeked": true
+				}
+			},
+			"right": {
+				"label": "Kapıyı aç",
+				"next": "s_open",
+				"set": {
+					"s_opened": true
+				}
+			},
+			"pause": 2.0
+		},
+		"s_peep": {
+			"type": "text",
+			"perspective": "kadin",
+			"art": "peephole",
+			"text": "Delikten bakıyorsun. Bükülmüş bir koridor. Sadece kurye, elinde senin paketin.",
+			"variants": [
+				{
+					"if": {
+						"y_let_in": true,
+						"y_left_quick": true
+					},
+					"text": "Delikten bakıyorsun. Bükülmüş bir koridor. Kapının önünde bir paket. Ve paketin yanında, çiçekler tutan bir el."
+				},
+				{
+					"if": {
+						"y_let_in": true
+					},
+					"text": "Delikten bakıyorsun. Kurye. Arkasında, merdiven boşluğunda, çiçek tutan bir el. O eli tanıyorsun."
+				}
+			],
+			"next": "s2"
+		},
+		"s_open": {
+			"type": "text",
+			"perspective": "kadin",
+			"art": "door_ajar",
+			"sfx": "door_open",
+			"text": "Zinciri takıp aralıyorsun. Kurye. Paketini alıyorsun. Koridor boş.",
+			"variants": [
+				{
+					"if": {
+						"y_let_in": true,
+						"y_left_quick": true
+					},
+					"text": "Kapıyı aralıyorsun. Paket yerde. Paketin hemen yanında o: “İyi ki doğdun,” diyor. Bugün doğum günün değil."
+				},
+				{
+					"if": {
+						"y_let_in": true
+					},
+					"text": "Zinciri takıp aralıyorsun. Kurye. Ve kuryenin omzunun üstünde, merdivende, o. Gülümsüyor."
+				}
+			],
+			"next": "s2"
+		},
+		"s2": {
+			"type": "branch",
+			"cases": [
+				{
+					"if": {
+						"y_let_in": true
+					},
+					"next": "s3_found"
+				}
+			],
+			"next": "s3_safe"
+		},
+		"s3_found": {
+			"type": "card",
+			"perspective": "kadin",
+			"art": "door_inside",
+			"text": "Kapı kapalı. Kilit iki tur. Kapının öbür yanında biri bekliyor ve hiç acelesi yok.",
+			"left": {
+				"label": "Karşı komşuyu ara",
+				"next": "s4",
+				"set": {
+					"s_called_neighbor": true
+				}
+			},
+			"right": {
+				"label": "Polisi ara",
+				"next": "s4",
+				"set": {
+					"s_called_police": true
+				}
+			}
+		},
+		"s3_safe": {
+			"type": "card",
+			"perspective": "kadin",
+			"art": "window_street",
+			"text": "Pencereden bakıyorsun. Apartmanın önünde, sokak lambasının altında, çiçekli bir adam.",
+			"variants": [
+				{
+					"if": {
+						"y_warned": true
+					},
+					"text": "Kurye uyarmıştı. Pencereden bakıyorsun. Sokak lambasının altında çiçekli bir adam. Seni bulmuş."
+				}
+			],
+			"left": {
+				"label": "Perdeyi çek",
+				"next": "s4",
+				"set": {
+					"s_curtain": true
+				}
+			},
+			"right": {
+				"label": "Polisi ara",
+				"next": "s4",
+				"set": {
+					"s_called_police": true
+				}
+			}
+		},
+		"s4": {
+			"type": "text",
+			"perspective": "kadin",
+			"art": "suitcase",
+			"text": "Gece. Bavul dolabın üstünde. Bu gece orada kalıyor.",
+			"variants": [
+				{
+					"if": {
+						"y_let_in": true
+					},
+					"text": "Gece. Bavul yatağın üstünde açık. Üç ayda kurduğun hayat bir bavula ne kadar da kolay sığıyor."
+				}
+			],
+			"next": "n_ch"
+		},
+		"n_ch": {
+			"type": "chapter",
+			"perspective": "komsu",
+			"title": "KOMŞU",
+			"text": "Yetmiş yaşında. Dairesi 10.\nKapı deliği, onun penceresi.",
+			"next": "n1"
+		},
+		"n1": {
+			"type": "branch",
+			"cases": [
+				{
+					"if": {
+						"y_let_in": true
+					},
+					"next": "n_hall"
+				}
+			],
+			"next": "n_window"
+		},
+		"n_hall": {
+			"type": "card",
+			"perspective": "komsu",
+			"art": "peephole",
+			"text": "Delikten bakıyorsun. Dokuzun önünde çiçekli bir adam. Kapı açılmıyor. Adam bekliyor, gülümsüyor, bekliyor.",
+			"variants": [
+				{
+					"if": {
+						"s_called_neighbor": true
+					},
+					"text": "Telefonun çalıyor: dokuzdaki kız, fısıltıyla. Delikten bakıyorsun. Kapısının önünde çiçekli bir adam. Bekliyor."
+				}
+			],
+			"left": {
+				"label": "Kapını aç: “Kimi aradınız?”",
+				"next": "n_spoke",
+				"set": {
+					"n_spoke": true
+				}
+			},
+			"right": {
+				"label": "Bak, karışma",
+				"next": "n_watched",
+				"set": {
+					"n_watched": true
+				}
+			},
+			"pause": 2.5
+		},
+		"n_window": {
+			"type": "card",
+			"perspective": "komsu",
+			"art": "window_street",
+			"text": "Pencereden bakıyorsun. Apartmanın önünde çiçekli bir adam. Bir saattir orada.",
+			"left": {
+				"label": "Aşağı in",
+				"next": "n_spoke",
+				"set": {
+					"n_spoke": true,
+					"n_went_down": true
+				}
+			},
+			"right": {
+				"label": "Perdeyi çek",
+				"next": "n_watched",
+				"set": {
+					"n_watched": true
+				}
+			}
+		},
+		"n_spoke": {
+			"type": "text",
+			"perspective": "komsu",
+			"art": "stairwell",
+			"text": "Adam sana dönüyor. Gülümsemesi bir an bozulmuyor. “Yanlış kapı,” diyor. Çiçekleri basamağa bırakıp iniyor.",
+			"variants": [
+				{
+					"if": {
+						"s_called_police": true
+					},
+					"text": "Adam sana dönüyor. “Yanlış kapı,” diyor. Aşağıda bir siren sesi. Çiçekler basamakta kalıyor."
+				}
+			],
+			"next": "n_last"
+		},
+		"n_watched": {
+			"type": "text",
+			"perspective": "komsu",
+			"art": "peephole",
+			"text": "Bir süre daha bekliyor. Sonra kapının altından bir zarf itiyor ve gidiyor. Kimseye bir şey olmadı. Henüz.",
+			"next": "n_last"
+		},
+		"n_last": {
+			"type": "card",
+			"perspective": "komsu",
+			"art": "peephole",
+			"sfx": "steps",
+			"text": "Birkaç gün sonra. Merdivende bavul sesleri. Dokuzdaki kadın taşınıyor. Kapının önünden geçerken gözü kapı deliğine takılıyor.",
+			"variants": [
+				{
+					"if": {
+						"y_let_in": false,
+						"s_called_police": false
+					},
+					"text": "Birkaç gün sonra. Dokuzdaki kadın merdivende sana gülümsüyor; elinde market poşetleri. Gözü bir an kapı deliğine takılıyor."
+				}
+			],
+			"left": {
+				"label": "Kapıyı aç",
+				"next": "end",
+				"set": {
+					"n_opened": true
+				}
+			},
+			"right": {
+				"label": "Delikten bak",
+				"next": "end"
+			},
+			"pause": 2.5
+		},
+		"end": {
+			"type": "ending",
+			"lines": [
+				{
+					"variants": [
+						{
+							"if": {
+								"y_let_in": true
+							},
+							"text": "Kurye o akşam birine kapı tuttu. Kibar bir adama."
+						},
+						{
+							"if": {
+								"y_warned": true
+							},
+							"text": "Kurye fazladan bir cümle söyledi. Neden söylediğini o da bilmedi."
+						},
+						{
+							"if": {},
+							"text": "Kurye kurallara uydu ve eve geç kaldı."
+						}
+					]
+				},
+				{
+					"variants": [
+						{
+							"if": {
+								"y_let_in": true
+							},
+							"text": "Kadın üç ayda kurduğu hayatı bir gecede bavula sığdırdı."
+						},
+						{
+							"if": {
+								"s_curtain": true
+							},
+							"text": "Kadın perdeyi çekti ve o gece uyuyabildi."
+						},
+						{
+							"if": {},
+							"text": "Kadın o gece ışıkları hiç kapatmadı."
+						}
+					]
+				},
+				{
+					"variants": [
+						{
+							"if": {
+								"n_opened": true,
+								"n_spoke": true
+							},
+							"text": "Komşu bir kez kapısını açtı. Bunun ne değiştirdiğini hiç öğrenmedi."
+						},
+						{
+							"if": {
+								"n_spoke": true
+							},
+							"text": "Komşu bir kez merdivene çıktı ve “Kimi aradınız?” dedi."
+						},
+						{
+							"if": {},
+							"text": "Komşu her şeyi gördü. Hiçbir şeye karışmadı."
+						}
+					]
+				}
+			],
+			"closing": "Bazen doğru kapıyı yanlış kişiye açarız.\nBazen yanlış kapı, açmadığımız kapıdır."
+		},
+		"y_stairs": {
+			"type": "interlude",
+			"perspective": "kurye",
+			"art": "stair_wait",
+			"walk": true,
+			"beats": [
+				"Birinci kat. Işık otomatiği tıkırdıyor.",
+				"İkinci kat. Arkanda ayak sesleri; senin adımlarına uyuyor.",
+				"Üçüncü kat. Işık sönüyor. Karanlıkta kimse düğmeye basmıyor.",
+				"Dördüncü kat. Işık geri geliyor. Daire 9."
+			],
+			"next": "y4"
+		}
+	}
+}

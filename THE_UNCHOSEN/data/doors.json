@@ -1,0 +1,130 @@
+{
+	"doors": [
+		{
+			"id": "200_tl",
+			"title": "200 TL",
+			"wall": "left",
+			"z": 2.35,
+			"door_color": [
+				0.2,
+				0.13,
+				0.1
+			],
+			"light_color": [
+				1.0,
+				0.16,
+				0.1
+			],
+			"light_pattern": "traffic",
+			"peek_style": "red_light",
+			"sound": "Motor sesi. Bir klakson. Yağmur camlara vuruyor.",
+			"moment": "Kırmızı ışık. Bir adam camını indiriyor. Elinde katlanmış bir 200 TL.",
+			"enterable": true,
+			"entry_text": "Işık hâlâ kırmızı. Camın önünde küçük bir çocuk duruyor; elleri cebinde, gözleri parada.",
+			"loop": "door_traffic",
+			"story": "res://data/stories/200_tl.json",
+			"sound_more": "Bir çocuk sesi, cama çok yakın: “Abi…” Sonra yalnızca yağmur.",
+			"token": "tissues"
+		},
+		{
+			"id": "son_mektup",
+			"title": "Son Mektup",
+			"wall": "right",
+			"z": 3.55,
+			"door_color": [
+				0.17,
+				0.15,
+				0.12
+			],
+			"light_color": [
+				1.0,
+				0.66,
+				0.3
+			],
+			"light_pattern": "candle",
+			"peek_style": "letter",
+			"sound": "Bir kalem kâğıda sürtünüyor. Duruyor. Yeniden başlıyor.",
+			"moment": "Bir masa. Yarım kalmış bir mektup: “Sana hiç söylemedim ama—”",
+			"enterable": true,
+			"loop": "door_pen",
+			"moment_after": "Bir masa. Yarım kalmış bir mektup: “Oğlum, o akşam sana—”",
+			"story": "res://data/stories/son_mektup.json",
+			"sound_more": "Bir sandalye gıcırdıyor. Biri kalkıyor, pencereye gidiyor, geri dönüyor.",
+			"token": "envelope"
+		},
+		{
+			"id": "yanlis_kapi",
+			"title": "Yanlış Kapı",
+			"wall": "left",
+			"z": 4.75,
+			"door_color": [
+				0.12,
+				0.13,
+				0.16
+			],
+			"light_color": [
+				0.55,
+				0.72,
+				1.0
+			],
+			"light_pattern": "tv",
+			"peek_style": "wrong_door",
+			"sound": "Bir televizyon açık. Biri alçak sesle “teşekkür ederim” diyor.",
+			"moment": "Biri kapıyı tutmuş, gülümsüyor. Arkasındaki karanlıkta başka biri bekliyor.",
+			"enterable": true,
+			"loop": "door_tv",
+			"moment_after": "Biri kapıyı tutmuş, gülümsüyor. Arkasındaki karanlıkta, elinde mendil paketleriyle bir çocuk bekliyor.",
+			"story": "res://data/stories/yanlis_kapi.json",
+			"sound_more": "Televizyonun sesi kısılıyor. Biri kapıya doğru yürüyor; duruyor.",
+			"token": "flowers"
+		},
+		{
+			"id": "bekleme_salonu",
+			"title": "Bekleme Salonu",
+			"wall": "right",
+			"z": 5.85,
+			"door_color": [
+				0.14,
+				0.15,
+				0.14
+			],
+			"light_color": [
+				0.62,
+				0.95,
+				0.72
+			],
+			"light_pattern": "fluorescent",
+			"peek_style": "waiting",
+			"sound": "Bir floresan cızırdıyor. Uzakta birinin adı okunuyor.",
+			"moment": "Plastik sandalyeler. Bir kadın telefonunu elinde çevirip duruyor. Arayamıyor.",
+			"enterable": false,
+			"loop": "door_fluorescent",
+			"moment_after": "Plastik sandalyeler. Bir adam telefonda: “Toplantıya geç kaldım, bir çocuk yüzünden.” Kimse ona bakmıyor.",
+			"sound_more": "Aynı isim bir kez daha okunuyor. Kimse kalkmıyor."
+		},
+		{
+			"id": "son_tren",
+			"title": "Son Tren",
+			"wall": "end",
+			"z": 7.4,
+			"door_color": [
+				0.15,
+				0.14,
+				0.16
+			],
+			"light_color": [
+				0.95,
+				0.9,
+				0.8
+			],
+			"light_pattern": "passing",
+			"peek_style": "train",
+			"sound": "Bir anons. Raylardan gelen bir uğultu yaklaşıyor.",
+			"moment": "Peronda tek bir bavul. Trenin kapıları açık. Kimse binmiyor.",
+			"enterable": false,
+			"loop": "door_train",
+			"moment_after": "Peronda tek bir bavul. Üstünde, kurusun diye dizilmiş mendil paketleri.",
+			"sound_more": "Bir düdük. Sonra uzun bir sessizlik; sanki tren birini bekliyor."
+		}
+	]
+}

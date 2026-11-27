@@ -1,0 +1,116 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/decision_card.gd" id="1_card"]
+[ext_resource type="PackedScene" path="res://scenes/peek_scene.tscn" id="2_scene"]
+[ext_resource type="Shader" path="res://shaders/pixel_dither.gdshader" id="3_dither"]
+
+[sub_resource type="StyleBoxFlat" id="frame"]
+bg_color = Color(0.02, 0.02, 0.025, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.86, 0.8, 0.68, 0.9)
+shadow_color = Color(0, 0, 0, 0.6)
+shadow_size = 18
+shadow_offset = Vector2(0, 8)
+
+[sub_resource type="StyleBoxFlat" id="inner"]
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.86, 0.8, 0.68, 0.3)
+
+[sub_resource type="ShaderMaterial" id="dither"]
+shader = ExtResource("3_dither")
+shader_parameter/levels = 10.0
+shader_parameter/dither = 1.0
+shader_parameter/tint = Vector3(1, 1, 1)
+
+[node name="DecisionCard" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 560.0
+offset_bottom = 560.0
+mouse_filter = 2
+script = ExtResource("1_card")
+
+[node name="Frame" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("frame")
+
+[node name="Inner" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("inner")
+
+[node name="Art" type="SubViewportContainer" parent="."]
+texture_filter = 1
+material = SubResource("dither")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+stretch = true
+stretch_shrink = 3
+
+[node name="View" type="SubViewport" parent="Art"]
+disable_3d = true
+handle_input_locally = false
+gui_disable_input = true
+canvas_item_default_texture_filter = 0
+size = Vector2i(178, 178)
+render_target_update_mode = 4
+
+[node name="Scene" parent="Art/View" instance=ExtResource("2_scene")]
+
+[node name="Band" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = 150.0
+grow_horizontal = 2
+mouse_filter = 2
+color = Color(0.02, 0.02, 0.025, 0.86)
+
+[node name="Choice" type="Label" parent="Band"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 10.0
+offset_right = -24.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 30
+vertical_alignment = 1
+autowrap_mode = 3

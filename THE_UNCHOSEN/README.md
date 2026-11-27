@@ -1,0 +1,204 @@
+# THE UNCHOSEN
+
+*Her kapı bir hayat. Her hayat bir ihtimal. Her seçim bir vazgeçiş.*
+
+Seçimler, ihtimaller ve hiç yaşanmamış hayatlar üzerine bir oyun.
+Godot 4.7 · GDScript · 2D piksel-art · dikey mobil (720×1280) · Android / Windows / Linux / Web
+
+## Oyun
+
+Karanlık bir koridorda beş kapı var. Her kapının ardında başka bir hayat sürüyor.
+
+1. **Kapıya yaklaş.** Altından sızan ışığı görürsün, ardındaki sesleri duyarsın.
+2. **Arala.** O hayatın yalnızca o anını görürsün. Geleceğini göremezsin.
+3. **İçeri gir** (basılı tut) **ya da vazgeç.** Aralamak seçmek değildir; içeri girmek bir taahhüttür. Vazgeçtiğin kapının ışığı biraz söner. *Bu ihtimal olduğu yerde kalır.*
+
+İçeri girdiğinde Reigns tarzı kartlarla bir hayatı yaşarsın: kartı sola ya da sağa kaydırırsın. Gösterge yok, puan yok, iyi/kötü yok. Kararlar yalnızca sonradan ne olacağını değiştirir. Çoğu zaman sonuç hemen gelmez, bazen başka birinin gözünden gelir.
+
+### Üç hayat
+
+Koridorda beş kapı var; üçünün içine girilebiliyor. Hayatlar ayrı ayrı oynanabilir ama birbirine dokunurlar. Önce yaşadığın hayatın kararları sonraki hayatlarda geri gelir: başka bir cümlede, başka bir çizimde, başka birinin anısında.
+
+| Hayat | Bakış açıları | Düğüm | Farklı oynanış | Farklı son |
+| --- | --- | --- | --- | --- |
+| **200 TL**: iyi niyet ve beklenmeyen sonuçlar | Adam · Çocuk · Baba | 43 | 496 | 26 |
+| **Son Mektup**: söylenmeyen sözler | Baba (yıllar sonra) · Oğul · Kız kardeş | 34 | 700 | 22 |
+| **Yanlış Kapı**: yanlış kişiye kapı tutmak | Kurye · Kadın · Komşu | 25 | 64 | 15 |
+
+**200 TL.** Bir adam kırmızı ışıkta bekliyor. Camın önünde mendil satan bir çocuk var; adamın cüzdanında tek bir kâğıt para duruyor. Aynı öğleden sonrayı üç kişinin gözünden yaşarsın.
+- Adamın camını tıklatan çocuk, sonra çocuğun gözünden camdaki yansıma olarak geri gelir.
+- Arkadaki beyaz kamyonetin kornasını markette çocuk da duyar. Babanın bölümünde o kamyonetin direksiyonunda kimin olduğunu öğrenirsin.
+- Son sahnede baba, oğlunun kapısının altından sızan ışığın önünde durur: aralayacak mısın?
+
+**Son Mektup.** Yirmi yıl sonra yaşlanmış baba, oğluna o akşam söyleyemediklerini yazmaya çalışır.
+- 200 TL'de sesini yükselttiysen mektup bununla başlar.
+- Oğul'un bölümü yine bir kırmızı ışıkta açılır; bu kez camın önündeki mendil satan çocuğa o bakar.
+- Kız kardeş babanın evini boşaltırken çekmecede postalanmamış bir zarf bulabilir.
+
+**Yanlış Kapı.** Aynı öğleden sonra baba kurye olarak son teslimatını yapar ve çiçekli, kibar bir adama apartman kapısını tutar.
+- Dördüncü kattaki kadın kapı deliğinden bakar.
+- Karşı komşu her şeyi kendi kapı deliğinden izler.
+
+Hiçbir yerde gösterge, puan ya da iyi/kötü yok. Her hayatın sonu **açıktır**: üç kişinin o akşam ne düşündüğünü söyler, hiçbirini yargılamaz.
+
+> Üçü de aynı 200 lirayı düşündü.
+> Hiçbiri aynı şeyi görmedi.
+
+Yaşanan bir hayatın kapısı bir daha açılmaz. Diğer kapıların ardındaki anlarda o hayatın izleri belirir: peronda kurumaya bırakılmış mendil paketleri, bekleme salonunda telefonla konuşan bir adam… (A — *Paralel* katmanı.)
+
+**Gizli final.** Üç hayat da yaşandığında koridorun sonundaki kapı kendiliğinden aralanır. Peronda birbirini tanımayan üç kişi bekliyor; trenin kapıları açık. Binebilir ya da vazgeçebilirsin. İkisi de bir cevap vermez.
+
+### 0.3: Duygusal derinlik
+
+Yeni hikâye eklenmedi; mevcut üç hayatın içinde daha uzun kalmak için yapıldı.
+
+- **Ara sahneler.** Kartların arasında, dokundukça ilerleyen kısa anlar var:
+  - Çocuğun markete yürüyüşü.
+  - Dikiz aynasında küçülen market kapısı.
+  - Eve dönüş yokuşu.
+  - Mektubun yazıldığı gece.
+  - Işığın söndüğü apartman merdiveni.
+
+  Kontrol aynı (dokunmak). Mekânlar ve figürler tekrar kullanılıyor; figürler yürüyor.
+- **Hatırlanan ayrıntılar.** Yaşanmış bir hayat, sonraki hayatın ara sahnesine bir satır ekler; örneğin "Pencerenin dışında yağmur. O akşamki gibi." Bunu söyleyen yok, yalnızca orada.
+- **Sessizlik.** Müzik yalnızca bölüm açılışlarında, finalde ve menüde çalar. Kartlar ortam sesiyle okunur. Ağır kararların ardından dünya birkaç saniye nefesini tutar: sesler kısılır, ekran kararır.
+- **Kapılar.**
+  - Kapının önünde beklersen biri öbür tarafta yürür: ışığın altından bir gölge geçer, ikinci bir ses duyulur.
+  - Kol iner, kilit hafifçe sarsılır, sonra aralık açılır.
+  - Gelecek hiçbir zaman gösterilmez.
+- **Yaşayan koridor.**
+  - Yaşanan her hayatın kapısının önünde bir iz kalır: mendil paketleri, bir zarf, çiçekler.
+  - Karanlık hafifçe ısınır ve sondaki kapının ışığı daha belirgin nefes alır.
+  - Uzaktan, duvarın ardından o hayatların sesleri gelir: yağmur, saat, merdiven.
+
+  Hiçbiri açıklanmaz. Son Tren'in açılma koşulu ve finali aynen korunuyor.
+
+## Çalıştırma
+
+- **Editörde:** Godot 4.7 ile `project.godot` dosyasını açıp **F5**'e bas. Masaüstünde fare dokunmanın yerine geçer; kartlar ← → tuşlarıyla da seçilebilir.
+- **Hazır sürümler:** Aşağıdaki "Dışa aktarma" bölümüne bak.
+
+Android geri tuşu bir adım geri götürür; koridorda ya da menüdeyken oyunu kaydedip kapatır. Bir hayatın ortasında geri tuşu oyunu kaydedip kapatır, çünkü bir hayattan yarıda çıkılmaz. Her karardan sonra ve uygulama arka plana alındığında oyun kaydedilir. Menüde **Devam et** kaldığın karttan sürdürür.
+
+## Yapı
+
+```text
+THE_UNCHOSEN/
+├── scenes/
+│   ├── corridor.tscn        menü + koridor (piksel SubViewport) + HUD
+│   ├── door.tscn            tek kapı (+ ışık sızıntısı için toplamalı katman)
+│   ├── peek_scene.tscn      bir anın çizimi (aralık ve kartlar için ortak)
+│   ├── decision_card.tscn   sürüklenen, eğilen karar kartı
+│   └── story_scene.tscn     hayatın içi: bölüm, anlatı, karar, son
+├── scripts/
+│   ├── corridor.gd          durum makinesi: MENU → IDLE → AT_DOOR → PEEKING → ENTERING
+│   ├── corridor_world.gd    küçük perspektif çizici (2D çokgenlerle 3D koridor)
+│   ├── door.gd              kapı geometrisi, ışık ritmi, kamera bakış noktaları
+│   ├── peek_scene.gd        31 prosedürel sahne (bayraklara göre ayrıntı değişir)
+│   ├── decision_card.gd     Reigns tarzı sürükle-bırak
+│   ├── story_scene.gd       kart akışı, yankı vurgusu, final
+│   ├── story_manager.gd     autoload: hikâye JSON yorumlayıcı (bayraklar, varyantlar)
+│   ├── game_manager.gd      autoload: bakılan / vazgeçilen / girilen / yaşanan
+│   ├── save_manager.gd      autoload: user://save.json, user://settings.json
+│   ├── audio_manager.gd     autoload: müzik, ambiyans, efekt, kapı ardı döngüleri
+│   ├── door_manager.gd      autoload: data/doors.json
+│   └── hold_button.gd, ui_style.gd, world.gd, door_glow.gd
+├── data/
+│   ├── doors.json           beş kapı: ışık, ses, an, yaşandıktan sonraki izler
+│   └── stories/             200_tl.json · son_mektup.json · yanlis_kapi.json
+├── shaders/                 pixel_dither (Bayer 4×4), vignette
+├── assets/audio/            28 ses (tools/synth_audio.py ile üretildi)
+├── assets/fonts/            Pixelify Sans, Lora (SIL OFL 1.1, lisansları yanında)
+└── tools/
+    ├── validate_story.py    bütün oynanışları dolaşır, kopuk/erişilemez düğümü bulur
+    ├── add_depth_03.py      0.3 veri geçişi: ara sahneler, sessizlikler, yankılar (tekrar çalıştırılabilir)
+    ├── synth_audio.py       bütün sesleri sıfırdan sentezler (numpy + scipy + ffmpeg)
+    ├── test_logic.gd        başsız mantık testleri (her hayatta 300 rastgele oynanış, kayıt/devam…)
+    ├── screenshot_tour.gd   bir hayatı baştan sona oynayıp ekran görüntüsü alır (TOUR_DOOR=0/1/2)
+    ├── finale_tour.gd       üç hayat yaşanmış gibi finali oynatır
+    ├── art_gallery.gd       kart sahnelerini tek bir sayfada render eder
+    └── interlude_gallery.gd ara sahneleri yürüyüşün başında, ortasında ve sonunda render eder
+```
+
+### Yeni bir hayat eklemek
+
+1. `data/stories/<id>.json` yaz. Ara sahne için `"type": "interlude"`, `"art"`, `"beats"` (metin ya da `{"text","if","variants"}`), isteğe bağlı `"walk": true` ve `"text_at": "top|middle|bottom"` kullan. Ağır bir karara `"pause": 2.5` eklersen ardından o kadar saniye sessizlik olur. Daha önce yaşanmış bir hayatın bayrakları `"<hayat>:<bayrak>"` adıyla okunabilir (örneğin `"200_tl:father_harsh"`). Bir düğüme `"sfx"` eklersen kart açılırken o ses çalar. Düğüm tipleri: `chapter`, `text`, `card` (sol/sağ seçenekli), `branch`, `ending`. Koşullar `{"bayrak": değer}` biçiminde yazılır ve hepsinin tutması gerekir; tanımsız bayrak `false` sayılır. `variants` içinde koşulu tutan ilk metin seçilir; geç gelen sonuçlar bu yolla yazılır.
+2. `python3 tools/validate_story.py data/stories/<id>.json -v` ile bütün yolları kontrol et.
+3. `data/doors.json` içinde ilgili kapıya `"enterable": true` ve `"story": "res://data/stories/<id>.json"` ekle.
+4. Kartlardaki `art` anahtarları `scripts/peek_scene.gd` içindeki sahnelere karşılık gelir.
+
+### Görsel dil
+
+- **Dünya:** Koridor 1/3, kart çizimleri 1/4 çözünürlükte çizilir. Ardından `pixel_dither.gdshader` ile Bayer dither uygulanır ve renk sayısı sınırlanır. Sonuç tutarlı bir piksel-art görünümü.
+- **Metinler:** Anlatı keskin kalır ve okuma hızında, daktilo gibi belirir; dokununca hemen tamamlanır. Tırnak içindeki konuşmalar italik ve sıcak tonda yazılır. Arayüzde Pixelify Sans, okunan metinlerde Lora ve Lora Italic kullanılır.
+- **Hazır görsel yok:** Hiçbir hazır görsel kullanılmadı, her şey kodla çiziliyor. Sonradan çizim eklemek için yalnızca `peek_scene.gd` içindeki ilgili fonksiyonu değiştirmek yeterli.
+
+### Ses
+
+Bütün sesleri `tools/synth_audio.py` üretiyor. Ne kullandığımı, neyi neden seçtiğimi karşılaştırarak belirledim:
+
+- **Gerçek piyano ve saha kayıtları:** [facebookincubator/Meta-open-sound](https://github.com/facebookincubator/Meta-open-sound) (CC0 1.0).
+  - Müzikte 88 tuşlu gerçek bir upright piyano çalıyor.
+  - Kapı, ayak sesi, şehir yağmuru, araba motoru, araba camı, tren, bozuk para, sayfa ve whoosh sesleri gerçek kayıtlardan.
+- **OpenGameArt (CC0):** Kalem yazısı ve televizyon paraziti kayıtları `tools/audio_src/` altında; kaynakları `SOURCES.md` içinde.
+- **Sentez:** Kayıt bulunmayan şeyler sentezleniyor: kapının ardındaki televizyon sesleri, floresan, korna, piyano altındaki pad'ler, "yankı" ve bölüm sesleri.
+- **Kayıtsız üretim:** Betik `--samples` olmadan da çalışır; o zaman her şey tamamen sentezle üretilir.
+- **Kapsam:**
+  - Müzik: üç parça.
+  - Ambiyans: dört döngü (koridor, yağmur, oda, merdiven boşluğu).
+  - Kapı ardı sesleri: beş döngü. Kapı kapalıyken boğuk duyulur, aralayınca filtre açılır.
+  - Efektler: on altı adet; bazıları belirli kartlarda çalar (araba camı, korna, bozuk para…).
+
+```bash
+git clone --depth 1 https://github.com/facebookincubator/Meta-open-sound /tmp/mos
+python3 tools/synth_audio.py assets/audio --samples /tmp/mos
+```
+
+### Araştırılan, kullanılmayanlar
+
+- **inkle/ink + inkgd:** Dallanan anlatı için sektör standardı. Ama kaydırmalı kart biçimine özel JSON motoru zaten var ve testleri yazılı. ink'e geçmek bir şey kazandırmıyor, karmaşıklık ekliyor.
+- **Kenney CC0 paketleri:** Platform/RPG tarzındalar, bu oyunun piksel diline uymuyorlar.
+- **Palet tabanlı dither:** [Donitzo/godot-color-dither](https://github.com/Donitzo/godot-color-dither) (CC0) ile [pixel-art-palettes](https://github.com/comficker/pixel-art-palettes) birlikte denendi.
+  - Yöntem: Aynı karelere Yliluoma'nın iki renk karışımı algoritması uygulandı, mevcut yöntemle karşılaştırıldı: `docs/research/palette_compare.png`.
+  - Ölçüm: Ham görüntüden ortalama sapma (algısal eğride):
+
+    | Yöntem | Sapma |
+    | --- | --- |
+    | Mevcut algısal Bayer | 0.026 |
+    | Oyunun karelerinden çıkarılan 32 renk | 0.023 |
+    | Steam Lords | 0.077 |
+    | Sweetie-16 | 0.126 |
+    | PICO-8 | 0.188 |
+  - Sonuç: 16 renkli paletler karanlık koridoru düz siyaha çeviriyor. Özel 32 renk yakın sonuç veriyor ama renkli ayrıntıları soldurur ve içerik değiştikçe yeniden üretilmesi gerekir. Mevcut yöntem korundu.
+- **Freesound:** İndirme için hesap ve OAuth gerekiyor; OpenGameArt ve Meta Open Sound ihtiyacı karşıladı.
+
+## Test
+
+```bash
+python3 tools/validate_story.py data/stories/200_tl.json
+godot --headless --path . --script res://tools/test_logic.gd
+TOUR_OUT=/tmp/shots xvfb-run godot --path . --rendering-driver opengl3 --resolution 720x1280 --script res://tools/screenshot_tour.gd
+```
+
+## Dışa aktarma
+
+`export_presets.cfg` içinde dört ön ayar var: **Android** (arm64 + armv7, minSdk 24, dikey), **Linux**, **Windows**, **Web** (tek iş parçacıklı; özel sunucu başlığı gerektirmez).
+
+```bash
+godot --headless --path . --export-release "Linux"   ../export/linux/the_unchosen.x86_64
+godot --headless --path . --export-release "Windows" ../export/windows/the_unchosen.exe
+godot --headless --path . --export-release "Web"     ../export/web/index.html
+# Android: Editör Ayarları > Export > Android > SDK yolu, ve imza anahtarı:
+GODOT_ANDROID_KEYSTORE_RELEASE_PATH=... GODOT_ANDROID_KEYSTORE_RELEASE_USER=... \
+GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD=... \
+godot --headless --path . --export-release "Android" ../export/android/the_unchosen.apk
+```
+
+Mağazaya yüklemek için kendi upload anahtarını oluştur (`keytool -genkeypair …`) ve bu anahtarı depoya koyma.
+
+## Lisanslar
+
+- **Fontlar:** Pixelify Sans (© The Pixelify Sans Project Authors) ve Lora (© The Lora Project Authors), ikisi de SIL Open Font License 1.1. Lisans metinleri `assets/fonts/` altında.
+- **Piyano ve saha kayıtları:** Meta Open Sound, CC0 1.0 (kamu malı; atıf zorunlu değil, yine de teşekkürler).
+- **Kalem ve parazit kayıtları:** OpenGameArt, CC0 (`tools/audio_src/SOURCES.md`).
+- **Diğer her şey:** Kod, çizimler, sentez sesler ve metinler bu proje için üretildi.

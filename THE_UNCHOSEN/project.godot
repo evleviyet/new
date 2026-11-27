@@ -1,0 +1,45 @@
+; Engine configuration file.
+; THE UNCHOSEN — prototype 0.1 (corridor & doors)
+
+config_version=5
+
+[application]
+
+config/name="THE UNCHOSEN"
+config/description="A game about choices, possibilities and lives never lived."
+run/main_scene="res://scenes/corridor.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+config/icon="res://icon.png"
+config/version="0.3.0"
+config/quit_on_go_back=false
+boot_splash/bg_color=Color(0, 0, 0, 1)
+boot_splash/show_image=false
+
+[autoload]
+
+DoorManager="*res://scripts/door_manager.gd"
+GameManager="*res://scripts/game_manager.gd"
+StoryManager="*res://scripts/story_manager.gd"
+AudioManager="*res://scripts/audio_manager.gd"
+SaveManager="*res://scripts/save_manager.gd"
+
+[display]
+
+window/size/viewport_width=720
+window/size/viewport_height=1280
+window/size/window_width_override=432
+window/size/window_height_override=768
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/handheld/orientation=1
+
+[gui]
+
+common/drop_mouse_on_gui_input_disabled=true
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
+environment/defaults/default_clear_color=Color(0, 0, 0, 1)
