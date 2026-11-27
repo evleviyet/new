@@ -130,7 +130,18 @@ python3 tools/synth_audio.py assets/audio --samples /tmp/mos
 
 - **inkle/ink + inkgd:** Dallanan anlatı için sektör standardı. Ama kaydırmalı kart biçimine özel JSON motoru zaten var ve testleri yazılı. ink'e geçmek bir şey kazandırmıyor, karmaşıklık ekliyor.
 - **Kenney CC0 paketleri:** Platform/RPG tarzındalar, bu oyunun piksel diline uymuyorlar.
-- **Lospec/pikselart paletleri:** Sabit palet yerine algısal eğride Bayer dither kullanıldı. Karanlık koridorun tonlarını daha iyi koruyor.
+- **Palet tabanlı dither:** [Donitzo/godot-color-dither](https://github.com/Donitzo/godot-color-dither) (CC0) ile [pixel-art-palettes](https://github.com/comficker/pixel-art-palettes) birlikte denendi.
+  - Yöntem: Aynı karelere Yliluoma'nın iki renk karışımı algoritması uygulandı, mevcut yöntemle karşılaştırıldı: `docs/research/palette_compare.png`.
+  - Ölçüm: Ham görüntüden ortalama sapma (algısal eğride):
+
+    | Yöntem | Sapma |
+    | --- | --- |
+    | Mevcut algısal Bayer | 0.026 |
+    | Oyunun karelerinden çıkarılan 32 renk | 0.023 |
+    | Steam Lords | 0.077 |
+    | Sweetie-16 | 0.126 |
+    | PICO-8 | 0.188 |
+  - Sonuç: 16 renkli paletler karanlık koridoru düz siyaha çeviriyor. Özel 32 renk yakın sonuç veriyor ama renkli ayrıntıları soldurur ve içerik değiştikçe yeniden üretilmesi gerekir. Mevcut yöntem korundu.
 - **Freesound, OpenGameArt:** Bu ortamdan erişilemedi.
 
 ## Test
